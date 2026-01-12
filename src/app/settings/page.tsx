@@ -66,13 +66,13 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy-800">設定</h1>
-        <p className="mt-1 text-sm text-navy-400">システム設定を管理</p>
+        <h1 className="text-2xl font-bold text-foreground">設定</h1>
+        <p className="mt-1 text-sm text-muted-foreground">システム設定を管理</p>
       </div>
 
       {/* Tabs */}
       <Card padding="none">
-        <div className="border-b border-gray-200">
+        <div className="border-b border-border">
           <nav className="flex">
             {tabs.map((tab) => (
               <button
@@ -82,8 +82,8 @@ export default function SettingsPage() {
                   flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors
                   ${
                     activeTab === tab.id
-                      ? 'border-navy-600 text-accent-600'
-                      : 'border-transparent text-navy-400 hover:text-navy-600 hover:border-gray-300'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                   }
                 `}
               >
@@ -98,7 +98,7 @@ export default function SettingsPage() {
           {activeTab === 'plans' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-navy-800">プラン一覧</h2>
+                <h2 className="text-lg font-semibold text-foreground">プラン一覧</h2>
                 <Button>
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -118,26 +118,26 @@ export default function SettingsPage() {
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`bg-white rounded-lg border ${plan.isActive ? 'border-primary-200' : 'border-gray-200'} p-5 hover:shadow-card-hover transition-all cursor-pointer`}
+                      className={`bg-white rounded-lg border ${plan.isActive ? 'border-primary/30' : 'border-border'} p-5 hover:shadow-card-hover transition-all cursor-pointer`}
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold text-navy-800">{plan.name}</h3>
+                        <h3 className="font-semibold text-foreground">{plan.name}</h3>
                         <Badge variant={plan.isActive ? 'success' : 'neutral'}>
                           {plan.isActive ? '有効' : '無効'}
                         </Badge>
                       </div>
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-navy-400">月額料金</span>
-                          <span className="font-semibold text-accent-600">{formatCurrency(plan.monthlyPrice)}</span>
+                          <span className="text-muted-foreground">月額料金</span>
+                          <span className="font-semibold text-primary">{formatCurrency(plan.monthlyPrice)}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-navy-400">初期費用</span>
-                          <span className="text-navy-800">{plan.setupFee ? formatCurrency(plan.setupFee) : '-'}</span>
+                          <span className="text-muted-foreground">初期費用</span>
+                          <span className="text-foreground">{plan.setupFee ? formatCurrency(plan.setupFee) : '-'}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-navy-400">作成日</span>
-                          <span className="text-navy-800">{formatDate(plan.createdAt)}</span>
+                          <span className="text-muted-foreground">作成日</span>
+                          <span className="text-foreground">{formatDate(plan.createdAt)}</span>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm" className="w-full">
@@ -156,7 +156,7 @@ export default function SettingsPage() {
           {activeTab === 'templates' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-navy-800">通知テンプレート</h2>
+                <h2 className="text-lg font-semibold text-foreground">通知テンプレート</h2>
                 <Button>
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -167,16 +167,16 @@ export default function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { type: 'invoice_send', label: '請求書送付', description: '月次請求書を送付する際のメールテンプレート', bg: 'bg-navy-50', text: 'text-navy-600' },
+                  { type: 'invoice_send', label: '請求書送付', description: '月次請求書を送付する際のメールテンプレート', bg: 'bg-muted', text: 'text-foreground' },
                   { type: 'reminder_1', label: '督促1回目', description: '支払期限超過7日以内の督促メール', bg: 'bg-amber-50', text: 'text-amber-600' },
                   { type: 'reminder_2', label: '督促2回目', description: '支払期限超過14日以上の督促メール', bg: 'bg-amber-50', text: 'text-amber-600' },
-                  { type: 'final_notice', label: '最終通知', description: 'サービス停止前の最終通知メール', bg: 'bg-red-50', text: 'text-red-600' },
-                  { type: 'cancel_confirm', label: '解約確認', description: '解約申請受付時の確認メール', bg: 'bg-gray-50', text: 'text-navy-500' },
-                  { type: 'payment_failed', label: '決済失敗', description: '決済失敗時の通知メール', bg: 'bg-red-50', text: 'text-red-600' },
+                  { type: 'final_notice', label: '最終通知', description: 'サービス停止前の最終通知メール', bg: 'bg-destructive/10', text: 'text-destructive' },
+                  { type: 'cancel_confirm', label: '解約確認', description: '解約申請受付時の確認メール', bg: 'bg-muted', text: 'text-muted-foreground' },
+                  { type: 'payment_failed', label: '決済失敗', description: '決済失敗時の通知メール', bg: 'bg-destructive/10', text: 'text-destructive' },
                 ].map((template) => (
                   <div
                     key={template.type}
-                    className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-card-hover transition-all cursor-pointer"
+                    className="bg-white rounded-lg border border-border p-5 hover:shadow-card-hover transition-all cursor-pointer"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -186,8 +186,8 @@ export default function SettingsPage() {
                           </svg>
                         </div>
                         <div>
-                          <h3 className="font-semibold text-navy-800">{template.label}</h3>
-                          <p className="text-sm text-navy-400 mt-1">{template.description}</p>
+                          <h3 className="font-semibold text-foreground">{template.label}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                         </div>
                       </div>
                       <Button variant="ghost" size="sm">
@@ -203,7 +203,7 @@ export default function SettingsPage() {
           {activeTab === 'permissions' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-navy-800">ユーザーと権限</h2>
+                <h2 className="text-lg font-semibold text-foreground">ユーザーと権限</h2>
                 <Button>
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                 </Button>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-gray-200">
+              <div className="overflow-hidden rounded-lg border border-border">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -232,13 +232,13 @@ export default function SettingsPage() {
                       <TableRow key={user.email}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-md bg-navy-50 flex items-center justify-center">
-                              <span className="text-sm font-semibold text-accent-600">{user.initial}</span>
+                            <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                              <span className="text-sm font-semibold text-primary">{user.initial}</span>
                             </div>
-                            <span className="font-medium text-navy-800">{user.name}</span>
+                            <span className="font-medium text-foreground">{user.name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-navy-500">{user.email}</TableCell>
+                        <TableCell className="text-muted-foreground">{user.email}</TableCell>
                         <TableCell>
                           <Badge variant={user.roleColor as 'danger' | 'warning' | 'neutral'}>{user.role}</Badge>
                         </TableCell>
@@ -254,17 +254,17 @@ export default function SettingsPage() {
                 </Table>
               </div>
 
-              <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
-                <h3 className="text-lg font-semibold text-navy-800 mb-4">権限の説明</h3>
+              <div className="bg-muted rounded-lg border border-border p-5">
+                <h3 className="text-lg font-semibold text-foreground mb-4">権限の説明</h3>
                 <div className="space-y-3">
                   {[
                     { role: '管理者', color: 'danger', desc: 'すべての操作が可能。プラン/テンプレート/権限の設定変更、解約確定、データ削除などの重要操作を実行可能。' },
                     { role: '運用担当', color: 'warning', desc: '請求・入金管理、督促送信、ルート稼働管理が可能。解約確定は不可。' },
                     { role: '営業', color: 'neutral', desc: '店舗登録、契約作成（leadまで）、閲覧のみ。請求・入金操作は不可。' },
                   ].map((item) => (
-                    <div key={item.role} className="flex items-start gap-4 p-4 bg-white rounded-md border border-gray-200">
+                    <div key={item.role} className="flex items-start gap-4 p-4 bg-white rounded-md border border-border">
                       <Badge variant={item.color as 'danger' | 'warning' | 'neutral'}>{item.role}</Badge>
-                      <p className="text-sm text-navy-500">{item.desc}</p>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
                     </div>
                   ))}
                 </div>

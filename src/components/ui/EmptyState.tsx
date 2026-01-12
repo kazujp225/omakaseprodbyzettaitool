@@ -1,40 +1,68 @@
-import { cn } from '@/lib/utils'
+import { FileQuestion, Search, Inbox, AlertTriangle } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "./Button"
+
+type EmptyStateVariant = 'default' | 'search' | 'filter'
 
 interface EmptyStateProps {
-  title: string
+  variant?: EmptyStateVariant
+  title?: string
   description?: string
   icon?: React.ReactNode
   action?: React.ReactNode
   className?: string
 }
 
-export function EmptyState({ title, description, icon, action, className }: EmptyStateProps) {
+const defaultContent: Record<EmptyStateVariant, { icon: React.ReactNode; title: string; description: string }> = {
+  default: {
+    icon: <Inbox className="h-12 w-12" />,
+    title: 'データがありません',
+    description: 'まだデータが登録されていません。',
+  },
+  search: {
+    icon: <Search className="h-12 w-12" />,
+    title: '検索結果がありません',
+    description: '検索条件に一致する結果が見つかりませんでした。',
+  },
+  filter: {
+    icon: <FileQuestion className="h-12 w-12" />,
+    title: '該当するデータがありません',
+    description: 'フィルター条件を変更してお試しください。',
+  },
+}
+
+export function EmptyState({
+  variant = 'default',
+  title,
+  description,
+  icon,
+  action,
+  className,
+}: EmptyStateProps) {
+  const content = defaultContent[variant]
+
   return (
-    <div className={cn('flex flex-col items-center justify-center py-16 text-center', className)}>
-      {icon && <div className="mb-5 text-gray-400">{icon}</div>}
-      <h3 className="text-base font-semibold text-navy-700">{title}</h3>
-      {description && <p className="mt-2 text-sm text-navy-400 max-w-md">{description}</p>}
-      {action && <div className="mt-6">{action}</div>}
+    <div className={cn('flex flex-col items-center justify-center py-12 px-4 text-center', className)}>
+      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        {icon || content.icon}
+      </div>
+      <h3 className="mt-4 text-lg font-semibold text-foreground">
+        {title || content.title}
+      </h3>
+      <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+        {description || content.description}
+      </p>
+      {action && (
+        <div className="mt-6">
+          {action}
+        </div>
+      )}
     </div>
   )
 }
 
 export function NoDataIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={cn('h-12 w-12', className)}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-      />
-    </svg>
-  )
+  return <FileQuestion className={cn('h-12 w-12', className)} />
 }
 
 interface ErrorStateProps {
@@ -52,25 +80,15 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <div className={cn('flex flex-col items-center justify-center py-16 text-center', className)}>
-      <div className="mb-5 w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-        <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+        <AlertTriangle className="h-6 w-6 text-destructive" />
       </div>
-      <h3 className="text-base font-semibold text-navy-700">{title}</h3>
-      <p className="mt-2 text-sm text-navy-400 max-w-md">{message}</p>
+      <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>
+      <p className="mt-2 text-sm text-muted-foreground max-w-md">{message}</p>
       {onRetry && (
-        <button
-          onClick={onRetry}
-          className="mt-6 px-4 py-2.5 text-sm font-medium text-white bg-navy-700 rounded-md hover:bg-navy-800 transition-colors shadow-sm"
-        >
+        <Button onClick={onRetry} className="mt-6">
           再試行
-        </button>
+        </Button>
       )}
     </div>
   )

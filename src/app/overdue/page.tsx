@@ -92,9 +92,9 @@ export default function OverduePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 ${hasIssues ? 'bg-red-100' : 'bg-green-100'} rounded-xl flex items-center justify-center`}>
+          <div className={`w-12 h-12 ${hasIssues ? 'bg-destructive/10' : 'bg-green-100'} rounded-xl flex items-center justify-center`}>
             {hasIssues ? (
-              <svg className="w-6 h-6 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             ) : (
@@ -104,16 +104,16 @@ export default function OverduePage() {
             )}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-navy-800">未入金/督促</h1>
-            <p className="text-sm text-navy-400">
+            <h1 className="text-2xl font-bold text-foreground">未入金/督促</h1>
+            <p className="text-sm text-muted-foreground">
               {hasIssues ? '期限超過・決済失敗の案件を管理' : 'すべての請求が正常に処理されています'}
             </p>
           </div>
         </div>
         {hasIssues && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg">
-            <span className="w-2 h-2 bg-red-500 rounded-full" />
-            <span className="text-sm font-medium text-red-700">要対応あり</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 border border-destructive/30 rounded-lg">
+            <span className="w-2 h-2 bg-destructive/100 rounded-full" />
+            <span className="text-sm font-medium text-destructive">要対応あり</span>
           </div>
         )}
       </div>
@@ -122,14 +122,14 @@ export default function OverduePage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card padding="sm" accent={overdueItems.length > 0 ? 'danger' : 'success'}>
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${overdueItems.length > 0 ? 'bg-red-50' : 'bg-green-50'} rounded-lg flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${overdueItems.length > 0 ? 'text-red-600' : 'text-green-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${overdueItems.length > 0 ? 'bg-destructive/10' : 'bg-green-50'} rounded-lg flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${overdueItems.length > 0 ? 'text-destructive' : 'text-green-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">未入金件数</p>
-              <p className={`text-xl font-bold ${overdueItems.length > 0 ? 'text-red-600' : 'text-green-600'}`}>
+              <p className="text-sm text-muted-foreground">未入金件数</p>
+              <p className={`text-xl font-bold ${overdueItems.length > 0 ? 'text-destructive' : 'text-green-600'}`}>
                 {overdueItems.length}件
               </p>
             </div>
@@ -137,14 +137,14 @@ export default function OverduePage() {
         </Card>
         <Card padding="sm" accent={failedPayments.length > 0 ? 'warning' : 'none'}>
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${failedPayments.length > 0 ? 'bg-amber-50' : 'bg-gray-50'} rounded-lg flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${failedPayments.length > 0 ? 'text-amber-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${failedPayments.length > 0 ? 'bg-amber-50' : 'bg-muted'} rounded-lg flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${failedPayments.length > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">決済失敗</p>
-              <p className={`text-xl font-bold ${failedPayments.length > 0 ? 'text-amber-600' : 'text-navy-800'}`}>
+              <p className="text-sm text-muted-foreground">決済失敗</p>
+              <p className={`text-xl font-bold ${failedPayments.length > 0 ? 'text-amber-600' : 'text-foreground'}`}>
                 {failedPayments.length}件
               </p>
             </div>
@@ -152,14 +152,14 @@ export default function OverduePage() {
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${criticalCount > 0 ? 'bg-red-50' : 'bg-gray-50'} rounded-md flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${criticalCount > 0 ? 'text-red-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${criticalCount > 0 ? 'bg-destructive/10' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${criticalCount > 0 ? 'text-destructive' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">14日超過（危険）</p>
-              <p className={`text-xl font-bold ${criticalCount > 0 ? 'text-red-600' : 'text-navy-800'}`}>
+              <p className="text-sm text-muted-foreground">14日超過（危険）</p>
+              <p className={`text-xl font-bold ${criticalCount > 0 ? 'text-destructive' : 'text-foreground'}`}>
                 {criticalCount}件
               </p>
             </div>
@@ -167,14 +167,14 @@ export default function OverduePage() {
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy-50 rounded-md flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+              <svg className="w-5 h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">未回収金額</p>
-              <p className="text-xl font-bold text-accent-600">{formatCurrency(totalOverdue)}</p>
+              <p className="text-sm text-muted-foreground">未回収金額</p>
+              <p className="text-xl font-bold text-primary">{formatCurrency(totalOverdue)}</p>
             </div>
           </div>
         </Card>
@@ -183,7 +183,7 @@ export default function OverduePage() {
       {/* Failed payments section */}
       {failedPayments.length > 0 && (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-amber-50 rounded-md flex items-center justify-center">
                 <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,8 +191,8 @@ export default function OverduePage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-navy-800">決済失敗（優先対応）</h2>
-                <p className="text-sm text-navy-400">再決済依頼または支払い方法の変更が必要です</p>
+                <h2 className="text-lg font-semibold text-foreground">決済失敗（優先対応）</h2>
+                <p className="text-sm text-muted-foreground">再決済依頼または支払い方法の変更が必要です</p>
               </div>
             </div>
           </div>
@@ -214,11 +214,11 @@ export default function OverduePage() {
                       <div className="w-9 h-9 bg-amber-50 rounded-md flex items-center justify-center">
                         <span className="text-sm font-semibold text-amber-700">{account.accountName.charAt(0)}</span>
                       </div>
-                      <span className="font-medium text-navy-800">{account.accountName}</span>
+                      <span className="font-medium text-foreground">{account.accountName}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="font-semibold text-navy-800">{formatCurrency(payment.amount)}</span>
+                    <span className="font-semibold text-foreground">{formatCurrency(payment.amount)}</span>
                   </TableCell>
                   <TableCell>
                     <Badge variant="danger">{payment.failureReason || '不明'}</Badge>
@@ -238,17 +238,17 @@ export default function OverduePage() {
 
       {/* Overdue items */}
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-red-50 rounded-md flex items-center justify-center">
-                <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-8 h-8 bg-destructive/10 rounded-md flex items-center justify-center">
+                <svg className="w-5 h-5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-navy-800">期限超過一覧</h2>
-                <p className="text-sm text-navy-400">延滞日数順（長い順）</p>
+                <h2 className="text-lg font-semibold text-foreground">期限超過一覧</h2>
+                <p className="text-sm text-muted-foreground">延滞日数順（長い順）</p>
               </div>
             </div>
             {overdueItems.length > 0 && (
@@ -297,26 +297,26 @@ export default function OverduePage() {
                     key={invoice.id}
                     clickable
                     onClick={() => router.push(`/contracts/${contract.id}`)}
-                    className={urgencyLevel === 'critical' ? 'bg-red-50/30' : ''}
+                    className={urgencyLevel === 'critical' ? 'bg-destructive/10/30' : ''}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 ${urgencyLevel === 'critical' ? 'bg-red-100' : urgencyLevel === 'warning' ? 'bg-amber-50' : 'bg-navy-50'} rounded-md flex items-center justify-center`}>
-                          <span className={`text-sm font-semibold ${urgencyLevel === 'critical' ? 'text-red-700' : urgencyLevel === 'warning' ? 'text-amber-700' : 'text-accent-600'}`}>
+                        <div className={`w-9 h-9 ${urgencyLevel === 'critical' ? 'bg-destructive/10' : urgencyLevel === 'warning' ? 'bg-amber-50' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+                          <span className={`text-sm font-semibold ${urgencyLevel === 'critical' ? 'text-destructive' : urgencyLevel === 'warning' ? 'text-amber-700' : 'text-primary'}`}>
                             {account.accountName.charAt(0)}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-navy-800">{account.accountName}</p>
+                          <p className="font-medium text-foreground">{account.accountName}</p>
                           {contract.cancellationReason && (
-                            <p className="text-sm text-navy-400">{contract.cancellationReason}</p>
+                            <p className="text-sm text-muted-foreground">{contract.cancellationReason}</p>
                           )}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>{formatMonth(invoice.billingMonth)}</TableCell>
                     <TableCell>
-                      <span className="font-semibold text-navy-800">{formatCurrency(invoice.amount)}</span>
+                      <span className="font-semibold text-foreground">{formatCurrency(invoice.amount)}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={overdueDays >= 14 ? 'danger' : overdueDays >= 7 ? 'warning' : 'neutral'}>
@@ -328,10 +328,10 @@ export default function OverduePage() {
                         {[0, 1, 2].map((i) => (
                           <div
                             key={i}
-                            className={`w-2 h-2 rounded-full ${i < reminderCount ? 'bg-red-500' : 'bg-gray-200'}`}
+                            className={`w-2 h-2 rounded-full ${i < reminderCount ? 'bg-destructive/100' : 'bg-border'}`}
                           />
                         ))}
-                        <span className={`ml-2 text-sm ${reminderCount >= 2 ? 'text-red-600 font-medium' : 'text-navy-500'}`}>
+                        <span className={`ml-2 text-sm ${reminderCount >= 2 ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                           {reminderCount}回
                         </span>
                       </div>

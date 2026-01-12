@@ -1,4 +1,5 @@
-import { cn } from '@/lib/utils'
+import { Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg'
@@ -13,26 +14,13 @@ const sizeStyles = {
 
 export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
-    <svg
-      className={cn('animate-spin text-primary-600', sizeStyles[size], className)}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
+    <Loader2
+      className={cn(
+        'animate-spin text-muted-foreground',
+        sizeStyles[size],
+        className
+      )}
+    />
   )
 }
 
@@ -40,7 +28,22 @@ export function LoadingState({ message = '読み込み中...' }: { message?: str
   return (
     <div className="flex flex-col items-center justify-center py-16">
       <Spinner size="lg" />
-      <p className="mt-4 text-sm text-gray-500">{message}</p>
+      <p className="mt-4 text-sm text-muted-foreground">{message}</p>
+    </div>
+  )
+}
+
+interface LoadingOverlayProps {
+  message?: string
+}
+
+export function LoadingOverlay({ message = '読み込み中...' }: LoadingOverlayProps) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center gap-4">
+        <Spinner size="lg" />
+        <p className="text-sm text-muted-foreground">{message}</p>
+      </div>
     </div>
   )
 }

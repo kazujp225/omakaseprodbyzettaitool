@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Badge, Card, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, LoadingState } from '@/components/ui'
+import { Badge, Card, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui'
+import { LoadingState } from '@/components/ui/Spinner'
 import { mockContractRepository, mockInvoiceRepository, mockPaymentRepository, mockRouteIntegrationRepository } from '@/repositories/mock'
 import { mockAccountRepository, mockPlanRepository } from '@/repositories/mock'
 import type { Contract, Invoice, Account, Plan, RouteIntegration, Payment } from '@/domain/types'
@@ -20,19 +21,19 @@ interface MetricItemProps {
 
 function MetricItem({ label, value, subValue, status = 'default', href, minimal = false }: MetricItemProps) {
   const content = (
-    <div className={`relative p-6 ${href ? 'hover:bg-warm-gray-50/50 cursor-pointer' : ''} transition-colors h-full flex flex-col justify-between`}>
+    <div className={`relative p-6 ${href ? 'hover:bg-muted/50 cursor-pointer' : ''} transition-colors h-full flex flex-col justify-between`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-bold text-warm-gray-500 tracking-wider uppercase">{label}</span>
+        <span className="text-xs font-bold text-muted-foreground tracking-wider uppercase">{label}</span>
         {status !== 'default' && !minimal && (
-          <span className={`w-2 h-2 rounded-full ${status === 'danger' ? 'bg-red-500' :
+          <span className={`w-2 h-2 rounded-full ${status === 'danger' ? 'bg-destructive' :
             status === 'warning' ? 'bg-amber-500' :
-              status === 'success' ? 'bg-green-500' : 'bg-warm-gray-300'
+              status === 'success' ? 'bg-green-500' : 'bg-muted-foreground'
             }`} />
         )}
       </div>
       <div className="flex items-baseline gap-3">
-        <span className="text-3xl font-bold text-ink leading-none tracking-tight whitespace-nowrap font-feature-settings-tnum">{value}</span>
-        {subValue && <span className="text-sm font-medium text-warm-gray-400 whitespace-nowrap">{subValue}</span>}
+        <span className="text-3xl font-bold text-foreground leading-none tracking-tight whitespace-nowrap text-monospaced-numbers">{value}</span>
+        {subValue && <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">{subValue}</span>}
       </div>
     </div>
   )
@@ -149,16 +150,16 @@ export default function DashboardPage() {
   return (
     <div className="space-y-10 pb-12">
       {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-warm-gray-200 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-bold text-ink tracking-tight font-feature-settings-palt">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
             {greeting}、<br className="hidden md:block" />
-            <span className="text-warm-gray-500">本日の業務状況です。</span>
+            <span className="text-muted-foreground">本日の業務状況です。</span>
           </h1>
         </div>
         <div className="text-right">
-          <p className="text-sm font-bold text-ink tracking-wider uppercase">TODAY</p>
-          <p className="text-xl font-medium text-warm-gray-600 font-feature-settings-tnum">{formatDate(new Date())}</p>
+          <p className="text-sm font-bold text-foreground tracking-wider uppercase">TODAY</p>
+          <p className="text-xl font-medium text-muted-foreground text-monospaced-numbers">{formatDate(new Date())}</p>
         </div>
       </div>
 
@@ -166,26 +167,25 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Primary Insight Card (Wider) */}
         <div className="md:col-span-8">
-          <Card padding="none" className="h-full border-warm-gray-200 shadow-sm bg-white overflow-hidden">
+          <Card padding="none" className="h-full overflow-hidden">
             <div className="p-8 h-full flex flex-col justify-between relative overflow-hidden">
-              {/* Subtle background decoration */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-warm-gray-50 rounded-full -mr-32 -mt-32 opacity-50 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-muted rounded-full -mr-32 -mt-32 opacity-50 pointer-events-none" />
 
               <div>
-                <h2 className="text-sm font-bold text-warm-gray-500 uppercase tracking-widest mb-1">Financial Overview</h2>
+                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">Financial Overview</h2>
                 <div className="flex items-baseline gap-4 mt-2">
-                  <span className="text-5xl font-bold text-ink tracking-tight font-feature-settings-tnum">{formatCurrency(monthlyRevenue)}</span>
-                  <span className="text-lg text-warm-gray-500 font-medium">税込 / 月次</span>
+                  <span className="text-5xl font-bold text-foreground tracking-tight text-monospaced-numbers">{formatCurrency(monthlyRevenue)}</span>
+                  <span className="text-lg text-muted-foreground font-medium">税込 / 月次</span>
                 </div>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-8">
                 <div>
-                  <p className="text-sm text-warm-gray-500 mb-1">稼働中契約</p>
-                  <p className="text-2xl font-bold text-ink">{activeCount}<span className="text-sm font-normal text-warm-gray-400 ml-1">件</span></p>
+                  <p className="text-sm text-muted-foreground mb-1">稼働中契約</p>
+                  <p className="text-2xl font-bold text-foreground">{activeCount}<span className="text-sm font-normal text-muted-foreground ml-1">件</span></p>
                 </div>
                 <div>
-                  <p className="text-sm text-warm-gray-500 mb-1">前月比</p>
+                  <p className="text-sm text-muted-foreground mb-1">前月比</p>
                   <p className="text-2xl font-bold text-green-600">+12<span className="text-sm font-normal text-green-500 ml-1">%</span></p>
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
 
         {/* Secondary Metric Column */}
         <div className="md:col-span-4 flex flex-col gap-6">
-          <Card padding="none" className="flex-1 border-warm-gray-200 shadow-sm bg-white">
+          <Card padding="none" className="flex-1">
             <MetricItem
               label="Action Required"
               value={`${overdueCount + failedPaymentCount}件`}
@@ -203,7 +203,7 @@ export default function DashboardPage() {
               href="/overdue"
             />
           </Card>
-          <Card padding="none" className="flex-1 border-warm-gray-200 shadow-sm bg-white">
+          <Card padding="none" className="flex-1">
             <MetricItem
               label="System Status"
               value={routeErrorCount > 0 ? 'エラー有' : '正常'}
@@ -219,16 +219,16 @@ export default function DashboardPage() {
         {/* Alerts Section */}
         <div className="xl:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-ink flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500" />
+            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-destructive" />
               Attention
             </h2>
-            <Link href="/overdue" className="text-sm font-medium text-warm-gray-500 hover:text-ink transition-colors border-b border-transparent hover:border-ink">
+            <Link href="/overdue" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b border-transparent hover:border-foreground">
               すべて表示
             </Link>
           </div>
 
-          <Card padding="none" className="border-warm-gray-200 shadow-sm bg-white overflow-hidden">
+          <Card padding="none" className="overflow-hidden">
             {alerts.length === 0 ? (
               <div className="px-6 py-16 text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-50 flex items-center justify-center">
@@ -236,17 +236,17 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-base font-bold text-ink">すべて正常</h3>
-                <p className="text-sm text-warm-gray-400 mt-1">対応が必要なアラートはありません</p>
+                <h3 className="text-base font-bold text-foreground">すべて正常</h3>
+                <p className="text-sm text-muted-foreground mt-1">対応が必要なアラートはありません</p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-warm-gray-100 hover:bg-transparent">
-                    <TableHead className="whitespace-nowrap text-warm-gray-400 font-medium">店舗名</TableHead>
-                    <TableHead className="whitespace-nowrap w-[120px] text-warm-gray-400 font-medium">ステータス</TableHead>
-                    <TableHead className="whitespace-nowrap text-warm-gray-400 font-medium">対応</TableHead>
-                    <TableHead className="text-right whitespace-nowrap text-warm-gray-400 font-medium">更新日時</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="whitespace-nowrap">店舗名</TableHead>
+                    <TableHead className="whitespace-nowrap w-[120px]">ステータス</TableHead>
+                    <TableHead className="whitespace-nowrap">対応</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">更新日時</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -254,13 +254,12 @@ export default function DashboardPage() {
                     <TableRow
                       key={alert.id}
                       clickable
-                      className="border-warm-gray-100/50 hover:bg-warm-gray-50/50"
                       onClick={() => window.location.href = alert.nextActionHref}
                     >
                       <TableCell>
                         <div className="max-w-[200px] lg:max-w-none">
-                          <p className="font-bold text-ink truncate text-[15px]">{alert.storeName}</p>
-                          <p className="text-xs text-warm-gray-400 mt-0.5 truncate">{alert.planName}</p>
+                          <p className="font-bold text-foreground truncate text-[15px]">{alert.storeName}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate">{alert.planName}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -269,14 +268,14 @@ export default function DashboardPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm font-medium text-warm-gray-600 hover:text-ink flex items-center gap-1 whitespace-nowrap transition-colors">
+                        <span className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 whitespace-nowrap transition-colors">
                           {alert.nextAction}
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </span>
                       </TableCell>
-                      <TableCell className="text-right text-warm-gray-400 text-sm whitespace-nowrap font-feature-settings-tnum">
+                      <TableCell className="text-right text-muted-foreground text-sm whitespace-nowrap text-monospaced-numbers">
                         {formatDate(alert.updatedAt)}
                       </TableCell>
                     </TableRow>
@@ -290,7 +289,7 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <div className="space-y-6">
           <div>
-            <h3 className="text-xl font-bold text-ink mb-4">Quick Tasks</h3>
+            <h3 className="text-xl font-bold text-foreground mb-4">Quick Tasks</h3>
             <div className="space-y-3">
               {[
                 {
@@ -328,19 +327,19 @@ export default function DashboardPage() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center justify-between p-4 rounded-lg border transition-all duration-200 group bg-white shadow-sm ${item.urgent && item.count > 0
-                      ? 'border-red-100 hover:border-red-300'
-                      : 'border-warm-gray-100 hover:border-warm-gray-300'
+                  className={`flex items-center justify-between p-4 rounded-lg border transition-all duration-200 group bg-card shadow-sm ${item.urgent && item.count > 0
+                      ? 'border-destructive/20 hover:border-destructive/50'
+                      : 'border-border hover:border-muted-foreground/50'
                     }`}
                 >
                   <span className="flex items-center gap-3">
-                    <span className={`${item.urgent && item.count > 0 ? 'text-red-500' : 'text-warm-gray-400 group-hover:text-ink'
+                    <span className={`${item.urgent && item.count > 0 ? 'text-destructive' : 'text-muted-foreground group-hover:text-foreground'
                       }`}>{item.icon}</span>
-                    <span className={`text-sm font-medium ${item.urgent && item.count > 0 ? 'text-red-800' : 'text-ink'
+                    <span className={`text-sm font-medium ${item.urgent && item.count > 0 ? 'text-destructive' : 'text-foreground'
                       }`}>{item.label}</span>
                   </span>
                   {item.count > 0 && (
-                    <span className={`text-lg font-bold ${item.urgent ? 'text-red-600' : 'text-ink'
+                    <span className={`text-lg font-bold ${item.urgent ? 'text-destructive' : 'text-foreground'
                       }`}>
                       {item.count}
                     </span>

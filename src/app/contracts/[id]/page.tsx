@@ -399,8 +399,8 @@ ${
   if (!contract || !store || !plan) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold text-navy-800">契約が見つかりません</h2>
-        <Link href="/contracts" className="mt-4 text-navy-600 hover:text-accent-600">
+        <h2 className="text-xl font-semibold text-foreground">契約が見つかりません</h2>
+        <Link href="/contracts" className="mt-4 text-primary hover:text-primary/80">
           契約一覧に戻る
         </Link>
       </div>
@@ -459,15 +459,15 @@ ${
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-sm text-navy-400 mb-2">
-            <Link href="/contracts" className="hover:text-navy-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link href="/contracts" className="hover:text-foreground">
               契約一覧
             </Link>
             <span>/</span>
             <span>{store.accountName}</span>
           </div>
-          <h1 className="text-2xl font-bold text-navy-800">{store.accountName}</h1>
-          <p className="text-sm text-navy-400">
+          <h1 className="text-2xl font-bold text-foreground">{store.accountName}</h1>
+          <p className="text-sm text-muted-foreground">
             {plan.name} - {formatCurrency(contract.contractMonthlyPriceSnapshot)}/月
           </p>
         </div>
@@ -482,10 +482,10 @@ ${
           {/* ステータスバー - モダンなステップインジケーター */}
           <div className="relative">
             {/* 進捗ライン（背景） */}
-            <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200" />
+            <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" />
             {/* 進捗ライン（完了分） */}
             <div
-              className="absolute top-5 left-0 h-0.5 bg-navy-500 transition-all duration-500"
+              className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500"
               style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * 100}%` }}
             />
 
@@ -512,14 +512,14 @@ ${
                       className={`
                         relative z-10 w-10 h-10 rounded-full flex items-center justify-center
                         transition-all duration-200 border-2
-                        ${isPast ? 'bg-navy-500 border-primary-500' : ''}
-                        ${isCurrent && !isCancelled ? 'bg-navy-500 border-primary-500 ring-4 ring-primary-100' : ''}
-                        ${isCurrent && isCancelled ? 'bg-red-500 border-red-500 ring-4 ring-red-100' : ''}
-                        ${isFuture && !isCancelled ? 'bg-white border-gray-300' : ''}
-                        ${isFuture && isCancelled ? 'bg-white border-red-200' : ''}
+                        ${isPast ? 'bg-primary border-primary' : ''}
+                        ${isCurrent && !isCancelled ? 'bg-primary border-primary ring-4 ring-primary/20' : ''}
+                        ${isCurrent && isCancelled ? 'bg-destructive border-destructive ring-4 ring-destructive/20' : ''}
+                        ${isFuture && !isCancelled ? 'bg-card border-border' : ''}
+                        ${isFuture && isCancelled ? 'bg-card border-destructive/30' : ''}
                         ${canTransition ? 'cursor-pointer hover:scale-110 hover:shadow-lg' : 'cursor-default'}
-                        ${canTransition && !isCancelled ? 'hover:bg-primary-600 hover:border-primary-600' : ''}
-                        ${canTransition && isCancelled ? 'hover:bg-red-600 hover:border-red-600' : ''}
+                        ${canTransition && !isCancelled ? 'hover:bg-primary/90 hover:border-primary' : ''}
+                        ${canTransition && isCancelled ? 'hover:bg-destructive/90 hover:border-destructive' : ''}
                       `}
                       title={blocker || undefined}
                     >
@@ -530,7 +530,7 @@ ${
                       ) : isCurrent ? (
                         <div className={`w-3 h-3 rounded-full ${isCancelled ? 'bg-white' : 'bg-white'}`} />
                       ) : (
-                        <span className={`text-sm font-medium ${isCancelled ? 'text-red-400' : 'text-gray-400'}`}>
+                        <span className={`text-sm font-medium ${isCancelled ? 'text-destructive/60' : 'text-muted-foreground'}`}>
                           {index + 1}
                         </span>
                       )}
@@ -540,16 +540,16 @@ ${
                     <div className="mt-3 text-center">
                       <span className={`
                         text-sm font-medium block
-                        ${isPast ? 'text-navy-600' : ''}
-                        ${isCurrent && !isCancelled ? 'text-accent-600' : ''}
-                        ${isCurrent && isCancelled ? 'text-red-600' : ''}
-                        ${isFuture && !isCancelled ? 'text-gray-400' : ''}
-                        ${isFuture && isCancelled ? 'text-red-300' : ''}
+                        ${isPast ? 'text-foreground' : ''}
+                        ${isCurrent && !isCancelled ? 'text-primary' : ''}
+                        ${isCurrent && isCancelled ? 'text-destructive' : ''}
+                        ${isFuture && !isCancelled ? 'text-muted-foreground' : ''}
+                        ${isFuture && isCancelled ? 'text-destructive/50' : ''}
                       `}>
                         {CONTRACT_STATUS_LABELS[step]}
                       </span>
                       {canTransition && (
-                        <span className="text-sm text-primary-500 mt-0.5 block">
+                        <span className="text-sm text-primary mt-0.5 block">
                           クリックで変更
                         </span>
                       )}
@@ -566,11 +566,11 @@ ${
           </div>
 
           {contract.status === 'cancelled' && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-              <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-3">
+              <svg className="w-5 h-5 text-destructive flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <p className="text-sm text-red-700">この契約は解約済みです。このステータスは不可逆です（元に戻せません）</p>
+              <p className="text-sm text-destructive">この契約は解約済みです。このステータスは不可逆です（元に戻せません）</p>
             </div>
           )}
           {contract.status === 'closed_won' && !hasInitialPayment && (
@@ -638,55 +638,55 @@ ${
           <CardTitle>契約情報</CardTitle>
           <dl className="mt-4 space-y-3">
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">プラン</dt>
-              <dd className="text-sm font-medium text-navy-800">{plan.name}</dd>
+              <dt className="text-sm text-muted-foreground">プラン</dt>
+              <dd className="text-sm font-medium text-foreground">{plan.name}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">月額</dt>
-              <dd className="text-sm font-medium text-navy-800">
+              <dt className="text-sm text-muted-foreground">月額</dt>
+              <dd className="text-sm font-medium text-foreground">
                 {formatCurrency(contract.contractMonthlyPriceSnapshot)}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">支払方法</dt>
-              <dd className="text-sm font-medium text-navy-800">
+              <dt className="text-sm text-muted-foreground">支払方法</dt>
+              <dd className="text-sm font-medium text-foreground">
                 {contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書払い'}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">課金日</dt>
-              <dd className="text-sm font-medium text-navy-800">毎月{contract.paymentDay}日</dd>
+              <dt className="text-sm text-muted-foreground">課金日</dt>
+              <dd className="text-sm font-medium text-foreground">毎月{contract.paymentDay}日</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">開始日</dt>
-              <dd className="text-sm font-medium text-navy-800">{formatDate(contract.startDate)}</dd>
+              <dt className="text-sm text-muted-foreground">開始日</dt>
+              <dd className="text-sm font-medium text-foreground">{formatDate(contract.startDate)}</dd>
             </div>
             {contract.cancellationRequestedAt && (
               <>
                 <div className="flex justify-between">
-                  <dt className="text-sm text-navy-400">解約申請日</dt>
-                  <dd className="text-sm font-medium text-navy-800">
+                  <dt className="text-sm text-muted-foreground">解約申請日</dt>
+                  <dd className="text-sm font-medium text-foreground">
                     {formatDate(contract.cancellationRequestedAt)}
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-sm text-navy-400">解約予定日</dt>
-                  <dd className="text-sm font-medium text-navy-800">
+                  <dt className="text-sm text-muted-foreground">解約予定日</dt>
+                  <dd className="text-sm font-medium text-foreground">
                     {contract.cancellationEffectiveDate
                       ? formatDate(contract.cancellationEffectiveDate)
                       : '-'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-navy-400">解約理由</dt>
-                  <dd className="mt-1 text-sm text-navy-800">{contract.cancellationReason || '-'}</dd>
+                  <dt className="text-sm text-muted-foreground">解約理由</dt>
+                  <dd className="mt-1 text-sm text-foreground">{contract.cancellationReason || '-'}</dd>
                 </div>
               </>
             )}
             {contract.notes && (
               <div>
-                <dt className="text-sm text-navy-400">備考</dt>
-                <dd className="mt-1 text-sm text-navy-800">{contract.notes}</dd>
+                <dt className="text-sm text-muted-foreground">備考</dt>
+                <dd className="mt-1 text-sm text-foreground">{contract.notes}</dd>
               </div>
             )}
           </dl>
@@ -697,20 +697,20 @@ ${
           {route ? (
             <div className="mt-4 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-navy-400">ステータス</span>
+                <span className="text-sm text-muted-foreground">ステータス</span>
                 <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
                   {ROUTE_STATUS_LABELS[route.status]}
                 </Badge>
               </div>
               {route.runningStartedAt && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-navy-400">稼働開始</span>
+                  <span className="text-sm text-muted-foreground">稼働開始</span>
                   <span className="text-sm font-medium">{formatDate(route.runningStartedAt)}</span>
                 </div>
               )}
               {route.stoppedAt && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-navy-400">停止日</span>
+                  <span className="text-sm text-muted-foreground">停止日</span>
                   <span className="text-sm font-medium">{formatDate(route.stoppedAt)}</span>
                 </div>
               )}
@@ -748,7 +748,7 @@ ${
               </div>
             </div>
           ) : (
-            <div className="mt-4 text-center py-6 text-navy-400">
+            <div className="mt-4 text-center py-6 text-muted-foreground">
               <p>ルート連携情報がありません</p>
               <Button variant="primary" size="sm" className="mt-4" onClick={handleCreateRoute} loading={processing}>
                 ルート連携を設定
@@ -786,12 +786,12 @@ ${
             </Button>
           </div>
           {notifications.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-sm text-navy-400 mb-2">送信履歴</p>
+            <div className="mt-4 pt-4 border-t border-border">
+              <p className="text-sm text-muted-foreground mb-2">送信履歴</p>
               <div className="space-y-2">
                 {notifications.slice(0, 3).map((n) => (
                   <div key={n.id} className="flex items-center justify-between text-sm">
-                    <span className="text-navy-500">{NOTIFICATION_TYPE_LABELS[n.type]}</span>
+                    <span className="text-muted-foreground">{NOTIFICATION_TYPE_LABELS[n.type]}</span>
                     <Badge variant={n.status === 'sent' ? 'success' : 'neutral'}>
                       {NOTIFICATION_STATUS_LABELS[n.status]}
                     </Badge>
@@ -804,11 +804,11 @@ ${
       </div>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-border">
           <CardTitle>請求/入金タイムライン</CardTitle>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-6 py-12 text-center text-navy-400">請求データがありません</div>
+          <div className="px-6 py-12 text-center text-muted-foreground">請求データがありません</div>
         ) : (
           <Table>
             <TableHeader>
@@ -884,11 +884,11 @@ ${
       </Card>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-border">
           <CardTitle>操作ログ</CardTitle>
         </div>
         {opsLogs.length === 0 ? (
-          <div className="px-6 py-12 text-center text-navy-400">操作ログがありません</div>
+          <div className="px-6 py-12 text-center text-muted-foreground">操作ログがありません</div>
         ) : (
           <Table>
             <TableHeader>
@@ -902,7 +902,7 @@ ${
             <TableBody>
               {opsLogs.map((log) => (
                 <TableRow key={log.id}>
-                  <TableCell className="text-navy-400">{formatDate(log.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">{formatDate(log.createdAt)}</TableCell>
                   <TableCell className="font-medium">{log.action}</TableCell>
                   <TableCell>
                     {log.before && log.after ? (
@@ -993,11 +993,11 @@ ${
         {draftNotification && (
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-navy-400 mb-1">宛先</p>
+              <p className="text-sm text-muted-foreground mb-1">宛先</p>
               <p className="text-sm font-medium">{draftNotification.toEmail || '（メールアドレス未設定）'}</p>
             </div>
             <div>
-              <p className="text-sm text-navy-400 mb-1">件名</p>
+              <p className="text-sm text-muted-foreground mb-1">件名</p>
               <p className="text-sm font-medium">{draftNotification.subject}</p>
             </div>
             <Textarea

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { Search, X, Clock, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Select } from './Select'
 
@@ -45,17 +46,12 @@ export function SearchBar({
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Combine suggestions
   const allSuggestions: SearchSuggestion[] = [
     ...recentSearches.slice(0, 3).map((s, i) => ({
       id: `recent-${i}`,
       label: s,
       type: 'recent' as const,
-      icon: (
-        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <Clock className="h-4 w-4 text-muted-foreground" />,
     })),
     ...suggestions,
   ]
@@ -66,7 +62,6 @@ export function SearchBar({
     )
     : allSuggestions
 
-  // Keyboard shortcut (Cmd+K / Ctrl+K)
   useEffect(() => {
     if (!showShortcut) return
 
@@ -81,7 +76,6 @@ export function SearchBar({
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [showShortcut])
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -137,36 +131,27 @@ export function SearchBar({
 
   const handleBlur = () => {
     setIsFocused(false)
-    // Delay to allow click on dropdown items
     setTimeout(() => setShowDropdown(false), 150)
   }
 
   return (
     <div className={cn('relative', className)}>
-      {/* Search Input */}
       <div
         className={cn(
           'relative flex items-center transition-all duration-200',
-          isFocused ? 'ring-2 ring-navy-600 ring-offset-1' : '',
-          'bg-white border border-gray-200 rounded-xl overflow-hidden',
-          'hover:border-gray-300 focus-within:border-navy-600'
+          'bg-background border border-input rounded-lg overflow-hidden',
+          'hover:border-muted-foreground/50',
+          isFocused && 'ring-2 ring-ring ring-offset-2'
         )}
       >
-        {/* Search Icon */}
-        <div className="absolute left-4 flex items-center pointer-events-none">
+        <div className="absolute left-3 flex items-center pointer-events-none">
           {loading ? (
-            <svg className="w-5 h-5 text-navy-500 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           ) : (
-            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Search className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
 
-        {/* Input */}
         <input
           ref={inputRef}
           type="text"
@@ -182,13 +167,12 @@ export function SearchBar({
           placeholder={placeholder}
           autoFocus={autoFocus}
           className={cn(
-            'w-full py-3 pl-12 pr-20 text-sm bg-transparent',
-            'text-navy-800 placeholder-gray-400',
+            'w-full py-2.5 pl-10 pr-20 text-sm bg-transparent',
+            'text-foreground placeholder:text-muted-foreground',
             'focus:outline-none'
           )}
         />
 
-        {/* Clear button */}
         {value && (
           <button
             type="button"
@@ -196,44 +180,39 @@ export function SearchBar({
               onChange('')
               inputRef.current?.focus()
             }}
-            className="absolute right-12 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-12 p-1 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="h-4 w-4" />
           </button>
         )}
 
-        {/* Keyboard shortcut hint */}
         {showShortcut && !isFocused && !value && (
-          <div className="absolute right-4 flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded">
+          <div className="absolute right-3 flex items-center gap-1">
+            <kbd className="px-1.5 py-0.5 text-xs font-medium text-muted-foreground bg-muted border border-border rounded">
               ⌘
             </kbd>
-            <kbd className="px-1.5 py-0.5 text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded">
+            <kbd className="px-1.5 py-0.5 text-xs font-medium text-muted-foreground bg-muted border border-border rounded">
               K
             </kbd>
           </div>
         )}
       </div>
 
-      {/* Dropdown */}
       {showDropdown && filteredSuggestions.length > 0 && (
         <div
           ref={dropdownRef}
           className={cn(
-            'absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg',
-            'overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200'
+            'absolute z-50 w-full mt-2 bg-popover border border-border rounded-lg shadow-lg',
+            'overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200'
           )}
         >
-          {/* Recent searches header */}
           {recentSearches.length > 0 && !value && (
-            <div className="flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-100">
-              <span className="text-xs font-medium text-navy-400 uppercase tracking-wider">最近の検索</span>
+            <div className="flex items-center justify-between px-4 py-2 bg-muted border-b border-border">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">最近の検索</span>
               {onClearRecentSearches && (
                 <button
                   onClick={onClearRecentSearches}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   クリア
                 </button>
@@ -241,8 +220,7 @@ export function SearchBar({
             </div>
           )}
 
-          {/* Suggestions list */}
-          <div className="max-h-64 overflow-y-auto py-2">
+          <div className="max-h-64 overflow-y-auto py-1">
             {filteredSuggestions.map((suggestion, index) => (
               <button
                 key={suggestion.id}
@@ -250,31 +228,26 @@ export function SearchBar({
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors',
                   selectedIndex === index
-                    ? 'bg-navy-50 text-accent-600'
-                    : 'text-navy-600 hover:bg-gray-50'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-foreground hover:bg-muted'
                 )}
               >
-                {suggestion.icon || (
-                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                )}
+                {suggestion.icon || <Search className="h-4 w-4 text-muted-foreground" />}
                 <span className="flex-1 text-sm truncate">{suggestion.label}</span>
                 {suggestion.type === 'recent' && (
-                  <span className="text-xs text-gray-400">履歴</span>
+                  <span className="text-xs text-muted-foreground">履歴</span>
                 )}
                 {suggestion.type === 'quick' && (
-                  <span className="text-xs text-navy-500">クイック</span>
+                  <span className="text-xs text-primary">クイック</span>
                 )}
               </button>
             ))}
           </div>
 
-          {/* Search hint */}
           {value && (
-            <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
-              <p className="text-xs text-navy-400">
-                <kbd className="px-1 py-0.5 bg-white border border-gray-200 rounded text-gray-600 mr-1">Enter</kbd>
+            <div className="px-4 py-2 bg-muted border-t border-border">
+              <p className="text-xs text-muted-foreground">
+                <kbd className="px-1 py-0.5 bg-background border border-border rounded text-foreground mr-1">Enter</kbd>
                 で「{value}」を検索
               </p>
             </div>
@@ -309,16 +282,16 @@ export function ActiveFilters({
   if (filters.length === 0) return null
 
   const colorClasses: Record<string, string> = {
-    primary: 'bg-navy-50 text-accent-600 border-primary-200',
+    primary: 'bg-primary/10 text-primary border-primary/20',
     success: 'bg-green-50 text-green-700 border-green-200',
     warning: 'bg-amber-50 text-amber-700 border-amber-200',
-    danger: 'bg-red-50 text-red-700 border-red-200',
-    neutral: 'bg-gray-50 text-navy-600 border-gray-200',
+    danger: 'bg-destructive/10 text-destructive border-destructive/20',
+    neutral: 'bg-muted text-muted-foreground border-border',
   }
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      <span className="text-sm text-navy-400 mr-1">絞り込み:</span>
+      <span className="text-sm text-muted-foreground mr-1">絞り込み:</span>
       {filters.map((filter) => (
         <span
           key={filter.id}
@@ -329,22 +302,20 @@ export function ActiveFilters({
             colorClasses[filter.color || 'neutral']
           )}
         >
-          <span className="text-xs text-gray-400">{filter.label}:</span>
+          <span className="text-xs opacity-70">{filter.label}:</span>
           <span>{filter.value}</span>
           <button
             onClick={() => onRemove(filter.id)}
             className="ml-0.5 p-0.5 rounded-full hover:bg-black/10 transition-colors"
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="h-3 w-3" />
           </button>
         </span>
       ))}
       {onClearAll && filters.length > 1 && (
         <button
           onClick={onClearAll}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors ml-2"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors ml-2"
         >
           すべてクリア
         </button>
@@ -370,11 +341,11 @@ export function FilterChip({
   color = 'primary',
 }: FilterChipProps) {
   const activeColors: Record<string, string> = {
-    primary: 'bg-primary-100 text-primary-800 border-primary-300 ring-2 ring-primary-200',
+    primary: 'bg-primary/10 text-primary border-primary/30 ring-2 ring-primary/20',
     success: 'bg-green-100 text-green-800 border-green-300 ring-2 ring-green-200',
     warning: 'bg-amber-100 text-amber-800 border-amber-300 ring-2 ring-amber-200',
-    danger: 'bg-red-100 text-red-800 border-red-300 ring-2 ring-red-200',
-    neutral: 'bg-gray-200 text-gray-800 border-gray-300 ring-2 ring-gray-200',
+    danger: 'bg-destructive/10 text-destructive border-destructive/30 ring-2 ring-destructive/20',
+    neutral: 'bg-muted text-foreground border-border ring-2 ring-border',
   }
 
   return (
@@ -386,7 +357,7 @@ export function FilterChip({
         'hover:scale-105 active:scale-95',
         active
           ? activeColors[color]
-          : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+          : 'bg-background border-border text-muted-foreground hover:border-muted-foreground/50 hover:bg-muted'
       )}
     >
       {label}
@@ -395,7 +366,7 @@ export function FilterChip({
           className={cn(
             'min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center',
             'text-xs font-semibold rounded-full',
-            active ? 'bg-white/50' : 'bg-gray-100 text-navy-400'
+            active ? 'bg-background/50' : 'bg-muted text-muted-foreground'
           )}
         >
           {count}
@@ -435,26 +406,23 @@ export function AdvancedFilterPanel({
   ).length
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
-      {/* Header */}
+    <div className="bg-card border border-border rounded-lg shadow-sm">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100"
+        className="w-full flex items-center justify-between px-4 py-3 bg-muted border-b border-border"
       >
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-navy-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
-          <span className="font-medium text-navy-600">詳細フィルター</span>
+          <Search className="h-5 w-5 text-muted-foreground" />
+          <span className="font-medium text-foreground">詳細フィルター</span>
           {activeCount > 0 && (
-            <span className="px-2 py-0.5 text-xs font-semibold bg-navy-100 text-accent-600 rounded-full">
+            <span className="px-2 py-0.5 text-xs font-semibold bg-primary/10 text-primary rounded-full">
               {activeCount}
             </span>
           )}
         </div>
         <svg
           className={cn(
-            'w-5 h-5 text-gray-400 transition-transform duration-200',
+            'h-5 w-5 text-muted-foreground transition-transform duration-200',
             isOpen ? 'rotate-180' : ''
           )}
           fill="none"
@@ -465,12 +433,11 @@ export function AdvancedFilterPanel({
         </svg>
       </button>
 
-      {/* Filter Groups */}
       {isOpen && (
         <div className="p-4 space-y-4">
           {groups.map((group) => (
             <div key={group.id}>
-              <label className="block text-sm font-medium text-navy-600 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 {group.label}
               </label>
               {group.type === 'select' && group.options && (
@@ -478,7 +445,6 @@ export function AdvancedFilterPanel({
                   options={[{ value: '', label: 'すべて' }, ...group.options]}
                   value={values[group.id] as string || ''}
                   onChange={(val) => onChange(group.id, val)}
-                  className="bg-white"
                 />
               )}
               {group.type === 'multiselect' && group.options && (
@@ -500,8 +466,8 @@ export function AdvancedFilterPanel({
                         className={cn(
                           'px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors',
                           selected
-                            ? 'bg-navy-50 text-accent-600 border-primary-300'
-                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                            ? 'bg-primary/10 text-primary border-primary/30'
+                            : 'bg-background text-muted-foreground border-border hover:bg-muted'
                         )}
                       >
                         {opt.label}
@@ -515,17 +481,16 @@ export function AdvancedFilterPanel({
                   type="date"
                   value={values[group.id] as string || ''}
                   onChange={(e) => onChange(group.id, e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-primary-500"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 />
               )}
             </div>
           ))}
 
-          {/* Clear button */}
           {onClear && activeCount > 0 && (
             <button
               onClick={onClear}
-              className="w-full py-2 text-sm text-navy-400 hover:text-navy-600 transition-colors"
+              className="w-full py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               フィルターをクリア
             </button>

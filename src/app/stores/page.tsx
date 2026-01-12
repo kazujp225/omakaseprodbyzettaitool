@@ -122,22 +122,22 @@ function StoreSearchContent() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy-800">店舗検索</h1>
-        <p className="mt-1 text-sm text-navy-400">店舗名・電話番号・住所で検索できます</p>
+        <h1 className="text-2xl font-bold text-foreground">店舗検索</h1>
+        <p className="mt-1 text-sm text-muted-foreground">店舗名・電話番号・住所で検索できます</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy-50 rounded-md flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">登録店舗数</p>
-              <p className="text-xl font-bold text-navy-800">{stores.length || '-'}店舗</p>
+              <p className="text-sm text-muted-foreground">登録店舗数</p>
+              <p className="text-xl font-bold text-foreground">{stores.length || '-'}店舗</p>
             </div>
           </div>
         </Card>
@@ -149,21 +149,21 @@ function StoreSearchContent() {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">稼働中契約</p>
+              <p className="text-sm text-muted-foreground">稼働中契約</p>
               <p className="text-xl font-bold text-green-600">{activeContractsCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${overdueCount > 0 ? 'bg-red-50' : 'bg-gray-50'} rounded-md flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${overdueCount > 0 ? 'text-red-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${overdueCount > 0 ? 'bg-destructive/10' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${overdueCount > 0 ? 'text-destructive' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">未入金</p>
-              <p className={`text-xl font-bold ${overdueCount > 0 ? 'text-red-600' : 'text-navy-800'}`}>{overdueCount}件</p>
+              <p className="text-sm text-muted-foreground">未入金</p>
+              <p className={`text-xl font-bold ${overdueCount > 0 ? 'text-destructive' : 'text-foreground'}`}>{overdueCount}件</p>
             </div>
           </div>
         </Card>
@@ -183,7 +183,7 @@ function StoreSearchContent() {
       {/* フィルターチップ */}
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-navy-400">都道府県:</span>
+          <span className="text-sm text-muted-foreground">都道府県:</span>
           <div className="flex flex-wrap gap-1">
             {['東京都', '神奈川県', '大阪府', '愛知県', '福岡県'].map((pref) => {
               const count = stores.filter(s => s.prefecture === pref).length
@@ -215,18 +215,18 @@ function StoreSearchContent() {
       {/* 検索結果サマリー */}
       {searched && stores.length > 0 && (
         <div className="flex items-center gap-2 px-1">
-          <span className="text-sm text-navy-400">
-            <span className="font-semibold text-accent-600">{filteredStores.length}</span>
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-primary">{filteredStores.length}</span>
             {filteredStores.length !== stores.length && (
-              <span className="text-gray-400"> / {stores.length}</span>
+              <span className="text-muted-foreground/70"> / {stores.length}</span>
             )}
             件の店舗
           </span>
           {query && (
-            <span className="text-sm text-gray-400">「{query}」で検索</span>
+            <span className="text-sm text-muted-foreground/70">「{query}」で検索</span>
           )}
           {prefectureFilter && (
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-muted-foreground/70">
               ・{prefectureFilter}
             </span>
           )}
@@ -239,8 +239,8 @@ function StoreSearchContent() {
         <Card>
           <EmptyState
             icon={
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -265,9 +265,9 @@ function StoreSearchContent() {
         </Card>
       ) : (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-navy-800">検索結果</h2>
+              <h2 className="text-lg font-semibold text-foreground">検索結果</h2>
               <Button variant="secondary" size="sm">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -296,23 +296,23 @@ function StoreSearchContent() {
                   <TableRow key={store.id} clickable onClick={() => router.push(`/stores/${store.id}`)}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-navy-50 rounded-md flex items-center justify-center">
-                          <span className="text-sm font-semibold text-accent-600">{store.accountName.charAt(0)}</span>
+                        <div className="w-9 h-9 bg-muted rounded-md flex items-center justify-center">
+                          <span className="text-sm font-semibold text-primary">{store.accountName.charAt(0)}</span>
                         </div>
                         <div>
-                          <p className="font-medium text-navy-800">{store.accountName}</p>
-                          <p className="text-sm text-navy-400">{store.adminEmail}</p>
+                          <p className="font-medium text-foreground">{store.accountName}</p>
+                          <p className="text-sm text-muted-foreground">{store.adminEmail}</p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-navy-600">{store.prefecture}</span>
+                      <span className="text-foreground">{store.prefecture}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-navy-500">{store.accountManager || '-'}</span>
+                      <span className="text-muted-foreground">{store.accountManager || '-'}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-navy-500">{`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}</span>
+                      <span className="text-muted-foreground">{`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}</span>
                     </TableCell>
                     <TableCell>
                       {activeContract ? (
@@ -320,7 +320,7 @@ function StoreSearchContent() {
                           {CONTRACT_STATUS_LABELS[activeContract.status]}
                         </Badge>
                       ) : (
-                        <span className="text-gray-400 text-sm">契約なし</span>
+                        <span className="text-muted-foreground text-sm">契約なし</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -329,13 +329,13 @@ function StoreSearchContent() {
                           {INVOICE_STATUS_LABELS[latestInvoice.status]}
                         </Badge>
                       ) : (
-                        <span className="text-gray-400 text-sm">-</span>
+                        <span className="text-muted-foreground text-sm">-</span>
                       )}
                     </TableCell>
                     <TableCell>
                       <Link
                         href={`/stores/${store.id}`}
-                        className="text-sm font-medium text-accent-600 hover:text-accent-700"
+                        className="text-sm font-medium text-primary hover:text-primary/80"
                         onClick={(e) => e.stopPropagation()}
                       >
                         詳細

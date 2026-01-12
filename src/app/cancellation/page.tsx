@@ -94,35 +94,35 @@ export default function CancellationPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-navy-800">解約管理</h1>
-        <p className="mt-1 text-sm text-navy-400">解約予定の契約を管理</p>
+        <h1 className="text-2xl font-bold text-foreground">解約管理</h1>
+        <p className="mt-1 text-sm text-muted-foreground">解約予定の契約を管理</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-50 rounded-md flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+              <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">解約予定</p>
-              <p className="text-xl font-bold text-navy-800">{items.length}件</p>
+              <p className="text-sm text-muted-foreground">解約予定</p>
+              <p className="text-xl font-bold text-foreground">{items.length}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${readyToComplete.length > 0 ? 'bg-green-50' : 'bg-gray-50'} rounded-md flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${readyToComplete.length > 0 ? 'text-green-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${readyToComplete.length > 0 ? 'bg-green-50' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${readyToComplete.length > 0 ? 'text-green-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">完了可能</p>
-              <p className={`text-xl font-bold ${readyToComplete.length > 0 ? 'text-green-600' : 'text-navy-800'}`}>
+              <p className="text-sm text-muted-foreground">完了可能</p>
+              <p className={`text-xl font-bold ${readyToComplete.length > 0 ? 'text-green-600' : 'text-foreground'}`}>
                 {readyToComplete.length}件
               </p>
             </div>
@@ -130,14 +130,14 @@ export default function CancellationPage() {
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${waitingItems.length > 0 ? 'bg-amber-50' : 'bg-gray-50'} rounded-md flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${waitingItems.length > 0 ? 'text-amber-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${waitingItems.length > 0 ? 'bg-amber-50' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${waitingItems.length > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">対応待ち</p>
-              <p className={`text-xl font-bold ${waitingItems.length > 0 ? 'text-amber-600' : 'text-navy-800'}`}>
+              <p className="text-sm text-muted-foreground">対応待ち</p>
+              <p className={`text-xl font-bold ${waitingItems.length > 0 ? 'text-amber-600' : 'text-foreground'}`}>
                 {waitingItems.length}件
               </p>
             </div>
@@ -162,8 +162,8 @@ export default function CancellationPage() {
         </Card>
       ) : (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-navy-800">解約予定一覧</h2>
+          <div className="px-6 py-4 border-b border-border">
+            <h2 className="text-lg font-semibold text-foreground">解約予定一覧</h2>
           </div>
           <Table>
             <TableHeader>
@@ -193,9 +193,9 @@ export default function CancellationPage() {
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-navy-800">{account.accountName}</p>
+                        <p className="font-medium text-foreground">{account.accountName}</p>
                         {contract.cancellationReason && (
-                          <p className="text-sm text-navy-400 max-w-[200px] truncate">{contract.cancellationReason}</p>
+                          <p className="text-sm text-muted-foreground max-w-[200px] truncate">{contract.cancellationReason}</p>
                         )}
                       </div>
                     </div>
@@ -214,7 +214,7 @@ export default function CancellationPage() {
                         {INVOICE_STATUS_LABELS[lastInvoice.status]}
                       </Badge>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -223,7 +223,7 @@ export default function CancellationPage() {
                         {ROUTE_STATUS_LABELS[route.status]}
                       </Badge>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -232,7 +232,7 @@ export default function CancellationPage() {
                     ) : (
                       <div className="space-y-1">
                         {blockers.map((blocker, i) => (
-                          <div key={i} className="flex items-center gap-1 text-sm text-red-600">
+                          <div key={i} className="flex items-center gap-1 text-sm text-destructive">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -276,8 +276,8 @@ export default function CancellationPage() {
 
       {/* Steps guide */}
       <Card>
-        <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
           </svg>
           解約完了までの手順
@@ -289,14 +289,14 @@ export default function CancellationPage() {
             { step: 3, title: 'ルート停止', desc: 'MEOツールを停止または削除' },
             { step: 4, title: '解約確定', desc: '契約ステータスを「解約完了」に（不可逆）' },
           ].map((item) => (
-            <div key={item.step} className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+            <div key={item.step} className="bg-muted rounded-lg border border-border p-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-navy-50 rounded-full flex items-center justify-center text-accent-600 font-bold text-sm">
+                <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-primary font-bold text-sm">
                   {item.step}
                 </div>
-                <h4 className="font-medium text-navy-800">{item.title}</h4>
+                <h4 className="font-medium text-foreground">{item.title}</h4>
               </div>
-              <p className="text-sm text-navy-400 pl-11">{item.desc}</p>
+              <p className="text-sm text-muted-foreground pl-11">{item.desc}</p>
             </div>
           ))}
         </div>

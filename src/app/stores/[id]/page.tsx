@@ -74,13 +74,13 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
   if (!store) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
-        <h2 className="text-xl font-semibold text-navy-800">店舗が見つかりません</h2>
-        <Link href="/stores" className="mt-4 inline-block text-navy-600 hover:text-accent-600">
+        <h2 className="text-xl font-semibold text-foreground">店舗が見つかりません</h2>
+        <Link href="/stores" className="mt-4 inline-block text-primary hover:text-primary/80">
           店舗検索に戻る
         </Link>
       </div>
@@ -150,23 +150,23 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-navy-400">
-        <Link href="/stores" className="hover:text-navy-600 transition-colors">店舗検索</Link>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href="/stores" className="hover:text-foreground transition-colors">店舗検索</Link>
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
-        <span className="text-navy-800">{store.accountName}</span>
+        <span className="text-foreground">{store.accountName}</span>
       </div>
 
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-navy-50 rounded-lg flex items-center justify-center">
-            <span className="text-xl font-bold text-accent-600">{store.accountName.charAt(0)}</span>
+          <div className="w-14 h-14 bg-muted rounded-lg flex items-center justify-center">
+            <span className="text-xl font-bold text-primary">{store.accountName.charAt(0)}</span>
           </div>
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl font-bold text-navy-800">{store.accountName}</h1>
+              <h1 className="text-2xl font-bold text-foreground">{store.accountName}</h1>
               {activeContract && (
                 <Badge variant={CONTRACT_STATUS_VARIANT[activeContract.status]}>
                   {CONTRACT_STATUS_LABELS[activeContract.status]}
@@ -178,7 +178,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-navy-400">{store.adminEmail}</p>
+            <p className="text-sm text-muted-foreground">{store.adminEmail}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -197,15 +197,15 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
       </div>
 
       {/* Contact info */}
-      <div className="flex items-center gap-6 text-sm text-navy-500">
+      <div className="flex items-center gap-6 text-sm text-muted-foreground">
         <span className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
           </svg>
           {`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}
         </span>
         <span className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -213,7 +213,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
         </span>
         {store.adminEmail && (
           <span className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
             {store.adminEmail}
@@ -225,14 +225,14 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy-50 rounded-md flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">契約数</p>
-              <p className="text-xl font-bold text-navy-800">{contracts.length}件</p>
+              <p className="text-sm text-muted-foreground">契約数</p>
+              <p className="text-xl font-bold text-foreground">{contracts.length}件</p>
             </div>
           </div>
         </Card>
@@ -244,34 +244,34 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">累計請求額</p>
+              <p className="text-sm text-muted-foreground">累計請求額</p>
               <p className="text-xl font-bold text-green-600">{formatCurrency(totalInvoiceAmount)}</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy-50 rounded-md flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">入金済み</p>
-              <p className="text-xl font-bold text-accent-600">{formatCurrency(paidAmount)}</p>
+              <p className="text-sm text-muted-foreground">入金済み</p>
+              <p className="text-xl font-bold text-primary">{formatCurrency(paidAmount)}</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${overdueInvoices.length > 0 ? 'bg-red-50' : 'bg-gray-50'} rounded-md flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${overdueInvoices.length > 0 ? 'text-red-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${overdueInvoices.length > 0 ? 'bg-destructive/10' : 'bg-muted'} rounded-md flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${overdueInvoices.length > 0 ? 'text-destructive' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">未入金</p>
-              <p className={`text-xl font-bold ${overdueInvoices.length > 0 ? 'text-red-600' : 'text-navy-800'}`}>{overdueInvoices.length}件</p>
+              <p className="text-sm text-muted-foreground">未入金</p>
+              <p className={`text-xl font-bold ${overdueInvoices.length > 0 ? 'text-destructive' : 'text-foreground'}`}>{overdueInvoices.length}件</p>
             </div>
           </div>
         </Card>
@@ -279,7 +279,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
 
       {/* Tabs */}
       <Card padding="none">
-        <div className="border-b border-gray-200">
+        <div className="border-b border-border">
           <nav className="flex">
             {tabs.map((tab) => (
               <button
@@ -289,8 +289,8 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors
                   ${
                     activeTab === tab.id
-                      ? 'border-navy-600 text-accent-600'
-                      : 'border-transparent text-navy-400 hover:text-navy-600 hover:border-gray-300'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                   }
                 `}
               >
@@ -298,7 +298,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                 {tab.label}
                 {tab.count !== undefined && (
                   <span className={`ml-1 px-2 py-0.5 rounded-md text-sm ${
-                    activeTab === tab.id ? 'bg-navy-100 text-accent-600' : 'bg-gray-100 text-navy-400'
+                    activeTab === tab.id ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                   }`}>
                     {tab.count}
                   </span>
@@ -313,46 +313,46 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
-                  <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-muted/50 rounded-lg border border-border p-5">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                     店舗情報
                   </h3>
                   <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">担当者</dt>
-                      <dd className="text-sm font-medium text-navy-800">{store.accountManager || '-'}</dd>
+                    <div className="bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">担当者</dt>
+                      <dd className="text-sm font-medium text-foreground">{store.accountManager || '-'}</dd>
                     </div>
-                    <div className="bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">メモ</dt>
-                      <dd className="text-sm font-medium text-navy-800">{store.memo || '-'}</dd>
+                    <div className="bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">メモ</dt>
+                      <dd className="text-sm font-medium text-foreground">{store.memo || '-'}</dd>
                     </div>
-                    <div className="bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">都道府県</dt>
-                      <dd className="text-sm font-medium text-navy-800">{store.prefecture}</dd>
+                    <div className="bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">都道府県</dt>
+                      <dd className="text-sm font-medium text-foreground">{store.prefecture}</dd>
                     </div>
-                    <div className="bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">郵便番号</dt>
-                      <dd className="text-sm font-medium text-navy-800">{store.postalCode || '-'}</dd>
+                    <div className="bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">郵便番号</dt>
+                      <dd className="text-sm font-medium text-foreground">{store.postalCode || '-'}</dd>
                     </div>
-                    <div className="sm:col-span-2 bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">住所</dt>
-                      <dd className="text-sm font-medium text-navy-800">{store.addressDetail}</dd>
+                    <div className="sm:col-span-2 bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">住所</dt>
+                      <dd className="text-sm font-medium text-foreground">{store.addressDetail}</dd>
                     </div>
-                    <div className="bg-white rounded-md p-3 border border-gray-200">
-                      <dt className="text-sm text-navy-500 mb-1">登録日</dt>
-                      <dd className="text-sm font-medium text-navy-800">{formatDate(store.createdAt)}</dd>
+                    <div className="bg-card rounded-md p-3 border border-border">
+                      <dt className="text-sm text-muted-foreground mb-1">登録日</dt>
+                      <dd className="text-sm font-medium text-foreground">{formatDate(store.createdAt)}</dd>
                     </div>
                   </dl>
                 </div>
               </div>
 
               <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
-                  <h3 className="text-lg font-semibold text-navy-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-muted/50 rounded-lg border border-border p-5">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     現在の契約
@@ -360,29 +360,29 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   {activeContract ? (
                     <Link
                       href={`/contracts/${activeContract.id}`}
-                      className="block p-4 rounded-md bg-white border border-gray-200 hover:border-primary-300 hover:shadow-card-hover transition-all group"
+                      className="block p-4 rounded-md bg-card border border-border hover:border-primary/50 hover:shadow-md transition-all group"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-semibold text-navy-800">{getPlanName(activeContract.planId)}</span>
+                        <span className="font-semibold text-foreground">{getPlanName(activeContract.planId)}</span>
                         <Badge variant={CONTRACT_STATUS_VARIANT[activeContract.status]}>
                           {CONTRACT_STATUS_LABELS[activeContract.status]}
                         </Badge>
                       </div>
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center justify-between text-navy-500">
+                        <div className="flex items-center justify-between text-muted-foreground">
                           <span>月額</span>
-                          <span className="font-semibold text-accent-600">{formatCurrency(activeContract.contractMonthlyPriceSnapshot)}</span>
+                          <span className="font-semibold text-primary">{formatCurrency(activeContract.contractMonthlyPriceSnapshot)}</span>
                         </div>
-                        <div className="flex items-center justify-between text-navy-500">
+                        <div className="flex items-center justify-between text-muted-foreground">
                           <span>開始日</span>
                           <span>{formatDate(activeContract.startDate)}</span>
                         </div>
-                        <div className="flex items-center justify-between text-navy-500">
+                        <div className="flex items-center justify-between text-muted-foreground">
                           <span>支払方法</span>
                           <span>{activeContract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</span>
                         </div>
                       </div>
-                      <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-end text-accent-600 text-sm font-medium group-hover:text-accent-700">
+                      <div className="mt-3 pt-3 border-t border-border flex items-center justify-end text-primary text-sm font-medium group-hover:text-primary/80">
                         詳細を見る
                         <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -391,12 +391,12 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                     </Link>
                   ) : (
                     <div className="text-center py-6">
-                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                       </div>
-                      <p className="text-navy-400 mb-4">有効な契約はありません</p>
+                      <p className="text-muted-foreground mb-4">有効な契約はありません</p>
                       <Button variant="primary" size="sm">
                         新規契約を作成
                       </Button>
@@ -410,7 +410,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
           {activeTab === 'contracts' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-navy-800">契約履歴</h3>
+                <h3 className="text-lg font-semibold text-foreground">契約履歴</h3>
                 <Button size="sm">
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -425,7 +425,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   className="py-12"
                 />
               ) : (
-                <div className="overflow-hidden rounded-lg border border-gray-200">
+                <div className="overflow-hidden rounded-lg border border-border">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -454,7 +454,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                           <TableCell>
                             <Link
                               href={`/contracts/${contract.id}`}
-                              className="inline-flex items-center gap-1 text-navy-600 hover:text-accent-600 text-sm font-medium"
+                              className="inline-flex items-center gap-1 text-primary hover:text-primary/80 text-sm font-medium"
                               onClick={(e) => e.stopPropagation()}
                             >
                               詳細
@@ -475,7 +475,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
           {activeTab === 'billing' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-navy-800 mb-4">請求履歴</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">請求履歴</h3>
                 {invoices.length === 0 ? (
                   <EmptyState
                     icon={<NoDataIcon />}
@@ -483,7 +483,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                     className="py-12"
                   />
                 ) : (
-                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                  <div className="overflow-hidden rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -515,7 +515,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-navy-800 mb-4">入金履歴</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-4">入金履歴</h3>
                 {payments.length === 0 ? (
                   <EmptyState
                     icon={<NoDataIcon />}
@@ -523,7 +523,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                     className="py-12"
                   />
                 ) : (
-                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                  <div className="overflow-hidden rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -545,7 +545,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                               </Badge>
                             </TableCell>
                             <TableCell>{payment.provider === 'monthlypay' ? '月額ペイ' : payment.provider === 'bank_transfer' ? '銀行振込' : payment.provider}</TableCell>
-                            <TableCell className="text-navy-400">{payment.failureReason || '-'}</TableCell>
+                            <TableCell className="text-muted-foreground">{payment.failureReason || '-'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -558,7 +558,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
 
           {activeTab === 'notifications' && (
             <div>
-              <h3 className="text-lg font-semibold text-navy-800 mb-4">通知履歴</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">通知履歴</h3>
               {notifications.length === 0 ? (
                 <EmptyState
                   icon={<NoDataIcon />}
@@ -566,7 +566,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   className="py-12"
                 />
               ) : (
-                <div className="overflow-hidden rounded-lg border border-gray-200">
+                <div className="overflow-hidden rounded-lg border border-border">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -588,7 +588,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                               {NOTIFICATION_STATUS_LABELS[notification.status]}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-navy-400">{notification.toEmail}</TableCell>
+                          <TableCell className="text-muted-foreground">{notification.toEmail}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -600,13 +600,13 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
 
           {activeTab === 'logs' && (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-navy-800 mb-2">操作ログ</h3>
-              <p className="text-navy-400 mb-4">店舗に関連する操作ログは契約詳細画面で確認できます</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">操作ログ</h3>
+              <p className="text-muted-foreground mb-4">店舗に関連する操作ログは契約詳細画面で確認できます</p>
               {activeContract && (
                 <Button onClick={() => router.push(`/contracts/${activeContract.id}`)}>
                   契約詳細へ

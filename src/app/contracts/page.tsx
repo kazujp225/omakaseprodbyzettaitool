@@ -287,14 +287,14 @@ function ContractListContent() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-navy-100 rounded-xl flex items-center justify-center">
-            <svg className="w-6 h-6 text-accent-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
+            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-navy-800">契約一覧</h1>
-            <p className="text-sm text-navy-400">{filteredContracts.length}件の契約</p>
+            <h1 className="text-2xl font-bold text-foreground">契約一覧</h1>
+            <p className="text-sm text-muted-foreground">{filteredContracts.length}件の契約</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -352,47 +352,47 @@ function ContractListContent() {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">稼働中</p>
+              <p className="text-sm text-muted-foreground">稼働中</p>
               <p className="text-xl font-bold text-green-600">{activeCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent="primary">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy-50 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">商談中</p>
-              <p className="text-xl font-bold text-accent-600">{leadCount}件</p>
+              <p className="text-sm text-muted-foreground">商談中</p>
+              <p className="text-xl font-bold text-primary">{leadCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent={cancelPendingCount > 0 ? 'warning' : 'none'}>
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${cancelPendingCount > 0 ? 'bg-amber-50' : 'bg-gray-50'} rounded-lg flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-navy-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className={`w-10 h-10 ${cancelPendingCount > 0 ? 'bg-amber-50' : 'bg-muted'} rounded-lg flex items-center justify-center`}>
+              <svg className={`w-5 h-5 ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">解約予定</p>
-              <p className={`text-xl font-bold ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-navy-800'}`}>{cancelPendingCount}件</p>
+              <p className="text-sm text-muted-foreground">解約予定</p>
+              <p className={`text-xl font-bold ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-foreground'}`}>{cancelPendingCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-navy-400">合計</p>
-              <p className="text-xl font-bold text-navy-800">{contracts.length}件</p>
+              <p className="text-sm text-muted-foreground">合計</p>
+              <p className="text-xl font-bold text-foreground">{contracts.length}件</p>
             </div>
           </div>
         </Card>
@@ -400,7 +400,7 @@ function ContractListContent() {
 
       {/* Status Filter Chips */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-navy-400 mr-1">ステータス:</span>
+        <span className="text-sm text-muted-foreground mr-1">ステータス:</span>
         {Object.entries(CONTRACT_STATUS).map(([, value]) => {
           const count = contracts.filter((c) => c.status === value).length
           const isActive = statusFilter === value
@@ -427,10 +427,10 @@ function ContractListContent() {
           <div className="w-64 flex-shrink-0">
             <Card className="sticky top-24">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-navy-800">フィルタ</h3>
+                <h3 className="font-semibold text-foreground">フィルタ</h3>
                 <button
                   onClick={() => setShowFilterPanel(false)}
-                  className="text-gray-400 hover:text-navy-500 p-1"
+                  className="text-muted-foreground hover:text-foreground p-1"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -443,22 +443,22 @@ function ContractListContent() {
                   label="ステータス"
                   options={statusOptions}
                   value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value)
-                    router.push(e.target.value ? `/contracts?status=${e.target.value}` : '/contracts')
+                  onChange={(value) => {
+                    setStatusFilter(value)
+                    router.push(value ? `/contracts?status=${value}` : '/contracts')
                   }}
                 />
                 <Select
                   label="支払方法"
                   options={billingOptions}
                   value={billingMethodFilter}
-                  onChange={(e) => setBillingMethodFilter(e.target.value)}
+                  onChange={(value) => setBillingMethodFilter(value)}
                 />
                 <Select
                   label="プラン"
                   options={planOptions}
                   value={planFilter}
-                  onChange={(e) => setPlanFilter(e.target.value)}
+                  onChange={(value) => setPlanFilter(value)}
                 />
 
                 {hasActiveFilters && (
@@ -476,7 +476,7 @@ function ContractListContent() {
           {!showFilterPanel && (
             <button
               onClick={() => setShowFilterPanel(true)}
-              className="mb-4 flex items-center gap-2 text-sm text-navy-400 hover:text-navy-600 transition-colors"
+              className="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -519,7 +519,7 @@ function ContractListContent() {
                         onClick={() => router.push(`/contracts/${contract.id}`)}
                       >
                         <TableCell>
-                          <span className="font-medium text-navy-800">{getAccountName(contract.accountId)}</span>
+                          <span className="font-medium text-foreground">{getAccountName(contract.accountId)}</span>
                         </TableCell>
                         <TableCell>
                           <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]}>
@@ -527,7 +527,7 @@ function ContractListContent() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <span className="text-navy-600">{getPlanName(contract.planId)}</span>
+                          <span className="text-foreground">{getPlanName(contract.planId)}</span>
                         </TableCell>
                         <TableCell>{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
                         <TableCell>
@@ -536,7 +536,7 @@ function ContractListContent() {
                               {INVOICE_STATUS_LABELS[invoice.status]}
                             </Badge>
                           ) : (
-                            <span className="text-gray-400">-</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -545,23 +545,23 @@ function ContractListContent() {
                               {ROUTE_STATUS_LABELS[route.status]}
                             </Badge>
                           ) : (
-                            <span className="text-gray-400">-</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </TableCell>
                         <TableCell>
                           {nextAction ? (
                             <Link
                               href={nextAction.href}
-                              className="text-sm font-medium text-accent-600 hover:text-accent-700"
+                              className="text-sm font-medium text-primary hover:text-primary/80"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {nextAction.label}
                             </Link>
                           ) : (
-                            <span className="text-gray-400">-</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </TableCell>
-                        <TableCell className="text-navy-400">{formatDate(contract.updatedAt)}</TableCell>
+                        <TableCell className="text-muted-foreground">{formatDate(contract.updatedAt)}</TableCell>
                       </TableRow>
                     )
                   })}
@@ -579,7 +579,7 @@ function ContractListContent() {
         title="新規契約作成"
         description="店舗との契約を作成します"
         icon={
-          <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         }
@@ -588,8 +588,8 @@ function ContractListContent() {
         <div className="space-y-5">
           {/* 店舗・プラン選択 */}
           <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">1</span>
+            <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 bg-primary/10 rounded text-primary text-xs flex items-center justify-center font-bold">1</span>
               店舗・プラン
             </h4>
             <div className="space-y-4 pl-7">
@@ -600,7 +600,7 @@ function ContractListContent() {
                   ...stores.map((s) => ({ value: s.id, label: s.accountName })),
                 ]}
                 value={newContract.accountId}
-                onChange={(e) => setNewContract({ ...newContract, accountId: e.target.value })}
+                onChange={(value) => setNewContract({ ...newContract, accountId: value })}
               />
               <Select
                 label="プラン"
@@ -609,15 +609,15 @@ function ContractListContent() {
                   ...plans.map((p) => ({ value: p.id, label: `${p.name}（${p.monthlyPrice.toLocaleString()}円/月）` })),
                 ]}
                 value={newContract.planId}
-                onChange={(e) => setNewContract({ ...newContract, planId: e.target.value })}
+                onChange={(value) => setNewContract({ ...newContract, planId: value })}
               />
             </div>
           </div>
 
           {/* 支払設定 */}
           <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">2</span>
+            <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 bg-primary/10 rounded text-primary text-xs flex items-center justify-center font-bold">2</span>
               支払設定
             </h4>
             <div className="space-y-4 pl-7">
@@ -629,7 +629,7 @@ function ContractListContent() {
                     { value: 'invoice', label: '請求書払い' },
                   ]}
                   value={newContract.billingMethod}
-                  onChange={(e) => setNewContract({ ...newContract, billingMethod: e.target.value as 'monthlypay' | 'invoice' })}
+                  onChange={(value) => setNewContract({ ...newContract, billingMethod: value as 'monthlypay' | 'invoice' })}
                 />
                 <Select
                   label="課金日"
@@ -638,7 +638,7 @@ function ContractListContent() {
                     label: `毎月${i + 1}日`,
                   }))}
                   value={String(newContract.paymentDay)}
-                  onChange={(e) => setNewContract({ ...newContract, paymentDay: Number(e.target.value) })}
+                  onChange={(value) => setNewContract({ ...newContract, paymentDay: Number(value) })}
                 />
               </div>
             </div>
@@ -646,8 +646,8 @@ function ContractListContent() {
 
           {/* 契約期間 */}
           <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">3</span>
+            <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 bg-primary/10 rounded text-primary text-xs flex items-center justify-center font-bold">3</span>
               契約期間
             </h4>
             <div className="space-y-4 pl-7">
@@ -668,8 +668,8 @@ function ContractListContent() {
 
           {/* プレビュー */}
           {newContract.accountId && newContract.planId && newContract.startDate && (
-            <div className="p-4 bg-navy-50 rounded-lg border border-navy-100">
-              <h4 className="text-sm font-semibold text-navy-700 mb-2 flex items-center gap-2">
+            <div className="p-4 bg-muted/50 rounded-lg border border-border">
+              <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
@@ -677,20 +677,20 @@ function ContractListContent() {
               </h4>
               <dl className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <dt className="text-navy-600">店舗</dt>
-                  <dd className="font-medium text-navy-800">{stores.find(s => s.id === newContract.accountId)?.accountName}</dd>
+                  <dt className="text-muted-foreground">店舗</dt>
+                  <dd className="font-medium text-foreground">{stores.find(s => s.id === newContract.accountId)?.accountName}</dd>
                 </div>
                 <div>
-                  <dt className="text-navy-600">プラン</dt>
-                  <dd className="font-medium text-navy-800">{plans.find(p => p.id === newContract.planId)?.name}</dd>
+                  <dt className="text-muted-foreground">プラン</dt>
+                  <dd className="font-medium text-foreground">{plans.find(p => p.id === newContract.planId)?.name}</dd>
                 </div>
                 <div>
-                  <dt className="text-navy-600">月額</dt>
-                  <dd className="font-medium text-navy-800">{plans.find(p => p.id === newContract.planId)?.monthlyPrice.toLocaleString()}円</dd>
+                  <dt className="text-muted-foreground">月額</dt>
+                  <dd className="font-medium text-foreground">{plans.find(p => p.id === newContract.planId)?.monthlyPrice.toLocaleString()}円</dd>
                 </div>
                 <div>
-                  <dt className="text-navy-600">開始日</dt>
-                  <dd className="font-medium text-navy-800">{newContract.startDate}</dd>
+                  <dt className="text-muted-foreground">開始日</dt>
+                  <dd className="font-medium text-foreground">{newContract.startDate}</dd>
                 </div>
               </dl>
             </div>

@@ -81,10 +81,10 @@ export default function NewStorePage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-navy-800">新規店舗登録</h1>
-          <p className="mt-1 text-sm text-navy-400">MEOツールで管理する店舗情報を登録します</p>
+          <h1 className="text-2xl font-bold text-foreground">新規店舗登録</h1>
+          <p className="mt-1 text-sm text-muted-foreground">MEOツールで管理する店舗情報を登録します</p>
         </div>
-        <Button variant="secondary" onClick={() => router.back()}>
+        <Button variant="secondary" onClick={() => router.push('/stores')}>
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -97,8 +97,8 @@ export default function NewStorePage() {
           <div className="space-y-8">
             {/* 基本情報 */}
             <div>
-              <h3 className="text-base font-semibold text-navy-800 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 bg-accent-100 rounded text-accent-600 text-sm flex items-center justify-center font-bold">1</span>
+              <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">1</span>
                 基本情報
               </h3>
               <div className="space-y-4 pl-8">
@@ -131,8 +131,8 @@ export default function NewStorePage() {
 
             {/* 連絡先 */}
             <div>
-              <h3 className="text-base font-semibold text-navy-800 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 bg-accent-100 rounded text-accent-600 text-sm flex items-center justify-center font-bold">2</span>
+              <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">2</span>
                 連絡先
               </h3>
               <div className="space-y-4 pl-8">
@@ -161,8 +161,8 @@ export default function NewStorePage() {
 
             {/* 所在地 */}
             <div>
-              <h3 className="text-base font-semibold text-navy-800 mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 bg-accent-100 rounded text-accent-600 text-sm flex items-center justify-center font-bold">3</span>
+              <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">3</span>
                 所在地
               </h3>
               <div className="space-y-4 pl-8">
@@ -177,7 +177,7 @@ export default function NewStorePage() {
                     label="都道府県"
                     options={PREFECTURES.map((p) => ({ value: p, label: p }))}
                     value={formData.prefecture}
-                    onChange={(e) => updateField('prefecture', e.target.value)}
+                    onChange={(value) => updateField('prefecture', value)}
                   />
                 </div>
                 <Input
@@ -190,8 +190,8 @@ export default function NewStorePage() {
             </div>
 
             {/* アクション */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-              <Button variant="secondary" type="button" onClick={() => router.back()}>
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <Button variant="secondary" type="button" onClick={() => router.push('/stores')}>
                 キャンセル
               </Button>
               <Button type="submit" loading={creating} disabled={!isValid}>

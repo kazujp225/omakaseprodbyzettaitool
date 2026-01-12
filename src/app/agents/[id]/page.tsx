@@ -187,8 +187,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
   if (!agent) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold text-navy-800">代理店が見つかりません</h2>
-        <Link href="/agents" className="mt-4 text-navy-600 hover:text-accent-600">
+        <h2 className="text-xl font-semibold text-foreground">代理店が見つかりません</h2>
+        <Link href="/agents" className="mt-4 text-foreground hover:text-primary">
           代理店一覧に戻る
         </Link>
       </div>
@@ -201,15 +201,15 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-sm text-navy-400 mb-2">
-            <Link href="/agents" className="hover:text-navy-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            <Link href="/agents" className="hover:text-foreground">
               代理店一覧
             </Link>
             <span>/</span>
             <span>{agent.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-navy-800">{agent.name}</h1>
-          <p className="text-sm text-navy-400">
+          <h1 className="text-2xl font-bold text-foreground">{agent.name}</h1>
+          <p className="text-sm text-muted-foreground">
             単価: {formatCurrency(agent.stockUnitPrice)} / 目標: {agent.monthlyTarget}件
           </p>
         </div>
@@ -225,26 +225,26 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
           <CardTitle>基本情報</CardTitle>
           <dl className="mt-4 space-y-3">
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">契約開始日</dt>
-              <dd className="text-sm font-medium text-navy-800">{formatDate(agent.contractStartDate)}</dd>
+              <dt className="text-sm text-muted-foreground">契約開始日</dt>
+              <dd className="text-sm font-medium text-foreground">{formatDate(agent.contractStartDate)}</dd>
             </div>
             {agent.contractEndDate && (
               <div className="flex justify-between">
-                <dt className="text-sm text-navy-400">契約終了日</dt>
-                <dd className="text-sm font-medium text-navy-800">{formatDate(agent.contractEndDate)}</dd>
+                <dt className="text-sm text-muted-foreground">契約終了日</dt>
+                <dd className="text-sm font-medium text-foreground">{formatDate(agent.contractEndDate)}</dd>
               </div>
             )}
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">単価</dt>
-              <dd className="text-sm font-medium text-navy-800">{formatCurrency(agent.stockUnitPrice)}</dd>
+              <dt className="text-sm text-muted-foreground">単価</dt>
+              <dd className="text-sm font-medium text-foreground">{formatCurrency(agent.stockUnitPrice)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">月間目標</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.monthlyTarget}件</dd>
+              <dt className="text-sm text-muted-foreground">月間目標</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.monthlyTarget}件</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">現在の有効契約</dt>
-              <dd className="text-sm font-medium text-navy-800">{activeContractCount}件</dd>
+              <dt className="text-sm text-muted-foreground">現在の有効契約</dt>
+              <dd className="text-sm font-medium text-foreground">{activeContractCount}件</dd>
             </div>
           </dl>
         </Card>
@@ -253,17 +253,17 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
           <CardTitle>連絡先</CardTitle>
           <dl className="mt-4 space-y-3">
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">メール</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.contactEmail || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">メール</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.contactEmail || '-'}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">電話</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.contactPhone || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">電話</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.contactPhone || '-'}</dd>
             </div>
             {agent.notes && (
               <div>
-                <dt className="text-sm text-navy-400">備考</dt>
-                <dd className="mt-1 text-sm text-navy-800">{agent.notes}</dd>
+                <dt className="text-sm text-muted-foreground">備考</dt>
+                <dd className="mt-1 text-sm text-foreground">{agent.notes}</dd>
               </div>
             )}
           </dl>
@@ -273,37 +273,37 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
           <CardTitle>振込先口座</CardTitle>
           <dl className="mt-4 space-y-3">
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">銀行名</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.bankName || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">銀行名</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.bankName || '-'}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">支店名</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.bankBranch || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">支店名</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.bankBranch || '-'}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">口座種別</dt>
-              <dd className="text-sm font-medium text-navy-800">
+              <dt className="text-sm text-muted-foreground">口座種別</dt>
+              <dd className="text-sm font-medium text-foreground">
                 {agent.bankAccountType === 'ordinary' ? '普通' : agent.bankAccountType === 'current' ? '当座' : '-'}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">口座番号</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.bankAccountNumber || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">口座番号</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.bankAccountNumber || '-'}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-navy-400">口座名義</dt>
-              <dd className="text-sm font-medium text-navy-800">{agent.bankAccountHolder || '-'}</dd>
+              <dt className="text-sm text-muted-foreground">口座名義</dt>
+              <dd className="text-sm font-medium text-foreground">{agent.bankAccountHolder || '-'}</dd>
             </div>
           </dl>
         </Card>
       </div>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-border">
           <CardTitle>月次精算テーブル</CardTitle>
         </div>
         {monthlyData.length === 0 ? (
-          <div className="px-6 py-12 text-center text-navy-400">精算データがありません</div>
+          <div className="px-6 py-12 text-center text-muted-foreground">精算データがありません</div>
         ) : (
           <Table>
             <TableHeader>
@@ -330,7 +330,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                     <TableCell className="text-right">{entitlement?.entitledCount ?? '-'}</TableCell>
                     <TableCell className="text-right">
                       {entitlement?.deficitCount !== undefined ? (
-                        <span className={entitlement.deficitCount > 0 ? 'text-red-600 font-medium' : ''}>
+                        <span className={entitlement.deficitCount > 0 ? 'text-destructive font-medium' : ''}>
                           {entitlement.deficitCount}
                         </span>
                       ) : (
@@ -348,7 +348,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                           {AGENT_SETTLEMENT_STATUS_LABELS[settlement.status]}
                         </Badge>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -357,7 +357,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                           {PAYOUT_STATUS_LABELS[settlement.payoutStatus]}
                         </Badge>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -405,11 +405,11 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
       </Card>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-border">
           <CardTitle>紐づき顧客契約</CardTitle>
         </div>
         {agentContracts.length === 0 ? (
-          <div className="px-6 py-12 text-center text-navy-400">紐づき契約がありません</div>
+          <div className="px-6 py-12 text-center text-muted-foreground">紐づき契約がありません</div>
         ) : (
           <Table>
             <TableHeader>
@@ -428,12 +428,12 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                     {ac.store ? (
                       <Link
                         href={`/contracts/${ac.contractId}`}
-                        className="font-medium text-navy-600 hover:text-accent-600"
+                        className="font-medium text-foreground hover:text-primary"
                       >
                         {ac.store.accountName}
                       </Link>
                     ) : (
-                      <span className="text-gray-400">不明</span>
+                      <span className="text-muted-foreground">不明</span>
                     )}
                   </TableCell>
                   <TableCell>{formatMonth(ac.billingMonth)}</TableCell>
@@ -443,7 +443,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                         {CONTRACT_STATUS_LABELS[ac.contract.status]}
                       </Badge>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -454,7 +454,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                   <TableCell>
                     <Link
                       href={`/contracts/${ac.contractId}`}
-                      className="text-sm text-navy-600 hover:text-accent-600"
+                      className="text-sm text-foreground hover:text-primary"
                     >
                       詳細を見る
                     </Link>
@@ -476,29 +476,29 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
       >
         {selectedSettlement && (
           <div className="space-y-4">
-            <p className="text-sm text-navy-500">
+            <p className="text-sm text-muted-foreground">
               以下の内容で精算を確定します。確定後は請求書が発行されます。
             </p>
-            <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+            <div className="p-4 bg-muted rounded-lg space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-navy-400">対象月</span>
+                <span className="text-sm text-muted-foreground">対象月</span>
                 <span className="text-sm font-medium">{formatMonth(selectedSettlement.billingMonth)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-navy-400">支払件数</span>
+                <span className="text-sm text-muted-foreground">支払件数</span>
                 <span className="text-sm font-medium">{selectedSettlement.payableCount}件</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-navy-400">相殺件数</span>
+                <span className="text-sm text-muted-foreground">相殺件数</span>
                 <span className="text-sm font-medium">{selectedSettlement.cancelledOffset}件</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-navy-400">単価</span>
+                <span className="text-sm text-muted-foreground">単価</span>
                 <span className="text-sm font-medium">{formatCurrency(selectedSettlement.unitPrice)}</span>
               </div>
-              <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                <span className="text-sm font-medium text-navy-600">合計金額</span>
-                <span className="text-lg font-bold text-navy-600">
+              <div className="flex justify-between border-t border-border pt-2 mt-2">
+                <span className="text-sm font-medium text-foreground">合計金額</span>
+                <span className="text-lg font-bold text-foreground">
                   {formatCurrency(selectedSettlement.totalAmount)}
                 </span>
               </div>

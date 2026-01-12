@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
 export function generateId(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0
@@ -47,8 +54,4 @@ export function getOverdueDays(dueDate: Date): number {
   due.setHours(0, 0, 0, 0)
   const diff = today.getTime() - due.getTime()
   return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)))
-}
-
-export function cn(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(' ')
 }

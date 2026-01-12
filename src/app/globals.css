@@ -3,6 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 24 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 24 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 10% 10%;
+    --primary: 220 26% 14%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 6% 96%;
+    --secondary-foreground: 220 26% 14%;
+    --muted: 30 6% 96%;
+    --muted-foreground: 24 6% 45%;
+    --accent: 30 6% 94%;
+    --accent-foreground: 220 26% 14%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 6% 90%;
+    --input: 30 6% 90%;
+    --ring: 220 26% 14%;
+    --radius: 0.5rem;
+  }
+
   html {
     font-family: var(--font-noto-sans-jp), -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -10,9 +33,13 @@
   }
 
   body {
-    @apply text-ink bg-paper;
+    @apply bg-background text-foreground;
     font-feature-settings: "palt" 1;
     letter-spacing: 0.02em;
+  }
+
+  * {
+    @apply border-border;
   }
 
   h1,
@@ -21,7 +48,7 @@
   h4,
   h5,
   h6 {
-    @apply text-navy-800 font-bold tracking-tight;
+    @apply text-foreground font-bold tracking-tight;
   }
 
   h1 {
@@ -44,42 +71,39 @@
 
 @layer components {
   .section-title {
-    @apply text-lg font-bold text-navy-800 mb-1;
+    @apply text-lg font-bold text-foreground mb-1;
   }
 
   .section-description {
-    @apply text-sm text-navy-400;
+    @apply text-sm text-muted-foreground;
   }
 
   .value-large {
-    @apply text-2xl font-bold text-navy-800 text-monospaced-numbers;
+    @apply text-2xl font-bold text-foreground text-monospaced-numbers;
   }
 
   .value-currency {
-    @apply text-xl font-bold text-navy-800 text-monospaced-numbers;
+    @apply text-xl font-bold text-foreground text-monospaced-numbers;
   }
 
-  /* Page header with decorative accent */
   .page-header {
     @apply relative;
   }
 
   .page-header::before {
     content: '';
-    @apply absolute -left-4 top-0 bottom-0 w-1 bg-accent-500 rounded-full;
+    @apply absolute -left-4 top-0 bottom-0 w-1 bg-primary rounded-full;
   }
 
-  /* Stat card accent indicator */
   .stat-card-accent {
     @apply relative overflow-hidden;
   }
 
   .stat-card-accent::after {
     content: '';
-    @apply absolute top-0 left-0 right-0 h-0.5 bg-accent-500;
+    @apply absolute top-0 left-0 right-0 h-0.5 bg-primary;
   }
 
-  /* Section divider with centered dot */
   .section-divider {
     @apply relative flex items-center justify-center;
   }
@@ -87,7 +111,7 @@
   .section-divider::before,
   .section-divider::after {
     content: '';
-    @apply flex-1 h-px bg-gray-200;
+    @apply flex-1 h-px bg-border;
   }
 
   .section-divider::before {
@@ -110,23 +134,21 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
+    background-color: hsl(var(--border));
     border-radius: 3px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: #9ca3af;
+    background-color: hsl(var(--muted-foreground));
   }
 
-  /* Subtle pattern background */
   .bg-pattern-dots {
-    background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+    background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
     background-size: 16px 16px;
   }
 
-  /* Accent border utilities */
   .border-l-accent-primary {
-    @apply border-l-2 border-l-navy-600;
+    @apply border-l-2 border-l-primary;
   }
 
   .border-l-accent-success {
@@ -138,11 +160,10 @@
   }
 
   .border-l-accent-danger {
-    @apply border-l-2 border-l-accent-500;
+    @apply border-l-2 border-l-red-500;
   }
 }
 
-/* Search dropdown animations */
 @keyframes search-dropdown-in {
   from {
     opacity: 0;
@@ -249,7 +270,6 @@
   animation: bounce-subtle 0.3s ease-in-out;
 }
 
-/* Stagger animation delays */
 .stagger-1 {
   animation-delay: 0.05s;
 }
@@ -270,26 +290,23 @@
   animation-delay: 0.25s;
 }
 
-/* Search result item hover effect */
 .search-result-item {
   @apply relative overflow-hidden;
 }
 
 .search-result-item::before {
   content: '';
-  @apply absolute inset-0 bg-navy-50 opacity-0 transition-opacity duration-200;
+  @apply absolute inset-0 bg-accent opacity-0 transition-opacity duration-200;
 }
 
 .search-result-item:hover::before {
   @apply opacity-100;
 }
 
-/* Keyboard shortcut key styles */
 kbd {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
-/* Custom focus ring for search */
 .search-focus-ring:focus-within {
-  @apply ring-2 ring-navy-600 ring-offset-2;
+  @apply ring-2 ring-ring ring-offset-2;
 }
