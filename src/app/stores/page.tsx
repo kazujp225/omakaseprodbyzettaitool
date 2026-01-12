@@ -3,27 +3,15 @@
 import { useEffect, useState, useCallback, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Card, Button, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, LoadingState, EmptyState, Modal, ModalFooter, Select, useToastHelpers, SearchBar, FilterChip, Input } from '@/components/ui'
+import { Card, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, LoadingState, EmptyState, SearchBar, FilterChip, Button } from '@/components/ui'
 import { mockAccountRepository, mockContractRepository, mockInvoiceRepository } from '@/repositories/mock'
-import type { Account, Contract, Invoice, CreateAccountInput } from '@/domain/types'
+import type { Account, Contract, Invoice } from '@/domain/types'
 import { CONTRACT_STATUS_LABELS, CONTRACT_STATUS_VARIANT, INVOICE_STATUS_LABELS, INVOICE_STATUS_VARIANT } from '@/domain/status'
 import { DEFAULT_ORG_ID } from '@/seed/data'
-
-const PREFECTURES = [
-  '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
-  '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
-  '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県',
-  '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県',
-  '奈良県', '和歌山県', '鳥取県', '島根県', '岡山県', '広島県', '山口県',
-  '徳島県', '香川県', '愛媛県', '高知県', '福岡県', '佐賀県', '長崎県',
-  '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県',
-]
-
 
 function StoreSearchContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const toast = useToastHelpers()
   const initialQuery = searchParams.get('q') || ''
 
   const [loading, setLoading] = useState(false)
@@ -61,21 +49,6 @@ function StoreSearchContent() {
     setRecentSearches([])
     localStorage.removeItem('storeRecentSearches')
   }
-
-  // 店舗作成モーダル
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [creating, setCreating] = useState(false)
-  const [newStore, setNewStore] = useState({
-    accountName: '',
-    adminEmail: '',
-    password: '',
-    postalCode: '',
-    prefecture: '東京都',
-    addressDetail: '',
-    phoneArea: '',
-    phoneLocal: '',
-    phoneNumber: '',
-  })
 
   const loadAllData = useCallback(async () => {
     const [contractsData, invoicesData] = await Promise.all([
@@ -132,67 +105,6 @@ function StoreSearchContent() {
     return true
   })
 
-  const handleCreateStore = async () => {
-    if (!newStore.accountName.trim() || !newStore.adminEmail.trim()) return
-    setCreating(true)
-    try {
-      const input: CreateAccountInput = {
-        orgId: DEFAULT_ORG_ID,
-        accountName: newStore.accountName,
-        adminEmail: newStore.adminEmail,
-        password: newStore.password || 'temp123',
-        postalCode: newStore.postalCode,
-        prefecture: newStore.prefecture,
-        addressDetail: newStore.addressDetail,
-        phoneArea: newStore.phoneArea,
-        phoneLocal: newStore.phoneLocal,
-        phoneNumber: newStore.phoneNumber,
-        accountManager: null,
-        lineOfficialNotification: false,
-        influencerDbPlan: 'free',
-        memo: null,
-        instagramIntegration: 'pending',
-        gbpManagement: 'pending',
-        instagramGbpIntegration: 'pending',
-        agencyId: null,
-      }
-      const created = await mockAccountRepository.create(input)
-      setCreateModalOpen(false)
-      setNewStore({
-        accountName: '',
-        adminEmail: '',
-        password: '',
-        postalCode: '',
-        prefecture: '東京都',
-        addressDetail: '',
-        phoneArea: '',
-        phoneLocal: '',
-        phoneNumber: '',
-      })
-      toast.success('アカウントを登録しました', `${created.accountName} の登録が完了しました`)
-      router.push(`/stores/${created.id}`)
-    } catch {
-      toast.error('エラーが発生しました', '店舗の登録に失敗しました')
-    } finally {
-      setCreating(false)
-    }
-  }
-
-  const resetCreateForm = () => {
-    setNewStore({
-      accountName: '',
-      adminEmail: '',
-      password: '',
-      postalCode: '',
-      prefecture: '東京都',
-      addressDetail: '',
-      phoneArea: '',
-      phoneLocal: '',
-      phoneNumber: '',
-    })
-    setCreateModalOpen(false)
-  }
-
   const getActiveContract = (storeId: string) =>
     contracts.find((c) => c.accountId === storeId && ['active', 'cancel_pending'].includes(c.status))
 
@@ -209,17 +121,9 @@ function StoreSearchContent() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-800">店舗検索</h1>
-          <p className="mt-1 text-sm text-navy-400">店舗名・電話番号・住所で検索できます</p>
-        </div>
-        <Button onClick={() => setCreateModalOpen(true)}>
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          新規店舗登録
-        </Button>
+      <div>
+        <h1 className="text-2xl font-bold text-navy-800">店舗検索</h1>
+        <p className="mt-1 text-sm text-navy-400">店舗名・電話番号・住所で検索できます</p>
       </div>
 
       {/* Stats Cards */}
@@ -444,135 +348,6 @@ function StoreSearchContent() {
           </Table>
         </Card>
       )}
-
-      {/* 店舗作成モーダル */}
-      <Modal
-        isOpen={createModalOpen}
-        onClose={resetCreateForm}
-        title="新規店舗登録"
-        description="MEOツールで管理する店舗情報を登録します"
-        icon={
-          <svg className="w-5 h-5 text-navy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-        }
-        size="lg"
-      >
-        <div className="space-y-5">
-          {/* 基本情報 */}
-          <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">1</span>
-              基本情報
-            </h4>
-            <div className="space-y-4 pl-7">
-              <Input
-                label="アカウント名"
-                value={newStore.accountName}
-                onChange={(e) => setNewStore({ ...newStore, accountName: e.target.value })}
-                placeholder="渋谷カフェ本店"
-                required
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="管理者メールアドレス"
-                  type="email"
-                  value={newStore.adminEmail}
-                  onChange={(e) => setNewStore({ ...newStore, adminEmail: e.target.value })}
-                  placeholder="admin@example.com"
-                  required
-                />
-                <Input
-                  label="パスワード"
-                  type="password"
-                  value={newStore.password}
-                  onChange={(e) => setNewStore({ ...newStore, password: e.target.value })}
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 連絡先 */}
-          <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">2</span>
-              連絡先
-            </h4>
-            <div className="space-y-4 pl-7">
-              <div className="grid grid-cols-3 gap-2">
-                <Input
-                  label="電話番号（市外局番）"
-                  value={newStore.phoneArea}
-                  onChange={(e) => setNewStore({ ...newStore, phoneArea: e.target.value })}
-                  placeholder="03"
-                  required
-                />
-                <Input
-                  label="（市内局番）"
-                  value={newStore.phoneLocal}
-                  onChange={(e) => setNewStore({ ...newStore, phoneLocal: e.target.value })}
-                  placeholder="1234"
-                  required
-                />
-                <Input
-                  label="（加入者番号）"
-                  value={newStore.phoneNumber}
-                  onChange={(e) => setNewStore({ ...newStore, phoneNumber: e.target.value })}
-                  placeholder="5678"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 所在地 */}
-          <div>
-            <h4 className="text-sm font-medium text-navy-600 mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-navy-100 rounded text-accent-600 text-xs flex items-center justify-center font-bold">3</span>
-              所在地
-            </h4>
-            <div className="space-y-4 pl-7">
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="郵便番号"
-                  value={newStore.postalCode}
-                  onChange={(e) => setNewStore({ ...newStore, postalCode: e.target.value })}
-                  placeholder="150-0043"
-                />
-                <Select
-                  label="都道府県"
-                  options={PREFECTURES.map((p) => ({ value: p, label: p }))}
-                  value={newStore.prefecture}
-                  onChange={(e) => setNewStore({ ...newStore, prefecture: e.target.value })}
-                />
-              </div>
-              <Input
-                label="住所詳細"
-                value={newStore.addressDetail}
-                onChange={(e) => setNewStore({ ...newStore, addressDetail: e.target.value })}
-                placeholder="渋谷区道玄坂1-2-3 〇〇ビル5F"
-              />
-            </div>
-          </div>
-
-          <ModalFooter>
-            <Button variant="secondary" onClick={resetCreateForm}>
-              キャンセル
-            </Button>
-            <Button
-              onClick={handleCreateStore}
-              loading={creating}
-              disabled={!newStore.accountName.trim() || !newStore.adminEmail.trim()}
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              登録する
-            </Button>
-          </ModalFooter>
-        </div>
-      </Modal>
     </div>
   )
 }

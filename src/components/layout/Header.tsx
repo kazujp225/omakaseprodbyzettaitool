@@ -598,10 +598,10 @@ export function Header() {
                 'relative flex items-center transition-all duration-200',
                 showResults
                   ? 'ring-2 ring-navy-600 shadow-xl shadow-navy-500/10 rounded-t-2xl bg-white'
-                  : 'rounded-xl bg-gray-50/80 hover:bg-gray-100/80'
+                  : 'rounded-xl bg-warm-gray-50/80 hover:bg-warm-gray-100/80'
               )}
             >
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-warm-gray-400">
                 {isSearching ? (
                   <Spinner size="sm" />
                 ) : (
@@ -613,7 +613,7 @@ export function Header() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="検索、または > でコマンド..."
+                placeholder="今日は何をお探しですか？ (Cmd+K)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => {

@@ -30,6 +30,15 @@ const navItems: NavItem[] = [
     ),
   },
   {
+    label: '新規店舗登録',
+    href: '/stores/new',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    ),
+  },
+  {
     label: '契約一覧',
     href: '/contracts',
     icon: (
@@ -90,24 +99,27 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 w-64 bg-navy-800">
+    <aside className="fixed inset-y-0 left-0 z-40 w-64 bg-warm-gray-50 border-r border-warm-gray-200">
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="flex items-center gap-3 h-16 px-6 border-b border-navy-700">
+        <div className="flex items-center gap-3 h-16 px-6 border-b border-warm-gray-200">
           <div className="relative w-8 h-8 flex-shrink-0">
             <img
               src="/logo.png"
               alt="Logo"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain opacity-90"
             />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white">
-            お任せ管理システム
+          <span className="text-lg font-bold tracking-tight text-ink">
+            お任せ管理
           </span>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-4 space-y-1 overflow-y-auto scrollbar-thin">
+        <nav className="flex-1 py-6 px-3 space-y-0.5 overflow-y-auto scrollbar-thin">
+          <div className="px-3 mb-2 text-xs font-semibold text-warm-gray-400 uppercase tracking-wider">
+            Contents
+          </div>
           {navItems.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href))
@@ -116,33 +128,36 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'group flex items-center gap-3 mx-3 px-3 py-2.5 text-base font-medium rounded-md transition-colors',
+                  'group flex items-center gap-3 px-3 py-2 text-sm font-medium rounded transition-all duration-200',
                   isActive
-                    ? 'bg-accent-500 text-white'
-                    : 'text-navy-200 hover:bg-navy-700 hover:text-white'
+                    ? 'text-ink font-bold bg-warm-gray-200/50'
+                    : 'text-warm-gray-500 hover:text-ink hover:bg-warm-gray-100'
                 )}
               >
                 <div className={cn(
                   "transition-colors",
-                  isActive ? "text-white" : "text-navy-400 group-hover:text-white"
+                  isActive ? "text-navy-600" : "text-warm-gray-400 group-hover:text-navy-500"
                 )}>
                   {item.icon}
                 </div>
                 <span>{item.label}</span>
+                {isActive && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-navy-600" />
+                )}
               </Link>
             )
           })}
         </nav>
 
         {/* User Profile */}
-        <div className="p-4 border-t border-navy-700">
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-9 h-9 rounded-md bg-accent-500 flex items-center justify-center">
-              <span className="text-base font-semibold text-white">AD</span>
+        <div className="p-4 border-t border-warm-gray-200">
+          <div className="flex items-center gap-3 px-2 py-2 hover:bg-warm-gray-100 rounded-lg transition-colors cursor-pointer group">
+            <div className="w-9 h-9 rounded-full bg-white border border-warm-gray-200 flex items-center justify-center shadow-sm text-navy-600 font-bold text-sm">
+              AD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-base font-medium text-white truncate">管理者</p>
-              <p className="text-sm text-navy-300 truncate">admin@example.com</p>
+              <p className="text-sm font-bold text-ink group-hover:text-navy-700 transition-colors truncate">管理者</p>
+              <p className="text-xs text-warm-gray-500 truncate">admin@example.com</p>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply text-navy-800 bg-white;
+    @apply text-ink bg-paper;
     font-feature-settings: "palt" 1;
     letter-spacing: 0.02em;
   }
