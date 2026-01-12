@@ -13,16 +13,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-700 text-white hover:bg-primary-800 hover:shadow-md focus:ring-primary-600 shadow-sm',
-  secondary: 'bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-300 border border-gray-300 shadow-sm',
-  danger: 'bg-red-600 text-white hover:bg-red-700 hover:shadow-md focus:ring-red-500 shadow-sm',
-  ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300',
+  primary: 'bg-navy-800 text-white hover:bg-navy-900 hover:shadow-md focus:ring-navy-800 shadow-sm border border-transparent',
+  secondary: 'bg-white text-ink hover:bg-warm-gray-50 hover:border-warm-gray-400 focus:ring-warm-gray-200 border border-warm-gray-200 shadow-sm',
+  danger: 'bg-red-600 text-white hover:bg-red-700 hover:shadow-md focus:ring-red-500 shadow-sm border border-transparent',
+  ghost: 'bg-transparent text-ink hover:bg-warm-gray-100 hover:text-navy-900 focus:ring-warm-gray-200',
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-3.5 py-2 text-sm',
-  md: 'px-4 py-2.5 text-sm',
-  lg: 'px-6 py-3 text-base',
+  sm: 'px-3 py-1.5 text-xs tracking-wide',
+  md: 'px-4 py-2 text-sm tracking-wide',
+  lg: 'px-6 py-3 text-base tracking-wide',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -31,11 +31,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center font-medium rounded-md',
-          'focus:outline-none focus:ring-2 focus:ring-offset-1',
-          'transition-all duration-150',
+          'inline-flex items-center justify-center font-medium rounded-[4px]',
+          'focus:outline-none focus:ring-2 focus:ring-offset-0',
+          'transition-all duration-200 ease-out',
           'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none',
-                    variantStyles[variant],
+          variantStyles[variant],
           sizeStyles[size],
           className
         )}

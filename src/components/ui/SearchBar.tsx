@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils'
+import { Select } from './Select'
 
 interface SearchSuggestion {
   id: string
@@ -61,8 +62,8 @@ export function SearchBar({
 
   const filteredSuggestions = value
     ? allSuggestions.filter(s =>
-        s.label.toLowerCase().includes(value.toLowerCase())
-      )
+      s.label.toLowerCase().includes(value.toLowerCase())
+    )
     : allSuggestions
 
   // Keyboard shortcut (Cmd+K / Ctrl+K)
@@ -434,7 +435,7 @@ export function AdvancedFilterPanel({
   ).length
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
       {/* Header */}
       <button
         onClick={onToggle}
@@ -473,18 +474,12 @@ export function AdvancedFilterPanel({
                 {group.label}
               </label>
               {group.type === 'select' && group.options && (
-                <select
+                <Select
+                  options={[{ value: '', label: 'すべて' }, ...group.options]}
                   value={values[group.id] as string || ''}
-                  onChange={(e) => onChange(group.id, e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-primary-500"
-                >
-                  <option value="">すべて</option>
-                  {group.options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => onChange(group.id, val)}
+                  className="bg-white"
+                />
               )}
               {group.type === 'multiselect' && group.options && (
                 <div className="flex flex-wrap gap-2">

@@ -74,7 +74,7 @@ export function TableHead({ children, className }: TableHeadProps) {
   return (
     <th
       className={cn(
-        'px-4 py-3.5 text-left text-sm font-semibold text-navy-600 uppercase tracking-wide',
+        'px-4 py-3 text-left text-xs font-bold text-warm-gray-500 uppercase tracking-wider',
         className
       )}
     >
@@ -90,7 +90,7 @@ interface TableCellProps {
 
 export function TableCell({ children, className }: TableCellProps) {
   return (
-    <td className={cn('px-4 py-4 text-base text-navy-700', className)}>
+    <td className={cn('px-4 py-4 text-sm text-ink border-b border-warm-gray-100', className)}>
       {children}
     </td>
   )
