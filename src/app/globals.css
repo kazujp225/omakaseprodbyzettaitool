@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-noto-sans-jp), -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply text-navy-800 bg-white;
+    font-feature-settings: "palt" 1;
+    letter-spacing: 0.02em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-navy-800 font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
+  .text-monospaced-numbers {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-lg font-bold text-navy-800 mb-1;
+  }
+
+  .section-description {
+    @apply text-sm text-navy-400;
+  }
+
+  .value-large {
+    @apply text-2xl font-bold text-navy-800 text-monospaced-numbers;
+  }
+
+  .value-currency {
+    @apply text-xl font-bold text-navy-800 text-monospaced-numbers;
+  }
+
+  /* Page header with decorative accent */
+  .page-header {
+    @apply relative;
+  }
+
+  .page-header::before {
+    content: '';
+    @apply absolute -left-4 top-0 bottom-0 w-1 bg-accent-500 rounded-full;
+  }
+
+  /* Stat card accent indicator */
+  .stat-card-accent {
+    @apply relative overflow-hidden;
+  }
+
+  .stat-card-accent::after {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-0.5 bg-accent-500;
+  }
+
+  /* Section divider with centered dot */
+  .section-divider {
+    @apply relative flex items-center justify-center;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    @apply flex-1 h-px bg-gray-200;
+  }
+
+  .section-divider::before {
+    @apply mr-4;
+  }
+
+  .section-divider::after {
+    @apply ml-4;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+
+  /* Subtle pattern background */
+  .bg-pattern-dots {
+    background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  /* Accent border utilities */
+  .border-l-accent-primary {
+    @apply border-l-2 border-l-navy-600;
+  }
+
+  .border-l-accent-success {
+    @apply border-l-2 border-l-green-500;
+  }
+
+  .border-l-accent-warning {
+    @apply border-l-2 border-l-amber-500;
+  }
+
+  .border-l-accent-danger {
+    @apply border-l-2 border-l-accent-500;
+  }
+}
+
+/* Search dropdown animations */
+@keyframes search-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes search-dropdown-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes highlight-pulse {
+
+  0%,
+  100% {
+    background-color: rgb(254 249 195 / 1);
+  }
+
+  50% {
+    background-color: rgb(254 240 138 / 1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes bounce-subtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-search-dropdown {
+  animation: search-dropdown-in 0.2s ease-out forwards;
+}
+
+.animate-backdrop {
+  animation: backdrop-in 0.15s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up-fade 0.2s ease-out forwards;
+}
+
+.animate-highlight-pulse {
+  animation: highlight-pulse 1s ease-in-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 0.3s ease-in-out;
+}
+
+/* Stagger animation delays */
+.stagger-1 {
+  animation-delay: 0.05s;
+}
+
+.stagger-2 {
+  animation-delay: 0.1s;
+}
+
+.stagger-3 {
+  animation-delay: 0.15s;
+}
+
+.stagger-4 {
+  animation-delay: 0.2s;
+}
+
+.stagger-5 {
+  animation-delay: 0.25s;
+}
+
+/* Search result item hover effect */
+.search-result-item {
+  @apply relative overflow-hidden;
+}
+
+.search-result-item::before {
+  content: '';
+  @apply absolute inset-0 bg-navy-50 opacity-0 transition-opacity duration-200;
+}
+
+.search-result-item:hover::before {
+  @apply opacity-100;
+}
+
+/* Keyboard shortcut key styles */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Custom focus ring for search */
+.search-focus-ring:focus-within {
+  @apply ring-2 ring-navy-600 ring-offset-2;
+}
