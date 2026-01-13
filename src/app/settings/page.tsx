@@ -72,18 +72,17 @@ export default function SettingsPage() {
 
       {/* Tabs */}
       <Card padding="none">
-        <div className="border-b border-border">
-          <nav className="flex">
+        <div className="border-b border-border overflow-x-auto">
+          <nav className="flex min-w-max">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors
-                  ${
-                    activeTab === tab.id
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                  flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  ${activeTab === tab.id
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                   }
                 `}
               >
@@ -114,11 +113,12 @@ export default function SettingsPage() {
                   description="最初のプランを作成してください"
                 />
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x">
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`bg-white rounded-lg border ${plan.isActive ? 'border-primary/30' : 'border-border'} p-5 hover:shadow-card-hover transition-all cursor-pointer`}
+                      className={`flex-none w-[280px] md:w-auto snap-center bg-white rounded-lg border ${plan.isActive ? 'border-primary/30' : 'border-border'} p-5 hover:shadow-card-hover transition-all cursor-pointer`}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-foreground">{plan.name}</h3>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x">
                 {[
                   { type: 'invoice_send', label: '請求書送付', description: '月次請求書を送付する際のメールテンプレート', bg: 'bg-muted', text: 'text-foreground' },
                   { type: 'reminder_1', label: '督促1回目', description: '支払期限超過7日以内の督促メール', bg: 'bg-amber-50', text: 'text-amber-600' },
@@ -176,7 +176,7 @@ export default function SettingsPage() {
                 ].map((template) => (
                   <div
                     key={template.type}
-                    className="bg-white rounded-lg border border-border p-5 hover:shadow-card-hover transition-all cursor-pointer"
+                    className="flex-none w-[280px] md:w-auto snap-center bg-white rounded-lg border border-border p-5 hover:shadow-card-hover transition-all cursor-pointer"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">

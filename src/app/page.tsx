@@ -194,8 +194,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Secondary Metric Column */}
-        <div className="md:col-span-4 flex flex-col gap-6">
-          <Card padding="none" className="flex-1">
+        <div className="md:col-span-4 grid grid-cols-2 md:flex md:flex-col gap-4 md:gap-6">
+          <Card padding="none" className="flex-1 min-w-0">
             <MetricItem
               label="Action Required"
               value={`${overdueCount + failedPaymentCount}件`}
@@ -203,7 +203,7 @@ export default function DashboardPage() {
               href="/overdue"
             />
           </Card>
-          <Card padding="none" className="flex-1">
+          <Card padding="none" className="flex-1 min-w-0">
             <MetricItem
               label="System Status"
               value={routeErrorCount > 0 ? 'エラー有' : '正常'}
@@ -287,10 +287,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="space-y-6">
+        <div className="space-y-6 overflow-hidden">
           <div>
             <h3 className="text-xl font-bold text-foreground mb-4">Quick Tasks</h3>
-            <div className="space-y-3">
+            <div className="flex overflow-x-auto pb-4 gap-3 md:grid md:grid-cols-1 md:gap-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x">
               {[
                 {
                   label: '請求書作成',
@@ -327,9 +327,9 @@ export default function DashboardPage() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center justify-between p-4 rounded-lg border transition-all duration-200 group bg-card shadow-sm ${item.urgent && item.count > 0
-                      ? 'border-destructive/20 hover:border-destructive/50'
-                      : 'border-border hover:border-muted-foreground/50'
+                  className={`flex-none w-[200px] md:w-auto snap-center flex items-center justify-between p-4 rounded-lg border transition-all duration-200 group bg-card shadow-sm ${item.urgent && item.count > 0
+                    ? 'border-destructive/20 hover:border-destructive/50'
+                    : 'border-border hover:border-muted-foreground/50'
                     }`}
                 >
                   <span className="flex items-center gap-3">
