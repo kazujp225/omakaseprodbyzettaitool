@@ -455,23 +455,60 @@ ${latestOverdueInvoice
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Link href="/contracts" className="hover:text-foreground">
-              契約一覧
-            </Link>
-            <span>/</span>
-            <span className="truncate">{store.accountName}</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground">{store.accountName}</h1>
-          <p className="text-sm text-muted-foreground">
-            {plan.name} - {formatCurrency(contract.contractMonthlyPriceSnapshot)}/月
-          </p>
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+      {/* Header Section */}
+      <div className="flex flex-col gap-3 sm:gap-4">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+          <Link href="/contracts" className="hover:text-foreground transition-colors">
+            契約一覧
+          </Link>
+          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span className="truncate max-w-[150px] sm:max-w-none">{store.accountName}</span>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary">編集</Button>
+
+        {/* Title and Actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start gap-3 sm:gap-4">
+            {/* Store Avatar */}
+            <div className="hidden sm:flex w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 items-center justify-center text-white font-bold text-lg lg:text-xl shadow-lg flex-shrink-0">
+              {store.accountName.charAt(0)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{store.accountName}</h1>
+                <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]} className="hidden sm:inline-flex">
+                  {CONTRACT_STATUS_LABELS[contract.status]}
+                </Badge>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 mt-1 sm:mt-1.5">
+                <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]} className="sm:hidden">
+                  {CONTRACT_STATUS_LABELS[contract.status]}
+                </Badge>
+                <span className="text-xs sm:text-sm text-muted-foreground">{plan.name}</span>
+                <span className="text-muted-foreground/50">·</span>
+                <span className="text-xs sm:text-sm font-medium text-foreground">{formatCurrency(contract.contractMonthlyPriceSnapshot)}/月</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2 sm:gap-3">
+            <Link href={`/stores/${store.id}`}>
+              <Button variant="secondary" size="sm" className="text-xs sm:text-sm">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                店舗
+              </Button>
+            </Link>
+            <Button variant="secondary" size="sm" className="text-xs sm:text-sm">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              編集
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -634,123 +671,151 @@ ${latestOverdueInvoice
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardTitle>契約情報</CardTitle>
-          <dl className="mt-4 space-y-3">
-            <div className="flex justify-between">
-              <dt className="text-sm text-muted-foreground">プラン</dt>
-              <dd className="text-sm font-medium text-foreground">{plan.name}</dd>
+      {/* Info Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+        {/* 契約情報カード */}
+        <Card className="h-fit">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-sm text-muted-foreground">月額</dt>
-              <dd className="text-sm font-medium text-foreground">
+            <CardTitle className="text-sm sm:text-base">契約情報</CardTitle>
+          </div>
+          <dl className="space-y-2.5 sm:space-y-3">
+            <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+              <dt className="text-xs sm:text-sm text-muted-foreground">プラン</dt>
+              <dd className="text-xs sm:text-sm font-medium text-foreground">{plan.name}</dd>
+            </div>
+            <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+              <dt className="text-xs sm:text-sm text-muted-foreground">月額</dt>
+              <dd className="text-xs sm:text-sm font-semibold text-foreground">
                 {formatCurrency(contract.contractMonthlyPriceSnapshot)}
               </dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-sm text-muted-foreground">支払方法</dt>
-              <dd className="text-sm font-medium text-foreground">
-                {contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書払い'}
+            <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+              <dt className="text-xs sm:text-sm text-muted-foreground">支払方法</dt>
+              <dd className="text-xs sm:text-sm font-medium text-foreground">
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+                  contract.billingMethod === 'monthlypay'
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}>
+                  {contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書払い'}
+                </span>
               </dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-sm text-muted-foreground">課金日</dt>
-              <dd className="text-sm font-medium text-foreground">毎月{contract.paymentDay}日</dd>
+            <div className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50">
+              <dt className="text-xs sm:text-sm text-muted-foreground">課金日</dt>
+              <dd className="text-xs sm:text-sm font-medium text-foreground">毎月{contract.paymentDay}日</dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-sm text-muted-foreground">開始日</dt>
-              <dd className="text-sm font-medium text-foreground">{formatDate(contract.startDate)}</dd>
+            <div className="flex justify-between items-center py-1.5 sm:py-2">
+              <dt className="text-xs sm:text-sm text-muted-foreground">開始日</dt>
+              <dd className="text-xs sm:text-sm font-medium text-foreground">{formatDate(contract.startDate)}</dd>
             </div>
             {contract.cancellationRequestedAt && (
-              <>
-                <div className="flex justify-between">
-                  <dt className="text-sm text-muted-foreground">解約申請日</dt>
-                  <dd className="text-sm font-medium text-foreground">
+              <div className="mt-3 pt-3 border-t border-border space-y-2.5">
+                <div className="flex justify-between items-center">
+                  <dt className="text-xs sm:text-sm text-muted-foreground">解約申請日</dt>
+                  <dd className="text-xs sm:text-sm font-medium text-destructive">
                     {formatDate(contract.cancellationRequestedAt)}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-sm text-muted-foreground">解約予定日</dt>
-                  <dd className="text-sm font-medium text-foreground">
+                <div className="flex justify-between items-center">
+                  <dt className="text-xs sm:text-sm text-muted-foreground">解約予定日</dt>
+                  <dd className="text-xs sm:text-sm font-medium text-destructive">
                     {contract.cancellationEffectiveDate
                       ? formatDate(contract.cancellationEffectiveDate)
                       : '-'}
                   </dd>
                 </div>
-                <div>
-                  <dt className="text-sm text-muted-foreground">解約理由</dt>
-                  <dd className="mt-1 text-sm text-foreground">{contract.cancellationReason || '-'}</dd>
-                </div>
-              </>
+                {contract.cancellationReason && (
+                  <div className="pt-2">
+                    <dt className="text-xs sm:text-sm text-muted-foreground mb-1">解約理由</dt>
+                    <dd className="text-xs sm:text-sm text-foreground bg-muted/50 rounded-md p-2">{contract.cancellationReason}</dd>
+                  </div>
+                )}
+              </div>
             )}
             {contract.notes && (
-              <div>
-                <dt className="text-sm text-muted-foreground">備考</dt>
-                <dd className="mt-1 text-sm text-foreground">{contract.notes}</dd>
+              <div className="mt-3 pt-3 border-t border-border">
+                <dt className="text-xs sm:text-sm text-muted-foreground mb-1">備考</dt>
+                <dd className="text-xs sm:text-sm text-foreground bg-muted/50 rounded-md p-2">{contract.notes}</dd>
               </div>
             )}
           </dl>
         </Card>
 
-        <Card>
-          <CardTitle>ルート稼働状態</CardTitle>
+        {/* ルート稼働カード */}
+        <Card className="h-fit">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <CardTitle className="text-sm sm:text-base">ルート稼働状態</CardTitle>
+          </div>
           {route ? (
-            <div className="mt-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">ステータス</span>
+            <div className="space-y-3 sm:space-y-4">
+              {/* Status Badge */}
+              <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/50">
+                <span className="text-xs sm:text-sm text-muted-foreground">ステータス</span>
                 <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
                   {ROUTE_STATUS_LABELS[route.status]}
                 </Badge>
               </div>
-              {route.runningStartedAt && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">稼働開始</span>
-                  <span className="text-sm font-medium">{formatDate(route.runningStartedAt)}</span>
-                </div>
-              )}
-              {route.stoppedAt && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">停止日</span>
-                  <span className="text-sm font-medium">{formatDate(route.stoppedAt)}</span>
-                </div>
-              )}
+
+              {/* Dates */}
+              <div className="space-y-2">
+                {route.runningStartedAt && (
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
+                    <span className="text-muted-foreground">稼働開始</span>
+                    <span className="font-medium">{formatDate(route.runningStartedAt)}</span>
+                  </div>
+                )}
+                {route.stoppedAt && (
+                  <div className="flex items-center justify-between text-xs sm:text-sm">
+                    <span className="text-muted-foreground">停止日</span>
+                    <span className="font-medium text-amber-600">{formatDate(route.stoppedAt)}</span>
+                  </div>
+                )}
+              </div>
+
               {route.lastError && (
-                <div className="p-3 bg-red-50 rounded-lg">
-                  <p className="text-sm text-red-600">{route.lastError}</p>
+                <div className="p-2.5 sm:p-3 bg-red-50 rounded-lg border border-red-100">
+                  <p className="text-xs sm:text-sm text-red-600">{route.lastError}</p>
                 </div>
               )}
 
               {/* Platform Alignment Status */}
-              <div className="space-y-3 pt-2 border-t border-border">
-                <p className="text-sm font-medium text-foreground">連携プラットフォーム</p>
-                <div className="grid grid-cols-1 gap-2">
+              <div className="space-y-2.5 sm:space-y-3 pt-3 border-t border-border">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground">連携プラットフォーム</p>
+                <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
                   {[
                     { key: 'instagram', domain: 'instagram.com', label: 'Instagram', status: route.instagramStatus, error: route.instagramError },
                     { key: 'facebook', domain: 'facebook.com', label: 'Facebook', status: route.facebookStatus, error: route.facebookError },
-                    { key: 'gbp', domain: 'google.com', label: 'Google Business Profile', status: route.gbpStatus, error: route.gbpError },
-                    { key: 'line', domain: 'line.me', label: 'LINE公式アカウント', status: route.lineStatus, error: route.lineError },
+                    { key: 'gbp', domain: 'google.com', label: 'GBP', status: route.gbpStatus, error: route.gbpError },
+                    { key: 'line', domain: 'line.me', label: 'LINE', status: route.lineStatus, error: route.lineError },
                   ].map((platform) => (
-                    <div key={platform.key} className="flex items-center justify-between p-2 rounded-lg border border-border bg-card/50">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-md bg-white border border-border flex items-center justify-center overflow-hidden shrink-0">
+                    <div key={platform.key} className="flex items-center justify-between p-2 sm:p-2.5 rounded-lg border border-border bg-card/50 hover:bg-muted/30 transition-colors">
+                      <div className="flex items-center gap-2 sm:gap-2.5">
+                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-white border border-border flex items-center justify-center overflow-hidden shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={`https://www.google.com/s2/favicons?domain=${platform.domain}&sz=128`}
                             alt={platform.label}
-                            className="w-5 h-5 object-contain"
+                            className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
                           />
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{platform.label}</p>
-                          {platform.error && <p className="text-xs text-destructive truncate max-w-[150px]">{platform.error}</p>}
-                        </div>
+                        <span className="text-xs sm:text-sm font-medium text-foreground">{platform.label}</span>
                       </div>
                       <Badge variant={
                         platform.status === 'connected' ? 'success' :
                           platform.status === 'error' ? 'danger' :
                             platform.status === 'pending' ? 'warning' : 'neutral'
-                      }>
+                      } className="text-[10px] sm:text-xs">
                         {platform.status === 'connected' ? '連携中' :
                           platform.status === 'error' ? 'エラー' :
                             platform.status === 'pending' ? '準備中' : '未連携'}
@@ -760,80 +825,103 @@ ${latestOverdueInvoice
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-2">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-2 pt-2 sm:pt-3">
                 {route.status === 'running' && (
-                  <Button variant="secondary" size="sm" onClick={() => handleRouteAction('pause')} loading={processing}>
+                  <Button variant="secondary" size="sm" onClick={() => handleRouteAction('pause')} loading={processing} className="text-xs sm:text-sm">
                     停止
                   </Button>
                 )}
                 {route.status === 'paused' && (
                   <>
-                    <Button variant="primary" size="sm" onClick={() => handleRouteAction('resume')} loading={processing}>
+                    <Button variant="primary" size="sm" onClick={() => handleRouteAction('resume')} loading={processing} className="text-xs sm:text-sm">
                       再開
                     </Button>
-                    <Button variant="danger" size="sm" onClick={() => handleRouteAction('delete')} loading={processing}>
+                    <Button variant="danger" size="sm" onClick={() => handleRouteAction('delete')} loading={processing} className="text-xs sm:text-sm">
                       削除
                     </Button>
                   </>
                 )}
                 {route.status === 'preparing' && (
-                  <Button variant="primary" size="sm" onClick={() => handleRouteAction('resume')} loading={processing}>
+                  <Button variant="primary" size="sm" onClick={() => handleRouteAction('resume')} loading={processing} className="text-xs sm:text-sm flex-1 sm:flex-none">
                     稼働開始
                   </Button>
                 )}
                 {route.status === 'error' && (
-                  <Button variant="danger" size="sm" onClick={() => handleRouteAction('resume')} loading={processing}>
+                  <Button variant="danger" size="sm" onClick={() => handleRouteAction('resume')} loading={processing} className="text-xs sm:text-sm">
                     再同期
                   </Button>
                 )}
               </div>
             </div>
           ) : (
-            <div className="mt-4 text-center py-6 text-muted-foreground">
-              <p>ルート連携情報がありません</p>
-              <Button variant="primary" size="sm" className="mt-4" onClick={handleCreateRoute} loading={processing}>
+            <div className="text-center py-6 sm:py-8">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
+                <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">ルート連携情報がありません</p>
+              <Button variant="primary" size="sm" onClick={handleCreateRoute} loading={processing} className="text-xs sm:text-sm">
                 ルート連携を設定
               </Button>
             </div>
           )}
         </Card>
 
-        <Card>
-          <CardTitle>通知・督促</CardTitle>
-          <div className="mt-4 space-y-3">
+        {/* 通知・督促カード */}
+        <Card className="h-fit md:col-span-2 lg:col-span-1">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
+            <CardTitle className="text-sm sm:text-base">通知・督促</CardTitle>
+          </div>
+          <div className="space-y-2 sm:space-y-2.5">
             <Button
               variant="secondary"
               size="sm"
-              className="w-full"
+              className="w-full justify-start text-xs sm:text-sm"
               onClick={() => generateNotificationDraft('reminder_1')}
             >
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
               督促（1回目）下書き生成
             </Button>
             <Button
               variant="secondary"
               size="sm"
-              className="w-full"
+              className="w-full justify-start text-xs sm:text-sm"
               onClick={() => generateNotificationDraft('reminder_2')}
             >
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
               督促（2回目）下書き生成
             </Button>
             <Button
               variant="secondary"
               size="sm"
-              className="w-full"
+              className="w-full justify-start text-xs sm:text-sm"
               onClick={() => generateNotificationDraft('final_notice')}
             >
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
               最終通知 下書き生成
             </Button>
           </div>
           {notifications.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-border">
-              <p className="text-sm text-muted-foreground mb-2">送信履歴</p>
+            <div className="mt-4 sm:mt-5 pt-4 border-t border-border">
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">送信履歴</p>
               <div className="space-y-2">
                 {notifications.slice(0, 3).map((n) => (
-                  <div key={n.id} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{NOTIFICATION_TYPE_LABELS[n.type]}</span>
-                    <Badge variant={n.status === 'sent' ? 'success' : 'neutral'}>
+                  <div key={n.id} className="flex items-center justify-between p-2 sm:p-2.5 rounded-lg bg-muted/30">
+                    <span className="text-xs sm:text-sm text-muted-foreground">{NOTIFICATION_TYPE_LABELS[n.type]}</span>
+                    <Badge variant={n.status === 'sent' ? 'success' : 'neutral'} className="text-[10px] sm:text-xs">
                       {NOTIFICATION_STATUS_LABELS[n.status]}
                     </Badge>
                   </div>
@@ -844,23 +932,36 @@ ${latestOverdueInvoice
         </Card>
       </div>
 
+      {/* 請求/入金タイムライン */}
       <Card padding="none">
-        <div className="px-4 sm:px-6 py-4 border-b border-border">
-          <CardTitle>請求/入金タイムライン</CardTitle>
+        <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 border-b border-border flex items-center gap-2 sm:gap-3">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <CardTitle className="text-sm sm:text-base">請求/入金タイムライン</CardTitle>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">請求データがありません</div>
+          <div className="px-4 py-10 sm:py-12 text-center">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
+              <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground">請求データがありません</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>対象月</TableHead>
-                  <TableHead>金額</TableHead>
-                  <TableHead>請求状態</TableHead>
-                  <TableHead className="hidden sm:table-cell">期限</TableHead>
-                  <TableHead className="hidden md:table-cell">入金状態</TableHead>
-                  <TableHead>アクション</TableHead>
+                  <TableHead className="text-xs sm:text-sm">対象月</TableHead>
+                  <TableHead className="text-xs sm:text-sm">金額</TableHead>
+                  <TableHead className="text-xs sm:text-sm">請求状態</TableHead>
+                  <TableHead className="hidden sm:table-cell text-xs sm:text-sm">期限</TableHead>
+                  <TableHead className="hidden md:table-cell text-xs sm:text-sm">入金状態</TableHead>
+                  <TableHead className="text-xs sm:text-sm">アクション</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -871,28 +972,28 @@ ${latestOverdueInvoice
                     invoice.status === 'overdue' ? getOverdueDays(invoice.dueDate) : 0
                   return (
                     <TableRow key={invoice.id}>
-                      <TableCell className="font-medium">{formatMonth(invoice.billingMonth)}</TableCell>
-                      <TableCell>{formatCurrency(invoice.amount)}</TableCell>
+                      <TableCell className="font-medium text-xs sm:text-sm">{formatMonth(invoice.billingMonth)}</TableCell>
+                      <TableCell className="text-xs sm:text-sm font-semibold">{formatCurrency(invoice.amount)}</TableCell>
                       <TableCell>
-                        <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
+                        <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]} className="text-[10px] sm:text-xs">
                           {INVOICE_STATUS_LABELS[invoice.status]}
                           {overdueDays > 0 && ` (${overdueDays}日)`}
                         </Badge>
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell">{formatDate(invoice.dueDate)}</TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs sm:text-sm text-muted-foreground">{formatDate(invoice.dueDate)}</TableCell>
                       <TableCell className="hidden md:table-cell">
                         {latestPayment ? (
-                          <Badge variant={PAYMENT_STATUS_VARIANT[latestPayment.status]}>
+                          <Badge variant={PAYMENT_STATUS_VARIANT[latestPayment.status]} className="text-[10px] sm:text-xs">
                             {PAYMENT_STATUS_LABELS[latestPayment.status]}
                           </Badge>
                         ) : (
-                          <span className="text-gray-400">未入金</span>
+                          <span className="text-xs sm:text-sm text-gray-400">未入金</span>
                         )}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-1 sm:gap-2 flex-wrap">
+                        <div className="flex gap-1.5 sm:gap-2 flex-wrap">
                           {invoice.status === 'draft' && (
-                            <Button variant="primary" size="sm" onClick={() => sendInvoice(invoice.id)} loading={processing}>
+                            <Button variant="primary" size="sm" onClick={() => sendInvoice(invoice.id)} loading={processing} className="text-[10px] sm:text-xs px-2 sm:px-3">
                               送付
                             </Button>
                           )}
@@ -902,6 +1003,7 @@ ${latestOverdueInvoice
                               size="sm"
                               onClick={() => recordPayment(invoice.id)}
                               loading={processing}
+                              className="text-[10px] sm:text-xs px-2 sm:px-3"
                             >
                               入金
                             </Button>
@@ -911,6 +1013,7 @@ ${latestOverdueInvoice
                               variant="secondary"
                               size="sm"
                               onClick={() => generateNotificationDraft('reminder_1')}
+                              className="text-[10px] sm:text-xs px-2 sm:px-3"
                             >
                               督促
                             </Button>
@@ -926,40 +1029,57 @@ ${latestOverdueInvoice
         )}
       </Card>
 
+      {/* 操作ログ */}
       <Card padding="none">
-        <div className="px-4 sm:px-6 py-4 border-b border-border">
-          <CardTitle>操作ログ</CardTitle>
+        <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 border-b border-border flex items-center gap-2 sm:gap-3">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gray-500/10 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <CardTitle className="text-sm sm:text-base">操作ログ</CardTitle>
         </div>
         {opsLogs.length === 0 ? (
-          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">操作ログがありません</div>
+          <div className="px-4 py-10 sm:py-12 text-center">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
+              <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground">操作ログがありません</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>日時</TableHead>
-                  <TableHead>操作</TableHead>
-                  <TableHead className="hidden sm:table-cell">変更内容</TableHead>
-                  <TableHead className="hidden md:table-cell">理由</TableHead>
+                  <TableHead className="text-xs sm:text-sm">日時</TableHead>
+                  <TableHead className="text-xs sm:text-sm">操作</TableHead>
+                  <TableHead className="hidden sm:table-cell text-xs sm:text-sm">変更内容</TableHead>
+                  <TableHead className="hidden md:table-cell text-xs sm:text-sm">理由</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {opsLogs.map((log) => (
                   <TableRow key={log.id}>
-                    <TableCell className="text-muted-foreground">{formatDate(log.createdAt)}</TableCell>
-                    <TableCell className="font-medium">{log.action}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{formatDate(log.createdAt)}</TableCell>
+                    <TableCell className="text-xs sm:text-sm font-medium">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted text-foreground">
+                        {log.action}
+                      </span>
+                    </TableCell>
                     <TableCell className="hidden sm:table-cell">
                       {log.before && log.after ? (
-                        <span className="truncate max-w-[200px] block">
+                        <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[200px] block">
                           {JSON.stringify(log.before)} → {JSON.stringify(log.after)}
                         </span>
                       ) : log.after ? (
-                        <span className="truncate max-w-[200px] block">{JSON.stringify(log.after)}</span>
+                        <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[200px] block">{JSON.stringify(log.after)}</span>
                       ) : (
-                        '-'
+                        <span className="text-xs sm:text-sm text-muted-foreground">-</span>
                       )}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell">{log.reason || '-'}</TableCell>
+                    <TableCell className="hidden md:table-cell text-xs sm:text-sm text-muted-foreground">{log.reason || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
