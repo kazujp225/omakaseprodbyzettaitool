@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { mockAccountRepository, mockContractRepository, mockInvoiceRepository } from '@/repositories/mock'
 import type { Account, Contract, Invoice } from '@/domain/types'
-import { CONTRACT_STATUS_LABELS, CONTRACT_STATUS_VARIANT, INVOICE_STATUS_LABELS, INVOICE_STATUS_VARIANT } from '@/domain/status'
+import { CONTRACT_STATUS_LABELS, CONTRACT_STATUS_VARIANT, INVOICE_STATUS_LABELS, INVOICE_STATUS_VARIANT, type NotificationType } from '@/domain/status'
 import { DEFAULT_ORG_ID } from '@/seed/data'
 import { cn, formatCurrency, formatMonth } from '@/lib/utils'
 import { useSidebar } from './SidebarContext'
@@ -58,6 +58,77 @@ interface FilterPreset {
   }
 }
 
+// Notification interface
+interface AppNotification {
+  id: string
+  type: NotificationType
+  title: string
+  description: string
+  storeName: string
+  createdAt: Date
+  isRead: boolean
+  href: string
+}
+
+// Mock notifications data
+const mockNotifications: AppNotification[] = [
+  {
+    id: '1',
+    type: 'payment_failed',
+    title: '決済失敗',
+    description: 'クレジットカード決済が失敗しました',
+    storeName: '麺屋 龍虎',
+    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30分前
+    isRead: false,
+    href: '/contracts/contract-001',
+  },
+  {
+    id: '2',
+    type: 'reminder_1',
+    title: '督促1回目',
+    description: '支払期限を5日過ぎています',
+    storeName: 'カフェ モーニング',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2時間前
+    isRead: false,
+    href: '/overdue',
+  },
+  {
+    id: '3',
+    type: 'route_error',
+    title: 'ルートエラー',
+    description: 'Google Business連携でエラーが発生',
+    storeName: '焼肉 炭火亭',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5時間前
+    isRead: true,
+    href: '/stores/store-003',
+  },
+  {
+    id: '4',
+    type: 'invoice_send',
+    title: '請求書送付完了',
+    description: '今月分の請求書を送付しました',
+    storeName: '鮨処 江戸前',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1日前
+    isRead: true,
+    href: '/invoices',
+  },
+]
+
+// Helper function to format relative time
+function formatRelativeTime(date: Date): string {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const minutes = Math.floor(diff / (1000 * 60))
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+  if (minutes < 1) return 'たった今'
+  if (minutes < 60) return `${minutes}分前`
+  if (hours < 24) return `${hours}時間前`
+  if (days < 7) return `${days}日前`
+  return date.toLocaleDateString('ja-JP')
+}
+
 // Highlight matching text
 function HighlightText({ text, query }: { text: string; query: string }) {
   if (!query.trim()) return <>{text}</>
@@ -87,10 +158,13 @@ export function Header() {
   const [category, setCategory] = useState<SearchCategory>('all')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [showBackdrop, setShowBackdrop] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState<AppNotification[]>(mockNotifications)
   const router = useRouter()
   const searchRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement>(null)
   const { toggle } = useSidebar()
 
   // Load recent searches
@@ -387,6 +461,74 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Click outside handler for notifications
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const unreadCount = notifications.filter(n => !n.isRead).length
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n))
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
+  }
+
+  const getNotificationIcon = (type: NotificationType) => {
+    switch (type) {
+      case 'payment_failed':
+        return (
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        )
+      case 'reminder_1':
+      case 'reminder_2':
+      case 'final_notice':
+        return (
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+        )
+      case 'route_error':
+        return (
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+        )
+      case 'invoice_send':
+        return (
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        )
+      default:
+        return (
+          <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+        )
+    }
+  }
+
   // Scroll selected item into view
   useEffect(() => {
     if (selectedIndex >= 0 && resultsRef.current) {
@@ -664,24 +806,24 @@ export function Header() {
             {showResults && (
               <div className="absolute top-full left-0 right-0 bg-white shadow-2xl border border-t-0 border-gray-200 rounded-b-2xl max-h-[75vh] overflow-hidden animate-search-dropdown">
                 {/* Category Tabs */}
-                <div className="flex items-center gap-1 px-4 py-2.5 bg-gray-50/80 border-b border-gray-100">
+                <div className="flex items-center gap-1 px-2 sm:px-4 py-2 sm:py-2.5 bg-gray-50/80 border-b border-gray-100 overflow-x-auto">
                   {(Object.keys(categoryConfig) as SearchCategory[]).map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setCategory(cat)}
                       className={cn(
-                        'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-150',
+                        'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-all duration-150 whitespace-nowrap flex-shrink-0',
                         category === cat
                           ? cn(categoryConfig[cat].color, 'shadow-sm')
                           : 'text-gray-500 hover:text-gray-700 hover:bg-white'
                       )}
                     >
                       {categoryConfig[cat].icon}
-                      {categoryConfig[cat].label}
+                      <span className="hidden sm:inline">{categoryConfig[cat].label}</span>
                     </button>
                   ))}
                   <div className="flex-1" />
-                  <span className="text-sm text-gray-400 flex items-center gap-1">
+                  <span className="text-xs sm:text-sm text-gray-400 hidden md:flex items-center gap-1">
                     <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px]">Tab</kbd>
                     で切替
                   </span>
@@ -691,20 +833,20 @@ export function Header() {
                   {/* Quick Presets (when no query) */}
                   {!searchQuery && (
                     <>
-                      <div className="px-4 py-2.5 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">クイックアクセス</p>
+                      <div className="px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-100">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">クイックアクセス</p>
                       </div>
-                      <div className="p-2 grid grid-cols-3 gap-2">
+                      <div className="p-2 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2">
                         {filterPresets.map((preset) => (
                           <button
                             key={preset.id}
                             onClick={() => handlePresetClick(preset)}
-                            className="flex items-center gap-3 px-3 py-3 text-left hover:bg-gray-50 rounded-xl transition-all group"
+                            className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-3 text-left hover:bg-gray-50 rounded-xl transition-all group"
                           >
                             {preset.icon}
                             <div className="flex-1 min-w-0">
-                              <p className="text-base font-medium text-gray-800 group-hover:text-primary transition-colors">{preset.label}</p>
-                              <p className="text-sm text-gray-400 truncate">{preset.description}</p>
+                              <p className="text-sm sm:text-base font-medium text-gray-800 group-hover:text-primary transition-colors">{preset.label}</p>
+                              <p className="text-xs sm:text-sm text-gray-400 truncate">{preset.description}</p>
                             </div>
                           </button>
                         ))}
@@ -713,14 +855,14 @@ export function Header() {
                       {/* Recent Searches */}
                       {recentSearches.length > 0 && (
                         <>
-                          <div className="px-4 py-2.5 bg-gray-50/50 border-y border-gray-100 flex items-center justify-between">
-                            <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider">最近の検索</p>
+                          <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-50/50 border-y border-gray-100 flex items-center justify-between">
+                            <p className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">最近の検索</p>
                             <button
                               onClick={() => {
                                 setRecentSearches([])
                                 localStorage.removeItem('globalRecentSearches')
                               }}
-                              className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+                              className="text-xs sm:text-sm text-gray-400 hover:text-red-500 transition-colors"
                             >
                               クリア
                             </button>
@@ -733,15 +875,15 @@ export function Header() {
                                   setSearchQuery(query)
                                   searchAll(query)
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-gray-50 rounded-xl transition-all group"
+                                className="w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 text-left hover:bg-gray-50 rounded-xl transition-all group"
                               >
-                                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors">
-                                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-gray-200 transition-colors flex-shrink-0">
+                                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                   </svg>
                                 </div>
-                                <span className="text-base text-gray-600 group-hover:text-gray-900 transition-colors">{query}</span>
-                                <svg className="w-4 h-4 text-gray-300 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <span className="text-sm sm:text-base text-gray-600 group-hover:text-gray-900 transition-colors truncate">{query}</span>
+                                <svg className="w-4 h-4 text-gray-300 ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
                               </button>
@@ -751,10 +893,11 @@ export function Header() {
                       )}
 
                       {/* Hint */}
-                      <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
-                        <p className="text-sm text-gray-500">
+                      <div className="px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border-t border-gray-100">
+                        <p className="text-xs sm:text-sm text-gray-500">
                           <span className="font-medium text-primary">ヒント:</span>
-                          「{'>'}」から始めるとコマンドを検索できます
+                          <span className="hidden sm:inline">「{'>'}」から始めるとコマンドを検索できます</span>
+                          <span className="sm:hidden">「{'>'}」でコマンド検索</span>
                         </p>
                       </div>
                     </>
@@ -881,7 +1024,7 @@ export function Header() {
                 </div>
 
                 {/* Footer */}
-                <div className="px-4 py-2.5 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between">
+                <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between">
                   {searchQuery && flattenedResults.length > 0 ? (
                     <p className="text-xs text-gray-500">
                       <span className="font-semibold text-gray-700">{flattenedResults.length}</span> 件の結果
@@ -889,7 +1032,7 @@ export function Header() {
                   ) : (
                     <p className="text-xs text-gray-400">検索してみましょう</p>
                   )}
-                  <div className="flex items-center gap-3 text-xs text-gray-400">
+                  <div className="hidden sm:flex items-center gap-3 text-xs text-gray-400">
                     <span className="flex items-center gap-1">
                       <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-medium">↑↓</kbd>
                       移動
@@ -919,12 +1062,98 @@ export function Header() {
             <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
 
             {/* Notifications */}
-            <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <div ref={notificationRef} className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-red-500 rounded-full">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-50 border-b border-gray-100">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900">通知</h3>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllAsRead}
+                        className="text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        すべて既読にする
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Notification List */}
+                  <div className="max-h-80 sm:max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="px-4 py-8 text-center">
+                        <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
+                          <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                          </svg>
+                        </div>
+                        <p className="text-sm text-gray-500">通知はありません</p>
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <button
+                          key={notification.id}
+                          onClick={() => {
+                            markAsRead(notification.id)
+                            router.push(notification.href)
+                            setShowNotifications(false)
+                          }}
+                          className={cn(
+                            'w-full flex items-start gap-2.5 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-left transition-colors border-b border-gray-50 last:border-b-0',
+                            notification.isRead ? 'bg-white hover:bg-gray-50' : 'bg-blue-50/50 hover:bg-blue-50'
+                          )}
+                        >
+                          {getNotificationIcon(notification.type)}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <p className={cn(
+                                'text-xs sm:text-sm truncate',
+                                notification.isRead ? 'font-medium text-gray-700' : 'font-semibold text-gray-900'
+                              )}>
+                                {notification.title}
+                              </p>
+                              {!notification.isRead && (
+                                <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5" />
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500 truncate mt-0.5">{notification.storeName}</p>
+                            <p className="text-[10px] sm:text-xs text-gray-400 mt-1">{formatRelativeTime(notification.createdAt)}</p>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  {notifications.length > 0 && (
+                    <div className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gray-50 border-t border-gray-100">
+                      <Link
+                        href="/notifications"
+                        onClick={() => setShowNotifications(false)}
+                        className="block text-center text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        すべての通知を見る
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Settings */}
             <Link href="/settings" className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all">
