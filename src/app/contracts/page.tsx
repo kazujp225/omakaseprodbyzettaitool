@@ -398,181 +398,191 @@ function ContractListContent() {
         </Card>
       </div>
 
-      {/* Status Filter Chips */}
-      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 md:pb-0">
-        <span className="text-xs sm:text-sm text-muted-foreground mr-0.5 sm:mr-1 whitespace-nowrap">ステータス:</span>
-        {Object.entries(CONTRACT_STATUS).map(([, value]) => {
-          const count = contracts.filter((c) => c.status === value).length
-          const isActive = statusFilter === value
-          const chipColor = value === 'cancelled' ? 'danger' : value === 'cancel_pending' ? 'warning' : value === 'active' ? 'success' : 'primary'
-          return (
-            <FilterChip
-              key={value}
-              label={CONTRACT_STATUS_LABELS[value as ContractStatus]}
-              count={count}
-              active={isActive}
-              color={chipColor}
-              size="sm"
-              onClick={() => {
-                setStatusFilter(isActive ? '' : value)
-                router.push(isActive ? '/contracts' : `/contracts?status=${value}`)
+      {/* Control Bar (Search + Filters) */}
+      <div className="space-y-4">
+        {/* Top Row: Search + Status Chips */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSearch={(q) => {
+                saveRecentSearch(q)
               }}
-            />
-          )
-        })}
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Filter Panel */}
-        {showFilterPanel && (
-          <div className="w-full lg:w-64 flex-shrink-0">
-            <Card className="lg:sticky lg:top-24">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-foreground">フィルタ</h3>
-                <button
-                  onClick={() => setShowFilterPanel(false)}
-                  className="text-muted-foreground hover:text-foreground p-1"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              placeholder="店舗名、プラン名で検索... (⌘K)"
+              recentSearches={recentSearches}
+              onClearRecentSearches={clearRecentSearches}
+              suggestions={stores.slice(0, 5).map((s, i) => ({
+                id: `store-${i}`,
+                label: s.accountName,
+                type: 'suggestion' as const,
+                icon: (
+                  <svg className="w-4 h-4 text-navy-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                </button>
-              </div>
+                ),
+              }))}
+            />
+          </div>
 
-              <div className="space-y-4">
-                <Select
-                  label="ステータス"
-                  options={statusOptions}
-                  value={statusFilter}
-                  onChange={(value) => {
-                    setStatusFilter(value)
-                    router.push(value ? `/contracts?status=${value}` : '/contracts')
+          {/* Status Chips Row - now adjacent to search on large screens */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
+            {Object.entries(CONTRACT_STATUS).map(([, value]) => {
+              const count = contracts.filter((c) => c.status === value).length
+              const isActive = statusFilter === value
+              const chipColor = value === 'cancelled' ? 'danger' : value === 'cancel_pending' ? 'warning' : value === 'active' ? 'success' : 'primary'
+              return (
+                <FilterChip
+                  key={value}
+                  label={CONTRACT_STATUS_LABELS[value as ContractStatus]}
+                  count={count}
+                  active={isActive}
+                  color={chipColor}
+                  size="sm"
+                  onClick={() => {
+                    setStatusFilter(isActive ? '' : value)
+                    router.push(isActive ? '/contracts' : `/contracts?status=${value}`)
                   }}
                 />
-                <Select
-                  label="支払方法"
-                  options={billingOptions}
-                  value={billingMethodFilter}
-                  onChange={(value) => setBillingMethodFilter(value)}
-                />
-                <Select
-                  label="プラン"
-                  options={planOptions}
-                  value={planFilter}
-                  onChange={(value) => setPlanFilter(value)}
-                />
-
-                {hasActiveFilters && (
-                  <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full">
-                    フィルタをクリア
-                  </Button>
-                )}
-              </div>
-            </Card>
+              )
+            })}
           </div>
-        )}
+        </div>
 
-        {/* Results Table */}
-        <div className="flex-1 min-w-0">
-          {!showFilterPanel && (
-            <button
-              onClick={() => setShowFilterPanel(true)}
-              className="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        {/* Bottom Row: Detailed Filters */}
+        <div className="flex flex-wrap items-center gap-4 p-4 bg-muted/20 rounded-xl border border-border/50">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span className="text-sm font-medium text-muted-foreground">絞り込み:</span>
+          </div>
+
+          <div className="w-[180px]">
+            <Select
+              placeholder="支払方法"
+              options={billingOptions}
+              value={billingMethodFilter}
+              onChange={(value) => setBillingMethodFilter(value)}
+            />
+          </div>
+          <div className="w-[240px]">
+            <Select
+              placeholder="プラン"
+              options={planOptions}
+              value={planFilter}
+              onChange={(value) => setPlanFilter(value)}
+            />
+          </div>
+
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="ml-auto text-muted-foreground">
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              フィルタを表示
-            </button>
-          )}
-
-          {filteredContracts.length === 0 ? (
-            <Card>
-              <EmptyState
-                title="該当する契約がありません"
-                description="フィルタ条件を変更してください"
-              />
-            </Card>
-          ) : (
-            <Card padding="none">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>店舗名</TableHead>
-                      <TableHead>契約状態</TableHead>
-                      <TableHead className="hidden md:table-cell">プラン</TableHead>
-                      <TableHead className="hidden lg:table-cell">支払方法</TableHead>
-                      <TableHead className="hidden sm:table-cell">今月請求</TableHead>
-                      <TableHead className="hidden lg:table-cell">ルート状態</TableHead>
-                      <TableHead className="hidden md:table-cell">次アクション</TableHead>
-                      <TableHead className="hidden xl:table-cell">最終更新</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredContracts.map((contract) => {
-                      const route = getRoute(contract.id)
-                      const invoice = getInvoice(contract.id)
-                      const nextAction = getNextAction(contract)
-                      return (
-                        <TableRow
-                          key={contract.id}
-                          clickable
-                          onClick={() => router.push(`/contracts/${contract.id}`)}
-                        >
-                          <TableCell>
-                            <span className="font-medium text-foreground text-sm md:text-base">{getAccountName(contract.accountId)}</span>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]}>
-                              <span className="text-xs">{CONTRACT_STATUS_LABELS[contract.status]}</span>
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            <span className="text-foreground text-sm">{getPlanName(contract.planId)}</span>
-                          </TableCell>
-                          <TableCell className="hidden lg:table-cell text-sm">{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {invoice ? (
-                              <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
-                                <span className="text-xs">{INVOICE_STATUS_LABELS[invoice.status]}</span>
-                              </Badge>
-                            ) : (
-                              <span className="text-muted-foreground text-sm">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="hidden lg:table-cell">
-                            {route ? (
-                              <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
-                                <span className="text-xs">{ROUTE_STATUS_LABELS[route.status]}</span>
-                              </Badge>
-                            ) : (
-                              <span className="text-muted-foreground text-sm">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {nextAction ? (
-                              <Link
-                                href={nextAction.href}
-                                className="text-sm font-medium text-primary hover:text-primary/80 whitespace-nowrap"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {nextAction.label}
-                              </Link>
-                            ) : (
-                              <span className="text-muted-foreground text-sm">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground text-sm hidden xl:table-cell">{formatDate(contract.updatedAt)}</TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+              条件クリア
+            </Button>
           )}
         </div>
+      </div>
+
+      {/* Active Filters Display */}
+      {hasActiveFilters && (
+        <ActiveFilters
+          filters={activeFilters}
+          onRemove={removeFilter}
+          onClearAll={clearFilters}
+        />
+      )}
+
+      {/* Results Table */}
+      <div className="w-full">
+        {filteredContracts.length === 0 ? (
+          <Card>
+            <EmptyState
+              title="該当する契約がありません"
+              description="フィルタ条件を変更してください"
+            />
+          </Card>
+        ) : (
+          <Card padding="none">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>店舗名</TableHead>
+                    <TableHead>契約状態</TableHead>
+                    <TableHead className="hidden md:table-cell">プラン</TableHead>
+                    <TableHead className="hidden lg:table-cell">支払方法</TableHead>
+                    <TableHead className="hidden sm:table-cell">今月請求</TableHead>
+                    <TableHead className="hidden lg:table-cell">ルート状態</TableHead>
+                    <TableHead className="hidden md:table-cell">次アクション</TableHead>
+                    <TableHead className="hidden xl:table-cell">最終更新</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredContracts.map((contract) => {
+                    const route = getRoute(contract.id)
+                    const invoice = getInvoice(contract.id)
+                    const nextAction = getNextAction(contract)
+                    return (
+                      <TableRow
+                        key={contract.id}
+                        clickable
+                        onClick={() => router.push(`/contracts/${contract.id}`)}
+                      >
+                        <TableCell>
+                          <span className="font-medium text-foreground text-sm md:text-base">{getAccountName(contract.accountId)}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]}>
+                            <span className="text-xs">{CONTRACT_STATUS_LABELS[contract.status]}</span>
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          <span className="text-foreground text-sm">{getPlanName(contract.planId)}</span>
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell text-sm">{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {invoice ? (
+                            <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
+                              <span className="text-xs">{INVOICE_STATUS_LABELS[invoice.status]}</span>
+                            </Badge>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          {route ? (
+                            <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
+                              <span className="text-xs">{ROUTE_STATUS_LABELS[route.status]}</span>
+                            </Badge>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {nextAction ? (
+                            <Link
+                              href={nextAction.href}
+                              className="text-sm font-medium text-primary hover:text-primary/80 whitespace-nowrap"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {nextAction.label}
+                            </Link>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground text-sm hidden xl:table-cell">{formatDate(contract.updatedAt)}</TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* 契約作成モーダル */}

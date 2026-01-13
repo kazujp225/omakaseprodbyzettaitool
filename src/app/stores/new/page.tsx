@@ -77,7 +77,7 @@ export default function NewStorePage() {
   const isValid = formData.accountName.trim() && formData.adminEmail.trim()
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -93,15 +93,15 @@ export default function NewStorePage() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card>
-          <div className="space-y-6 sm:space-y-8">
+        <Card padding="lg">
+          <div className="space-y-8">
             {/* 基本情報 */}
-            <div className="pb-6 border-b border-border">
-              <h3 className="text-sm sm:text-base font-semibold text-foreground mb-4 sm:mb-5 flex items-center gap-2">
-                <span className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-primary text-xs sm:text-sm flex items-center justify-center font-bold">1</span>
+            <div className="pb-8 border-b border-border">
+              <h3 className="text-base font-semibold text-foreground mb-6 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">1</span>
                 基本情報
               </h3>
-              <div className="space-y-4 sm:space-y-5">
+              <div className="space-y-6">
                 <Input
                   label="アカウント名"
                   value={formData.accountName}
@@ -109,7 +109,7 @@ export default function NewStorePage() {
                   placeholder="渋谷カフェ本店"
                   required
                 />
-                <div className="grid grid-cols-1 gap-4 sm:gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     label="管理者メールアドレス"
                     type="email"
@@ -130,28 +130,31 @@ export default function NewStorePage() {
             </div>
 
             {/* 連絡先 */}
-            <div className="pb-6 border-b border-border">
-              <h3 className="text-sm sm:text-base font-semibold text-foreground mb-4 sm:mb-5 flex items-center gap-2">
-                <span className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-primary text-xs sm:text-sm flex items-center justify-center font-bold">2</span>
+            <div className="pb-8 border-b border-border">
+              <h3 className="text-base font-semibold text-foreground mb-6 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">2</span>
                 連絡先
               </h3>
-              <div className="space-y-4 sm:space-y-5">
-                <p className="text-xs sm:text-sm text-muted-foreground">電話番号</p>
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="space-y-6">
+                <p className="text-sm font-medium text-slate-700 mb-2">電話番号</p>
+                <div className="grid grid-cols-3 gap-3 max-w-[400px]">
                   <Input
                     value={formData.phoneArea}
                     onChange={(e) => updateField('phoneArea', e.target.value)}
                     placeholder="03"
+                    className="text-center"
                   />
                   <Input
                     value={formData.phoneLocal}
                     onChange={(e) => updateField('phoneLocal', e.target.value)}
                     placeholder="1234"
+                    className="text-center"
                   />
                   <Input
                     value={formData.phoneNumber}
                     onChange={(e) => updateField('phoneNumber', e.target.value)}
                     placeholder="5678"
+                    className="text-center"
                   />
                 </div>
               </div>
@@ -159,24 +162,28 @@ export default function NewStorePage() {
 
             {/* 所在地 */}
             <div>
-              <h3 className="text-sm sm:text-base font-semibold text-foreground mb-4 sm:mb-5 flex items-center gap-2">
-                <span className="w-5 h-5 sm:w-6 sm:h-6 bg-primary/10 rounded text-primary text-xs sm:text-sm flex items-center justify-center font-bold">3</span>
+              <h3 className="text-base font-semibold text-foreground mb-6 flex items-center gap-2">
+                <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">3</span>
                 所在地
               </h3>
-              <div className="space-y-4 sm:space-y-5">
-                <div className="grid grid-cols-1 gap-4 sm:gap-5">
-                  <Input
-                    label="郵便番号"
-                    value={formData.postalCode}
-                    onChange={(e) => updateField('postalCode', e.target.value)}
-                    placeholder="150-0043"
-                  />
-                  <Select
-                    label="都道府県"
-                    options={PREFECTURES.map((p) => ({ value: p, label: p }))}
-                    value={formData.prefecture}
-                    onChange={(value) => updateField('prefecture', value)}
-                  />
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="md:col-span-1">
+                    <Input
+                      label="郵便番号"
+                      value={formData.postalCode}
+                      onChange={(e) => updateField('postalCode', e.target.value)}
+                      placeholder="150-0043"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Select
+                      label="都道府県"
+                      options={PREFECTURES.map((p) => ({ value: p, label: p }))}
+                      value={formData.prefecture}
+                      onChange={(value) => updateField('prefecture', value)}
+                    />
+                  </div>
                 </div>
                 <Input
                   label="住所詳細"
@@ -188,7 +195,7 @@ export default function NewStorePage() {
             </div>
 
             {/* アクション */}
-            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-5 sm:pt-6 border-t border-border">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-6 border-t border-border mt-8">
               <Button variant="secondary" type="button" onClick={() => router.push('/stores')} className="w-full sm:w-auto">
                 キャンセル
               </Button>

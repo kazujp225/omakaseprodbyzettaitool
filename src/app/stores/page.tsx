@@ -121,9 +121,19 @@ function StoreSearchContent() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">店舗検索</h1>
-        <p className="mt-1 text-sm text-muted-foreground">店舗名・電話番号・住所で検索できます</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">店舗検索</h1>
+          <p className="mt-1 text-sm text-muted-foreground">店舗名・電話番号・住所で検索できます</p>
+        </div>
+        <Link href="/stores/new">
+          <Button className="w-full sm:w-auto">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            新規登録
+          </Button>
+        </Link>
       </div>
 
       {/* Stats Cards */}

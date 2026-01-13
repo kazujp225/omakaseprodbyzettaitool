@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Card, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, LoadingState, EmptyState, NoDataIcon } from '@/components/ui'
+import { Card, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, LoadingState, EmptyState, NoDataIcon, Button } from '@/components/ui'
 import { mockAgentRepository, mockAgentSettlementRepository, mockAgentContractRepository } from '@/repositories/mock'
 import type { Agent, AgentSettlement } from '@/domain/types'
 import { AGENT_SETTLEMENT_STATUS_LABELS, AGENT_SETTLEMENT_STATUS_VARIANT, PAYOUT_STATUS_LABELS, PAYOUT_STATUS_VARIANT } from '@/domain/status'
@@ -79,11 +79,19 @@ export default function AgentsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-end justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">代理店管理</h1>
           <p className="mt-1 sm:mt-2 text-sm sm:text-base text-muted-foreground">OEM代理店の一覧と月次精算管理</p>
         </div>
+        <Link href="/agents/new">
+          <Button className="w-full sm:w-auto">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            代理店追加
+          </Button>
+        </Link>
       </div>
 
       {/* Summary Cards */}
