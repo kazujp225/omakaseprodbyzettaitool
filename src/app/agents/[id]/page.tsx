@@ -199,22 +199,22 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Link href="/agents" className="hover:text-foreground">
               代理店一覧
             </Link>
             <span>/</span>
-            <span>{agent.name}</span>
+            <span className="truncate max-w-[150px] sm:max-w-none">{agent.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">{agent.name}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">{agent.name}</h1>
           <p className="text-sm text-muted-foreground">
             単価: {formatCurrency(agent.stockUnitPrice)} / 目標: {agent.monthlyTarget}件
           </p>
         </div>
         <div className="flex gap-2">
-          <Badge variant={agent.isActive ? 'success' : 'neutral'} className="text-base px-4 py-2">
+          <Badge variant={agent.isActive ? 'success' : 'neutral'} className="text-sm sm:text-base px-3 sm:px-4 py-1.5 sm:py-2">
             {agent.isActive ? '契約中' : '契約終了'}
           </Badge>
         </div>
@@ -299,36 +299,37 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
       </div>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-border">
+        <div className="px-4 sm:px-6 py-4 border-b border-border">
           <CardTitle>月次精算テーブル</CardTitle>
         </div>
         {monthlyData.length === 0 ? (
-          <div className="px-6 py-12 text-center text-muted-foreground">精算データがありません</div>
+          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">精算データがありません</div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>対象月</TableHead>
-                <TableHead className="text-right">獲得数</TableHead>
-                <TableHead className="text-right">権利数</TableHead>
-                <TableHead className="text-right">不足</TableHead>
-                <TableHead className="text-right">支払件数</TableHead>
-                <TableHead className="text-right">相殺数</TableHead>
-                <TableHead className="text-right">金額</TableHead>
-                <TableHead>精算状態</TableHead>
-                <TableHead>振込状態</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>対象月</TableHead>
+                  <TableHead className="text-right hidden sm:table-cell">獲得数</TableHead>
+                  <TableHead className="text-right hidden md:table-cell">権利数</TableHead>
+                  <TableHead className="text-right hidden lg:table-cell">不足</TableHead>
+                  <TableHead className="text-right hidden sm:table-cell">支払件数</TableHead>
+                  <TableHead className="text-right hidden lg:table-cell">相殺数</TableHead>
+                  <TableHead className="text-right">金額</TableHead>
+                  <TableHead>精算状態</TableHead>
+                  <TableHead className="hidden sm:table-cell">振込状態</TableHead>
+                  <TableHead>アクション</TableHead>
+                </TableRow>
+              </TableHeader>
             <TableBody>
               {monthlyData.map((data) => {
                 const { billingMonth, performance, entitlement, settlement } = data
                 return (
                   <TableRow key={formatMonth(billingMonth)}>
                     <TableCell className="font-medium">{formatMonth(billingMonth)}</TableCell>
-                    <TableCell className="text-right">{performance?.acquiredCount ?? '-'}</TableCell>
-                    <TableCell className="text-right">{entitlement?.entitledCount ?? '-'}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right hidden sm:table-cell">{performance?.acquiredCount ?? '-'}</TableCell>
+                    <TableCell className="text-right hidden md:table-cell">{entitlement?.entitledCount ?? '-'}</TableCell>
+                    <TableCell className="text-right hidden lg:table-cell">
                       {entitlement?.deficitCount !== undefined ? (
                         <span className={entitlement.deficitCount > 0 ? 'text-destructive font-medium' : ''}>
                           {entitlement.deficitCount}
@@ -337,8 +338,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                         '-'
                       )}
                     </TableCell>
-                    <TableCell className="text-right">{settlement?.payableCount ?? '-'}</TableCell>
-                    <TableCell className="text-right">{settlement?.cancelledOffset ?? '-'}</TableCell>
+                    <TableCell className="text-right hidden sm:table-cell">{settlement?.payableCount ?? '-'}</TableCell>
+                    <TableCell className="text-right hidden lg:table-cell">{settlement?.cancelledOffset ?? '-'}</TableCell>
                     <TableCell className="text-right font-medium">
                       {settlement ? formatCurrency(settlement.totalAmount) : '-'}
                     </TableCell>
@@ -351,7 +352,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                         <span className="text-muted-foreground">-</span>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       {settlement ? (
                         <Badge variant={PAYOUT_STATUS_VARIANT[settlement.payoutStatus]}>
                           {PAYOUT_STATUS_LABELS[settlement.payoutStatus]}
@@ -361,7 +362,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
                         {settlement?.status === 'draft' && (
                           <Button
                             variant="primary"
@@ -371,7 +372,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                               setConfirmSettlementModal(true)
                             }}
                           >
-                            精算確定
+                            <span className="hidden sm:inline">精算確定</span>
+                            <span className="sm:hidden">確定</span>
                           </Button>
                         )}
                         {settlement?.status === 'invoiced' && settlement.payoutStatus === 'unpaid' && (
@@ -381,7 +383,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                             onClick={() => handleRequestPayout(settlement)}
                             loading={processing}
                           >
-                            振込依頼
+                            <span className="hidden sm:inline">振込依頼</span>
+                            <span className="sm:hidden">依頼</span>
                           </Button>
                         )}
                         {settlement?.payoutStatus === 'requested' && (
@@ -391,7 +394,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                             onClick={() => handleCompletePayout(settlement)}
                             loading={processing}
                           >
-                            振込完了
+                            <span className="hidden sm:inline">振込完了</span>
+                            <span className="sm:hidden">完了</span>
                           </Button>
                         )}
                       </div>
@@ -401,26 +405,28 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
               })}
             </TableBody>
           </Table>
+          </div>
         )}
       </Card>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-border">
+        <div className="px-4 sm:px-6 py-4 border-b border-border">
           <CardTitle>紐づき顧客契約</CardTitle>
         </div>
         {agentContracts.length === 0 ? (
-          <div className="px-6 py-12 text-center text-muted-foreground">紐づき契約がありません</div>
+          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">紐づき契約がありません</div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>紐づけ開始月</TableHead>
-                <TableHead>契約ステータス</TableHead>
-                <TableHead>紐づけ状態</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead className="hidden sm:table-cell">紐づけ開始月</TableHead>
+                  <TableHead className="hidden md:table-cell">契約ステータス</TableHead>
+                  <TableHead>紐づけ状態</TableHead>
+                  <TableHead>アクション</TableHead>
+                </TableRow>
+              </TableHeader>
             <TableBody>
               {agentContracts.map((ac) => (
                 <TableRow key={ac.id}>
@@ -428,7 +434,7 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                     {ac.store ? (
                       <Link
                         href={`/contracts/${ac.contractId}`}
-                        className="font-medium text-foreground hover:text-primary"
+                        className="font-medium text-foreground hover:text-primary truncate block max-w-[120px] sm:max-w-none"
                       >
                         {ac.store.accountName}
                       </Link>
@@ -436,8 +442,8 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                       <span className="text-muted-foreground">不明</span>
                     )}
                   </TableCell>
-                  <TableCell>{formatMonth(ac.billingMonth)}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">{formatMonth(ac.billingMonth)}</TableCell>
+                  <TableCell className="hidden md:table-cell">
                     {ac.contract ? (
                       <Badge variant={CONTRACT_STATUS_VARIANT[ac.contract.status]}>
                         {CONTRACT_STATUS_LABELS[ac.contract.status]}
@@ -456,13 +462,15 @@ export default function AgentDetailPage({ params }: AgentDetailPageProps) {
                       href={`/contracts/${ac.contractId}`}
                       className="text-sm text-foreground hover:text-primary"
                     >
-                      詳細を見る
+                      <span className="hidden sm:inline">詳細を見る</span>
+                      <span className="sm:hidden">詳細</span>
                     </Link>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          </div>
         )}
       </Card>
 

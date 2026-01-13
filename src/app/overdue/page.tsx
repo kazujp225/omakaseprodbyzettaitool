@@ -90,28 +90,28 @@ export default function OverduePage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 ${hasIssues ? 'bg-destructive/10' : 'bg-green-100'} rounded-xl flex items-center justify-center`}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 ${hasIssues ? 'bg-destructive/10' : 'bg-green-100'} rounded-xl flex items-center justify-center flex-shrink-0`}>
             {hasIssues ? (
-              <svg className="w-6 h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             ) : (
-              <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             )}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">未入金/督促</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">未入金/督促</h1>
             <p className="text-sm text-muted-foreground">
               {hasIssues ? '期限超過・決済失敗の案件を管理' : 'すべての請求が正常に処理されています'}
             </p>
           </div>
         </div>
         {hasIssues && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-destructive/10 border border-destructive/30 rounded-lg">
+          <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-destructive/10 border border-destructive/30 rounded-lg self-start sm:self-auto">
             <span className="w-2 h-2 bg-destructive/100 rounded-full" />
             <span className="text-sm font-medium text-destructive">要対応あり</span>
           </div>
@@ -119,7 +119,7 @@ export default function OverduePage() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Card padding="sm" accent={overdueItems.length > 0 ? 'danger' : 'success'}>
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 ${overdueItems.length > 0 ? 'bg-destructive/10' : 'bg-green-50'} rounded-lg flex items-center justify-center`}>
@@ -183,87 +183,89 @@ export default function OverduePage() {
       {/* Failed payments section */}
       {failedPayments.length > 0 && (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-border">
+          <div className="px-4 sm:px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-amber-50 rounded-md flex items-center justify-center">
+              <div className="w-8 h-8 bg-amber-50 rounded-md flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-foreground">決済失敗（優先対応）</h2>
-                <p className="text-sm text-muted-foreground">再決済依頼または支払い方法の変更が必要です</p>
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">決済失敗（優先対応）</h2>
+                <p className="text-sm text-muted-foreground hidden sm:block">再決済依頼または支払い方法の変更が必要です</p>
               </div>
             </div>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>金額</TableHead>
-                <TableHead>失敗理由</TableHead>
-                <TableHead>発生日</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {failedPayments.map(({ payment, contract, account }) => (
-                <TableRow key={payment.id} clickable onClick={() => router.push(`/contracts/${contract.id}`)}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-amber-50 rounded-md flex items-center justify-center">
-                        <span className="text-sm font-semibold text-amber-700">{account.accountName.charAt(0)}</span>
-                      </div>
-                      <span className="font-medium text-foreground">{account.accountName}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-semibold text-foreground">{formatCurrency(payment.amount)}</span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="danger">{payment.failureReason || '不明'}</Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(payment.createdAt)}</TableCell>
-                  <TableCell>
-                    <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); router.push(`/contracts/${contract.id}`) }}>
-                      対応する
-                    </Button>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead>金額</TableHead>
+                  <TableHead className="hidden sm:table-cell">失敗理由</TableHead>
+                  <TableHead className="hidden md:table-cell">発生日</TableHead>
+                  <TableHead>アクション</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {failedPayments.map(({ payment, contract, account }) => (
+                  <TableRow key={payment.id} clickable onClick={() => router.push(`/contracts/${contract.id}`)}>
+                    <TableCell>
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 bg-amber-50 rounded-md flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs sm:text-sm font-semibold text-amber-700">{account.accountName.charAt(0)}</span>
+                        </div>
+                        <span className="font-medium text-foreground truncate max-w-[100px] sm:max-w-none">{account.accountName}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-semibold text-foreground">{formatCurrency(payment.amount)}</span>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <Badge variant="danger">{payment.failureReason || '不明'}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{formatDate(payment.createdAt)}</TableCell>
+                    <TableCell>
+                      <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); router.push(`/contracts/${contract.id}`) }}>
+                        対応
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       )}
 
       {/* Overdue items */}
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-border">
-          <div className="flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-border">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-destructive/10 rounded-md flex items-center justify-center">
+              <div className="w-8 h-8 bg-destructive/10 rounded-md flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-foreground">期限超過一覧</h2>
-                <p className="text-sm text-muted-foreground">延滞日数順（長い順）</p>
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">期限超過一覧</h2>
+                <p className="text-sm text-muted-foreground hidden sm:block">延滞日数順（長い順）</p>
               </div>
             </div>
             {overdueItems.length > 0 && (
-              <Button variant="secondary" size="sm">
-                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <Button variant="secondary" size="sm" className="self-start sm:self-auto">
+                <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                CSV出力
+                <span className="hidden sm:inline">CSV出力</span>
               </Button>
             )}
           </div>
         </div>
 
         {overdueItems.length === 0 ? (
-          <div className="p-16">
+          <div className="p-8 sm:p-16">
             <EmptyState
               icon={
                 <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
@@ -277,84 +279,87 @@ export default function OverduePage() {
             />
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>対象月</TableHead>
-                <TableHead>金額</TableHead>
-                <TableHead>延滞日数</TableHead>
-                <TableHead>督促回数</TableHead>
-                <TableHead>支払方法</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {overdueItems.map(({ invoice, contract, account, overdueDays, reminderCount }) => {
-                const urgencyLevel = overdueDays >= 14 ? 'critical' : overdueDays >= 7 ? 'warning' : 'normal'
-                return (
-                  <TableRow
-                    key={invoice.id}
-                    clickable
-                    onClick={() => router.push(`/contracts/${contract.id}`)}
-                    className={urgencyLevel === 'critical' ? 'bg-destructive/10/30' : ''}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 ${urgencyLevel === 'critical' ? 'bg-destructive/10' : urgencyLevel === 'warning' ? 'bg-amber-50' : 'bg-muted'} rounded-md flex items-center justify-center`}>
-                          <span className={`text-sm font-semibold ${urgencyLevel === 'critical' ? 'text-destructive' : urgencyLevel === 'warning' ? 'text-amber-700' : 'text-primary'}`}>
-                            {account.accountName.charAt(0)}
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead className="hidden sm:table-cell">対象月</TableHead>
+                  <TableHead>金額</TableHead>
+                  <TableHead>延滞</TableHead>
+                  <TableHead className="hidden md:table-cell">督促回数</TableHead>
+                  <TableHead className="hidden lg:table-cell">支払方法</TableHead>
+                  <TableHead>アクション</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {overdueItems.map(({ invoice, contract, account, overdueDays, reminderCount }) => {
+                  const urgencyLevel = overdueDays >= 14 ? 'critical' : overdueDays >= 7 ? 'warning' : 'normal'
+                  return (
+                    <TableRow
+                      key={invoice.id}
+                      clickable
+                      onClick={() => router.push(`/contracts/${contract.id}`)}
+                      className={urgencyLevel === 'critical' ? 'bg-destructive/10/30' : ''}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className={`w-8 h-8 sm:w-9 sm:h-9 ${urgencyLevel === 'critical' ? 'bg-destructive/10' : urgencyLevel === 'warning' ? 'bg-amber-50' : 'bg-muted'} rounded-md flex items-center justify-center flex-shrink-0`}>
+                            <span className={`text-xs sm:text-sm font-semibold ${urgencyLevel === 'critical' ? 'text-destructive' : urgencyLevel === 'warning' ? 'text-amber-700' : 'text-primary'}`}>
+                              {account.accountName.charAt(0)}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground truncate max-w-[100px] sm:max-w-none">{account.accountName}</p>
+                            {contract.cancellationReason && (
+                              <p className="text-sm text-muted-foreground hidden sm:block truncate">{contract.cancellationReason}</p>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">{formatMonth(invoice.billingMonth)}</TableCell>
+                      <TableCell>
+                        <span className="font-semibold text-foreground text-sm sm:text-base">{formatCurrency(invoice.amount)}</span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={overdueDays >= 14 ? 'danger' : overdueDays >= 7 ? 'warning' : 'neutral'}>
+                          {overdueDays}日
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <div className="flex items-center gap-1">
+                          {[0, 1, 2].map((i) => (
+                            <div
+                              key={i}
+                              className={`w-2 h-2 rounded-full ${i < reminderCount ? 'bg-destructive/100' : 'bg-border'}`}
+                            />
+                          ))}
+                          <span className={`ml-2 text-sm ${reminderCount >= 2 ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                            {reminderCount}回
                           </span>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{account.accountName}</p>
-                          {contract.cancellationReason && (
-                            <p className="text-sm text-muted-foreground">{contract.cancellationReason}</p>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{formatMonth(invoice.billingMonth)}</TableCell>
-                    <TableCell>
-                      <span className="font-semibold text-foreground">{formatCurrency(invoice.amount)}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={overdueDays >= 14 ? 'danger' : overdueDays >= 7 ? 'warning' : 'neutral'}>
-                        {overdueDays}日
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        {[0, 1, 2].map((i) => (
-                          <div
-                            key={i}
-                            className={`w-2 h-2 rounded-full ${i < reminderCount ? 'bg-destructive/100' : 'bg-border'}`}
-                          />
-                        ))}
-                        <span className={`ml-2 text-sm ${reminderCount >= 2 ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                          {reminderCount}回
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="neutral">
-                        {contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant={reminderCount >= 2 ? 'danger' : 'primary'}
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); router.push(`/contracts/${contract.id}`) }}
-                      >
-                        {reminderCount === 0 ? '督促1回目' : reminderCount === 1 ? '督促2回目' : '最終通知'}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        <Badge variant="neutral">
+                          {contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant={reminderCount >= 2 ? 'danger' : 'primary'}
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); router.push(`/contracts/${contract.id}`) }}
+                        >
+                          <span className="hidden sm:inline">{reminderCount === 0 ? '督促1回目' : reminderCount === 1 ? '督促2回目' : '最終通知'}</span>
+                          <span className="sm:hidden">督促</span>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </Card>
     </div>

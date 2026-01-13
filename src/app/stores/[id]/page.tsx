@@ -159,37 +159,37 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
       </div>
 
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-xl font-bold text-primary">{store.accountName.charAt(0)}</span>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+            <span className="text-lg sm:text-xl font-bold text-primary">{store.accountName.charAt(0)}</span>
           </div>
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl font-bold text-foreground">{store.accountName}</h1>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">{store.accountName}</h1>
               {activeContract && (
                 <Badge variant={CONTRACT_STATUS_VARIANT[activeContract.status]}>
                   {CONTRACT_STATUS_LABELS[activeContract.status]}
                 </Badge>
               )}
               {activeRoute && (
-                <Badge variant={ROUTE_STATUS_VARIANT[activeRoute.status]}>
+                <Badge variant={ROUTE_STATUS_VARIANT[activeRoute.status]} className="hidden sm:inline-flex">
                   ルート: {ROUTE_STATUS_LABELS[activeRoute.status]}
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">{store.adminEmail}</p>
+            <p className="text-sm text-muted-foreground truncate">{store.adminEmail}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="secondary">
-            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button variant="secondary" className="flex-1 sm:flex-none">
+            <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            編集
+            <span className="hidden sm:inline">編集</span>
           </Button>
           {activeContract && (
-            <Button onClick={() => router.push(`/contracts/${activeContract.id}`)}>
+            <Button onClick={() => router.push(`/contracts/${activeContract.id}`)} className="flex-1 sm:flex-none">
               契約詳細へ
             </Button>
           )}
@@ -197,23 +197,23 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
       </div>
 
       {/* Contact info */}
-      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm text-muted-foreground">
         <span className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-muted-foreground/70 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
           </svg>
           {`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}
         </span>
-        <span className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <span className="flex items-center gap-2 hidden sm:flex">
+          <svg className="w-4 h-4 text-muted-foreground/70 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          {store.addressDetail}
+          <span className="truncate max-w-[200px] md:max-w-none">{store.addressDetail}</span>
         </span>
         {store.adminEmail && (
-          <span className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-muted-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <span className="flex items-center gap-2 hidden md:flex">
+            <svg className="w-4 h-4 text-muted-foreground/70 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
             {store.adminEmail}
@@ -222,7 +222,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
@@ -279,14 +279,14 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
 
       {/* Tabs */}
       <Card padding="none">
-        <div className="border-b border-border">
-          <nav className="flex">
+        <div className="border-b border-border overflow-x-auto">
+          <nav className="flex min-w-max">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors
+                  flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 sm:py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                   ${
                     activeTab === tab.id
                       ? 'border-primary text-primary'
@@ -295,9 +295,9 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                 `}
               >
                 {tab.icon}
-                {tab.label}
+                <span className="hidden sm:inline">{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`ml-1 px-2 py-0.5 rounded-md text-sm ${
+                  <span className={`ml-1 px-1.5 sm:px-2 py-0.5 rounded-md text-xs sm:text-sm ${
                     activeTab === tab.id ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                   }`}>
                     {tab.count}
@@ -308,7 +308,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
           </nav>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Tab content */}
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -409,7 +409,7 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
 
           {activeTab === 'contracts' && (
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <h3 className="text-lg font-semibold text-foreground">契約履歴</h3>
                 <Button size="sm">
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -425,16 +425,16 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   className="py-12"
                 />
               ) : (
-                <div className="overflow-hidden rounded-lg border border-border">
+                <div className="overflow-x-auto rounded-lg border border-border">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>プラン</TableHead>
                         <TableHead>ステータス</TableHead>
-                        <TableHead>支払方法</TableHead>
-                        <TableHead>月額</TableHead>
-                        <TableHead>開始日</TableHead>
-                        <TableHead>終了日</TableHead>
+                        <TableHead className="hidden sm:table-cell">支払方法</TableHead>
+                        <TableHead className="hidden md:table-cell">月額</TableHead>
+                        <TableHead className="hidden lg:table-cell">開始日</TableHead>
+                        <TableHead className="hidden lg:table-cell">終了日</TableHead>
                         <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -447,10 +447,10 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                               {CONTRACT_STATUS_LABELS[contract.status]}
                             </Badge>
                           </TableCell>
-                          <TableCell>{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
-                          <TableCell>{formatCurrency(contract.contractMonthlyPriceSnapshot)}</TableCell>
-                          <TableCell>{formatDate(contract.startDate)}</TableCell>
-                          <TableCell>{contract.endDate ? formatDate(contract.endDate) : '-'}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
+                          <TableCell className="hidden md:table-cell">{formatCurrency(contract.contractMonthlyPriceSnapshot)}</TableCell>
+                          <TableCell className="hidden lg:table-cell">{formatDate(contract.startDate)}</TableCell>
+                          <TableCell className="hidden lg:table-cell">{contract.endDate ? formatDate(contract.endDate) : '-'}</TableCell>
                           <TableCell>
                             <Link
                               href={`/contracts/${contract.id}`}
@@ -483,15 +483,15 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                     className="py-12"
                   />
                 ) : (
-                  <div className="overflow-hidden rounded-lg border border-border">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead>請求月</TableHead>
                           <TableHead>金額</TableHead>
                           <TableHead>ステータス</TableHead>
-                          <TableHead>期限</TableHead>
-                          <TableHead>送付日</TableHead>
+                          <TableHead className="hidden sm:table-cell">期限</TableHead>
+                          <TableHead className="hidden md:table-cell">送付日</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -504,8 +504,8 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                                 {INVOICE_STATUS_LABELS[invoice.status]}
                               </Badge>
                             </TableCell>
-                            <TableCell>{formatDate(invoice.dueDate)}</TableCell>
-                            <TableCell>{invoice.sentAt ? formatDate(invoice.sentAt) : '-'}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{formatDate(invoice.dueDate)}</TableCell>
+                            <TableCell className="hidden md:table-cell">{invoice.sentAt ? formatDate(invoice.sentAt) : '-'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -523,15 +523,15 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                     className="py-12"
                   />
                 ) : (
-                  <div className="overflow-hidden rounded-lg border border-border">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead>日時</TableHead>
                           <TableHead>金額</TableHead>
                           <TableHead>ステータス</TableHead>
-                          <TableHead>決済方法</TableHead>
-                          <TableHead>備考</TableHead>
+                          <TableHead className="hidden sm:table-cell">決済方法</TableHead>
+                          <TableHead className="hidden md:table-cell">備考</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -544,8 +544,8 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                                 {payment.status === 'succeeded' ? '成功' : payment.status === 'failed' ? '失敗' : payment.status}
                               </Badge>
                             </TableCell>
-                            <TableCell>{payment.provider === 'monthlypay' ? '月額ペイ' : payment.provider === 'bank_transfer' ? '銀行振込' : payment.provider}</TableCell>
-                            <TableCell className="text-muted-foreground">{payment.failureReason || '-'}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{payment.provider === 'monthlypay' ? '月額ペイ' : payment.provider === 'bank_transfer' ? '銀行振込' : payment.provider}</TableCell>
+                            <TableCell className="hidden md:table-cell text-muted-foreground">{payment.failureReason || '-'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -566,15 +566,15 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                   className="py-12"
                 />
               ) : (
-                <div className="overflow-hidden rounded-lg border border-border">
+                <div className="overflow-x-auto rounded-lg border border-border">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>日時</TableHead>
                         <TableHead>種別</TableHead>
-                        <TableHead>件名</TableHead>
+                        <TableHead className="hidden md:table-cell">件名</TableHead>
                         <TableHead>ステータス</TableHead>
-                        <TableHead>送信先</TableHead>
+                        <TableHead className="hidden sm:table-cell">送信先</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -582,13 +582,13 @@ export default function StoreDetailPage({ params }: StoreDetailPageProps) {
                         <TableRow key={notification.id}>
                           <TableCell className="font-medium">{formatDate(notification.createdAt)}</TableCell>
                           <TableCell>{NOTIFICATION_TYPE_LABELS[notification.type]}</TableCell>
-                          <TableCell className="max-w-xs truncate">{notification.subject}</TableCell>
+                          <TableCell className="hidden md:table-cell max-w-xs truncate">{notification.subject}</TableCell>
                           <TableCell>
                             <Badge variant={notification.status === 'sent' ? 'success' : notification.status === 'draft' ? 'neutral' : 'danger'}>
                               {NOTIFICATION_STATUS_LABELS[notification.status]}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-muted-foreground">{notification.toEmail}</TableCell>
+                          <TableCell className="hidden sm:table-cell text-muted-foreground">{notification.toEmail}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

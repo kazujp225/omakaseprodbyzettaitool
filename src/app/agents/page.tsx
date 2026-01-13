@@ -81,13 +81,13 @@ export default function AgentsPage() {
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">代理店管理</h1>
-          <p className="mt-2 text-muted-foreground">OEM代理店の一覧と月次精算管理</p>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">代理店管理</h1>
+          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-muted-foreground">OEM代理店の一覧と月次精算管理</p>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
@@ -147,8 +147,8 @@ export default function AgentsPage() {
 
       {/* Agent List */}
       <Card padding="none">
-        <div className="border-b border-border">
-          <nav className="flex">
+        <div className="border-b border-border overflow-x-auto">
+          <nav className="flex min-w-max">
             {[
               { key: 'active', label: '契約中', count: agents.filter((a) => a.isActive).length },
               { key: 'inactive', label: '契約終了', count: agents.filter((a) => !a.isActive).length },
@@ -157,14 +157,14 @@ export default function AgentsPage() {
               <button
                 key={tab.key}
                 onClick={() => setFilter(tab.key as typeof filter)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   filter === tab.key
                     ? 'border-primary text-primary'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
               >
                 {tab.label}
-                <span className={`px-2 py-0.5 text-sm rounded-md ${
+                <span className={`px-1.5 sm:px-2 py-0.5 text-xs sm:text-sm rounded-md ${
                   filter === tab.key ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                 }`}>
                   {tab.count}
@@ -181,90 +181,92 @@ export default function AgentsPage() {
             icon={<NoDataIcon />}
           />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>代理店名</TableHead>
-                <TableHead>契約状態</TableHead>
-                <TableHead className="text-right">今月実績 / 目標</TableHead>
-                <TableHead className="text-right">支払件数</TableHead>
-                <TableHead className="text-right">今月請求金額</TableHead>
-                <TableHead>精算状態</TableHead>
-                <TableHead>振込状態</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAgents.map((agent) => {
-                const settlement = agent.currentMonthSettlement
-                return (
-                  <TableRow
-                    key={agent.id}
-                    clickable
-                    onClick={() => window.location.href = `/agents/${agent.id}`}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          agent.isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>代理店名</TableHead>
+                  <TableHead className="hidden sm:table-cell">契約状態</TableHead>
+                  <TableHead className="text-right hidden md:table-cell">今月実績 / 目標</TableHead>
+                  <TableHead className="text-right hidden lg:table-cell">支払件数</TableHead>
+                  <TableHead className="text-right">今月請求金額</TableHead>
+                  <TableHead className="hidden sm:table-cell">精算状態</TableHead>
+                  <TableHead className="hidden md:table-cell">振込状態</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredAgents.map((agent) => {
+                  const settlement = agent.currentMonthSettlement
+                  return (
+                    <TableRow
+                      key={agent.id}
+                      clickable
+                      onClick={() => window.location.href = `/agents/${agent.id}`}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                            agent.isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                          }`}>
+                            <span className="text-xs sm:text-sm font-bold">{agent.name.charAt(0)}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <Link
+                              href={`/agents/${agent.id}`}
+                              className="font-medium text-foreground hover:text-foreground truncate block max-w-[120px] sm:max-w-none"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {agent.name}
+                            </Link>
+                            <p className="text-sm text-muted-foreground hidden sm:block">
+                              単価: {formatCurrency(agent.stockUnitPrice)}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <Badge variant={agent.isActive ? 'success' : 'neutral'}>
+                          {agent.isActive ? '契約中' : '契約終了'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right hidden md:table-cell">
+                        <span className={`font-medium ${
+                          agent.activeContractCount >= agent.monthlyTarget ? 'text-green-600' : 'text-amber-600'
                         }`}>
-                          <span className="text-sm font-bold">{agent.name.charAt(0)}</span>
-                        </div>
-                        <div>
-                          <Link
-                            href={`/agents/${agent.id}`}
-                            className="font-medium text-foreground hover:text-foreground"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {agent.name}
-                          </Link>
-                          <p className="text-sm text-muted-foreground">
-                            単価: {formatCurrency(agent.stockUnitPrice)}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={agent.isActive ? 'success' : 'neutral'}>
-                        {agent.isActive ? '契約中' : '契約終了'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className={`font-medium ${
-                        agent.activeContractCount >= agent.monthlyTarget ? 'text-green-600' : 'text-amber-600'
-                      }`}>
-                        {agent.activeContractCount}
-                      </span>
-                      <span className="text-muted-foreground"> / {agent.monthlyTarget}</span>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {settlement ? settlement.payableCount : '-'}
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {settlement ? formatCurrency(settlement.totalAmount) : '-'}
-                    </TableCell>
-                    <TableCell>
-                      {settlement ? (
-                        <Badge variant={AGENT_SETTLEMENT_STATUS_VARIANT[settlement.status]}>
-                          {AGENT_SETTLEMENT_STATUS_LABELS[settlement.status]}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {settlement ? (
-                        <Badge variant={PAYOUT_STATUS_VARIANT[settlement.payoutStatus]}>
-                          {PAYOUT_STATUS_LABELS[settlement.payoutStatus]}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                          {agent.activeContractCount}
+                        </span>
+                        <span className="text-muted-foreground"> / {agent.monthlyTarget}</span>
+                      </TableCell>
+                      <TableCell className="text-right font-medium hidden lg:table-cell">
+                        {settlement ? settlement.payableCount : '-'}
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        {settlement ? formatCurrency(settlement.totalAmount) : '-'}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {settlement ? (
+                          <Badge variant={AGENT_SETTLEMENT_STATUS_VARIANT[settlement.status]}>
+                            {AGENT_SETTLEMENT_STATUS_LABELS[settlement.status]}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {settlement ? (
+                          <Badge variant={PAYOUT_STATUS_VARIANT[settlement.payoutStatus]}>
+                            {PAYOUT_STATUS_LABELS[settlement.payoutStatus]}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </Card>
     </div>

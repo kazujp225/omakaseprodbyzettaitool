@@ -63,10 +63,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">設定</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">設定</h1>
         <p className="mt-1 text-sm text-muted-foreground">システム設定を管理</p>
       </div>
 
@@ -79,7 +79,7 @@ export default function SettingsPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                   ${activeTab === tab.id
                     ? 'border-primary text-primary'
                     : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
@@ -93,12 +93,12 @@ export default function SettingsPage() {
           </nav>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {activeTab === 'plans' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">プラン一覧</h2>
-                <Button>
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">プラン一覧</h2>
+                <Button className="w-full sm:w-auto">
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
@@ -114,11 +114,11 @@ export default function SettingsPage() {
                 />
               ) : (
 
-                <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x">
+                <div className="flex overflow-x-auto pb-4 gap-3 sm:gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 snap-x">
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`flex-none w-[280px] md:w-auto snap-center bg-white rounded-lg border ${plan.isActive ? 'border-primary/30' : 'border-border'} p-5 hover:shadow-card-hover transition-all cursor-pointer`}
+                      className={`flex-none w-[260px] sm:w-[280px] md:w-auto snap-center bg-white rounded-lg border ${plan.isActive ? 'border-primary/30' : 'border-border'} p-4 sm:p-5 hover:shadow-card-hover transition-all cursor-pointer`}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-foreground">{plan.name}</h3>
@@ -154,10 +154,10 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'templates' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">通知テンプレート</h2>
-                <Button>
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">通知テンプレート</h2>
+                <Button className="w-full sm:w-auto">
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
                 </Button>
               </div>
 
-              <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x">
+              <div className="flex overflow-x-auto pb-4 gap-3 sm:gap-4 md:grid md:grid-cols-2 md:pb-0 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 snap-x">
                 {[
                   { type: 'invoice_send', label: '請求書送付', description: '月次請求書を送付する際のメールテンプレート', bg: 'bg-muted', text: 'text-foreground' },
                   { type: 'reminder_1', label: '督促1回目', description: '支払期限超過7日以内の督促メール', bg: 'bg-amber-50', text: 'text-amber-600' },
@@ -176,21 +176,21 @@ export default function SettingsPage() {
                 ].map((template) => (
                   <div
                     key={template.type}
-                    className="flex-none w-[280px] md:w-auto snap-center bg-white rounded-lg border border-border p-5 hover:shadow-card-hover transition-all cursor-pointer"
+                    className="flex-none w-[260px] sm:w-[280px] md:w-auto snap-center bg-white rounded-lg border border-border p-4 sm:p-5 hover:shadow-card-hover transition-all cursor-pointer"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 ${template.bg} rounded-md flex items-center justify-center`}>
-                          <svg className={`w-5 h-5 ${template.text}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 ${template.bg} rounded-md flex items-center justify-center flex-shrink-0`}>
+                          <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${template.text}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-foreground">{template.label}</h3>
-                          <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-foreground text-sm sm:text-base">{template.label}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 line-clamp-2">{template.description}</p>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" className="flex-shrink-0">
                         編集
                       </Button>
                     </div>
@@ -201,10 +201,10 @@ export default function SettingsPage() {
           )}
 
           {activeTab === 'permissions' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">ユーザーと権限</h2>
-                <Button>
+            <div className="space-y-4 sm:space-y-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground">ユーザーと権限</h2>
+                <Button className="w-full sm:w-auto">
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                   </svg>
@@ -212,14 +212,14 @@ export default function SettingsPage() {
                 </Button>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-border">
+              <div className="overflow-x-auto rounded-lg border border-border">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>ユーザー名</TableHead>
-                      <TableHead>メールアドレス</TableHead>
+                      <TableHead className="hidden sm:table-cell">メールアドレス</TableHead>
                       <TableHead>役割</TableHead>
-                      <TableHead>ステータス</TableHead>
+                      <TableHead className="hidden sm:table-cell">ステータス</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -231,18 +231,18 @@ export default function SettingsPage() {
                     ].map((user) => (
                       <TableRow key={user.email}>
                         <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
-                              <span className="text-sm font-semibold text-primary">{user.initial}</span>
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs sm:text-sm font-semibold text-primary">{user.initial}</span>
                             </div>
-                            <span className="font-medium text-foreground">{user.name}</span>
+                            <span className="font-medium text-foreground text-sm sm:text-base truncate max-w-[100px] sm:max-w-none">{user.name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                        <TableCell className="text-muted-foreground hidden sm:table-cell">{user.email}</TableCell>
                         <TableCell>
                           <Badge variant={user.roleColor as 'danger' | 'warning' | 'neutral'}>{user.role}</Badge>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           <Badge variant="success">有効</Badge>
                         </TableCell>
                         <TableCell>
@@ -254,17 +254,17 @@ export default function SettingsPage() {
                 </Table>
               </div>
 
-              <div className="bg-muted rounded-lg border border-border p-5">
-                <h3 className="text-lg font-semibold text-foreground mb-4">権限の説明</h3>
-                <div className="space-y-3">
+              <div className="bg-muted rounded-lg border border-border p-3 sm:p-5">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">権限の説明</h3>
+                <div className="space-y-2 sm:space-y-3">
                   {[
                     { role: '管理者', color: 'danger', desc: 'すべての操作が可能。プラン/テンプレート/権限の設定変更、解約確定、データ削除などの重要操作を実行可能。' },
                     { role: '運用担当', color: 'warning', desc: '請求・入金管理、督促送信、ルート稼働管理が可能。解約確定は不可。' },
                     { role: '営業', color: 'neutral', desc: '店舗登録、契約作成（leadまで）、閲覧のみ。請求・入金操作は不可。' },
                   ].map((item) => (
-                    <div key={item.role} className="flex items-start gap-4 p-4 bg-white rounded-md border border-border">
-                      <Badge variant={item.color as 'danger' | 'warning' | 'neutral'}>{item.role}</Badge>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    <div key={item.role} className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-md border border-border">
+                      <Badge variant={item.color as 'danger' | 'warning' | 'neutral'} className="w-fit">{item.role}</Badge>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{item.desc}</p>
                     </div>
                   ))}
                 </div>

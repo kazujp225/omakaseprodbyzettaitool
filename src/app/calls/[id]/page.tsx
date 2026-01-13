@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button, Badge, Input, Textarea, LoadingState, Modal, ModalFooter } from '@/components/ui'
+import { Button, Badge, Input, Textarea, LoadingState, Modal, ModalFooter, Select, SelectRoot, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import { mockCallRecordRepository, mockCallHistoryRepository } from '@/repositories/mock'
 import type { CallRecord, CallHistory, UpdateCallRecordInput } from '@/domain/types'
 import {
@@ -42,6 +42,7 @@ import {
   Timer,
   History,
   Zap,
+  Plus,
 } from 'lucide-react'
 
 // ============================================
@@ -230,15 +231,13 @@ function ServiceToggle({
     <button
       type="button"
       onClick={() => onChange(fieldName, String(!checked))}
-      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all w-full border ${
-        checked
-          ? 'bg-slate-800 text-white border-slate-800'
-          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-      }`}
+      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all w-full border ${checked
+        ? 'bg-slate-800 text-white border-slate-800'
+        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+        }`}
     >
-      <div className={`h-5 w-5 rounded flex items-center justify-center ${
-        checked ? 'bg-white/20' : 'bg-slate-100 border border-slate-300'
-      }`}>
+      <div className={`h-5 w-5 rounded flex items-center justify-center ${checked ? 'bg-white/20' : 'bg-slate-100 border border-slate-300'
+        }`}>
         {checked && <Check className="h-3.5 w-3.5" />}
       </div>
       <span className="text-sm font-medium">{label}</span>
@@ -265,15 +264,13 @@ function CopyButton({ label, template }: { label: string; template: string }) {
   return (
     <button
       onClick={handleCopy}
-      className={`group flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all border ${
-        copied
-          ? 'bg-slate-800 text-white border-slate-800'
-          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-      }`}
+      className={`group flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all border ${copied
+        ? 'bg-slate-800 text-white border-slate-800'
+        : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+        }`}
     >
-      <div className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
-        copied ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-slate-200'
-      }`}>
+      <div className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${copied ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-slate-200'
+        }`}>
         {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
       </div>
       <span className="text-xs font-medium truncate">{label}</span>
@@ -290,11 +287,10 @@ function CallHistoryItem({ history, isLast }: { history: CallHistory; isLast?: b
     <div className="flex gap-3">
       {/* Timeline indicator */}
       <div className="flex flex-col items-center">
-        <div className={`w-3 h-3 rounded-full border-2 ${
-          isSuccess ? 'border-slate-800 bg-slate-800' :
+        <div className={`w-3 h-3 rounded-full border-2 ${isSuccess ? 'border-slate-800 bg-slate-800' :
           isWarning ? 'border-slate-400 bg-slate-400' :
-          'border-slate-300 bg-white'
-        }`} />
+            'border-slate-300 bg-white'
+          }`} />
         {!isLast && <div className="w-0.5 flex-1 bg-slate-200 my-1" />}
       </div>
 
@@ -303,11 +299,10 @@ function CallHistoryItem({ history, isLast }: { history: CallHistory; isLast?: b
         <div className="bg-white border border-slate-200 rounded-lg p-3 hover:border-slate-300 transition-colors">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-                isSuccess ? 'bg-slate-800 text-white' :
+              <span className={`text-xs font-bold px-2 py-0.5 rounded ${isSuccess ? 'bg-slate-800 text-white' :
                 isWarning ? 'bg-slate-200 text-slate-600' :
-                'bg-slate-100 text-slate-500'
-              }`}>
+                  'bg-slate-100 text-slate-500'
+                }`}>
                 {history.resultNote || CALL_RESULT_LABELS[history.result]}
               </span>
               <span className="text-xs text-slate-400">{history.callerEmployeeName}</span>
@@ -361,6 +356,16 @@ export default function CallRecordDetailPage({
   const [callNotes, setCallNotes] = useState('')
   const [processing, setProcessing] = useState(false)
   const [callDuration, setCallDuration] = useState(0)
+
+  // Add History Modal State
+  const [showAddHistoryModal, setShowAddHistoryModal] = useState(false)
+  const [newHistory, setNewHistory] = useState({
+    callDate: new Date().toISOString().split('T')[0],
+    callTime: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+    callerEmployeeName: '現在のユーザー',
+    result: 'connected' as CallResult,
+    notes: ''
+  })
 
   // Call duration timer
   useEffect(() => {
@@ -482,6 +487,41 @@ export default function CallRecordDetailPage({
     }
   }
 
+  const handleAddHistory = async () => {
+    if (!record) return
+    setProcessing(true)
+    try {
+      await mockCallHistoryRepository.create({
+        callRecordId: record.id,
+        orgId: DEFAULT_ORG_ID,
+        callDate: new Date(newHistory.callDate),
+        callTime: newHistory.callTime,
+        callerEmployeeName: newHistory.callerEmployeeName,
+        callerEmployeeId: null,
+        result: newHistory.result,
+        resultNote: CALL_RESULT_LABELS[newHistory.result],
+        notes: newHistory.notes || null,
+        startedAt: null,
+        endedAt: null,
+        duration: null,
+      })
+      toast.success('履歴を追加しました')
+      setShowAddHistoryModal(false)
+      // Reset form
+      setNewHistory(prev => ({
+        ...prev,
+        notes: '',
+        result: 'connected'
+      }))
+      loadData()
+    } catch (e) {
+      console.error(e)
+      toast.error('履歴の追加に失敗しました')
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   if (loading) {
     return <LoadingState />
   }
@@ -505,105 +545,105 @@ export default function CallRecordDetailPage({
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-8">
       {/* ========== HEADER ========== */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Navigation Bar */}
-        <div className="bg-slate-50 border-b border-slate-200 px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
+        <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-0.5 sm:gap-1">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigate('first')}
                 disabled={currentPosition <= 1}
-                className="h-10 w-10 p-0"
+                className="h-8 w-8 sm:h-10 sm:w-10 p-0"
               >
-                <ChevronsLeft className="h-5 w-5" />
+                <ChevronsLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigate('prev')}
                 disabled={currentPosition <= 1}
-                className="h-10 w-10 p-0"
+                className="h-8 w-8 sm:h-10 sm:w-10 p-0"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
-              <div className="px-5 py-2 bg-white rounded-xl border border-slate-200 mx-2 min-w-[100px] text-center">
-                <span className="font-bold text-primary text-xl">{currentPosition}</span>
-                <span className="text-slate-400 mx-2">/</span>
-                <span className="text-slate-500 text-lg">{totalCount}</span>
+              <div className="px-3 sm:px-5 py-1.5 sm:py-2 bg-white rounded-lg sm:rounded-xl border border-slate-200 mx-1 sm:mx-2 min-w-[80px] sm:min-w-[100px] text-center">
+                <span className="font-bold text-primary text-lg sm:text-xl">{currentPosition}</span>
+                <span className="text-slate-400 mx-1 sm:mx-2">/</span>
+                <span className="text-slate-500 text-base sm:text-lg">{totalCount}</span>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigate('next')}
                 disabled={currentPosition >= totalCount}
-                className="h-10 w-10 p-0"
+                className="h-8 w-8 sm:h-10 sm:w-10 p-0"
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigate('last')}
                 disabled={currentPosition >= totalCount}
-                className="h-10 w-10 p-0"
+                className="h-8 w-8 sm:h-10 sm:w-10 p-0"
               >
-                <ChevronsRight className="h-5 w-5" />
+                <ChevronsRight className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
-            <Badge variant={CALL_RECORD_STATUS_VARIANT[record.status]} className="text-sm px-4 py-1.5">
+            <Badge variant={CALL_RECORD_STATUS_VARIANT[record.status]} className="text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-1.5">
               {CALL_RECORD_STATUS_LABELS[record.status]}
             </Badge>
           </div>
         </div>
 
         {/* Customer Info */}
-        <div className="p-6">
-          <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-            <div className="flex-1">
-              <div className="inline-flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full mb-3">
+        <div className="p-4 sm:p-6">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0">
+              <div className="inline-flex items-center gap-2 bg-slate-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full mb-2 sm:mb-3">
                 <span className="text-xs text-slate-500 font-medium">ID</span>
-                <span className="text-sm font-bold text-slate-700 font-mono">{record.customerId}</span>
+                <span className="text-xs sm:text-sm font-bold text-slate-700 font-mono truncate max-w-[120px] sm:max-w-none">{record.customerId}</span>
               </div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-2">{record.storeName}</h1>
-              <div className="flex items-center gap-2 text-slate-600">
-                <User className="h-5 w-5 text-slate-400" />
-                <span className="text-xl">{record.customerName}</span>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 mb-1 sm:mb-2 truncate">{record.storeName}</h1>
+              <div className="flex items-center gap-2 text-slate-600 flex-wrap">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400 flex-shrink-0" />
+                <span className="text-base sm:text-xl truncate">{record.customerName}</span>
                 {record.customerNameKana && (
-                  <span className="text-sm text-slate-400">（{record.customerNameKana}）</span>
+                  <span className="text-xs sm:text-sm text-slate-400 hidden sm:inline">（{record.customerNameKana}）</span>
                 )}
               </div>
             </div>
 
             {/* Phone Cards */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 w-full lg:w-auto">
               <a
                 href={`tel:${record.phone1}`}
-                className="flex items-center gap-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-5 py-4 rounded-xl transition-all group shadow-sm"
+                className="flex items-center gap-3 sm:gap-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 sm:px-5 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all group shadow-sm"
               >
-                <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <Phone className="h-6 w-6 text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-slate-800 flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                  <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-slate-400 font-medium mb-1">メイン</p>
-                  <p className="text-xl font-bold font-mono text-slate-800 tracking-wide">{record.phone1}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-slate-400 font-medium mb-0.5 sm:mb-1">メイン</p>
+                  <p className="text-lg sm:text-xl font-bold font-mono text-slate-800 tracking-wide truncate">{record.phone1}</p>
                 </div>
-                <div className="text-slate-300 group-hover:text-slate-500 transition-colors">
-                  <ExternalLink className="h-5 w-5" />
+                <div className="text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0">
+                  <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </a>
               {record.phone2 && (
                 <a
                   href={`tel:${record.phone2}`}
-                  className="flex items-center gap-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-5 py-3 rounded-xl transition-all group shadow-sm"
+                  className="flex items-center gap-3 sm:gap-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl transition-all group shadow-sm"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                    <Phone className="h-5 w-5 text-slate-500" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-md sm:rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                    <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <p className="text-xs text-slate-400">サブ</p>
-                    <p className="text-lg font-mono text-slate-600">{record.phone2}</p>
+                    <p className="text-base sm:text-lg font-mono text-slate-600 truncate">{record.phone2}</p>
                   </div>
                 </a>
               )}
@@ -613,34 +653,33 @@ export default function CallRecordDetailPage({
       </div>
 
       {/* ========== CALL ACTION ========== */}
-      <div className={`rounded-xl p-5 transition-all border ${
-        activeCall
-          ? 'bg-red-50 border-red-200'
-          : 'bg-slate-50 border-slate-200'
-      }`}>
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${activeCall ? 'bg-red-100' : 'bg-slate-200'}`}>
+      <div className={`rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all border ${activeCall
+        ? 'bg-red-50 border-red-200'
+        : 'bg-slate-50 border-slate-200'
+        }`}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0 ${activeCall ? 'bg-red-100' : 'bg-slate-200'}`}>
               {activeCall ? (
-                <PhoneOff className="h-6 w-6 text-red-600" />
+                <PhoneOff className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />
               ) : (
-                <Phone className="h-6 w-6 text-slate-600" />
+                <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-slate-600" />
               )}
             </div>
-            <div>
-              <h2 className={`text-lg font-bold ${activeCall ? 'text-red-700' : 'text-slate-700'}`}>
+            <div className="min-w-0">
+              <h2 className={`text-base sm:text-lg font-bold ${activeCall ? 'text-red-700' : 'text-slate-700'}`}>
                 {activeCall ? '通話中' : 'コールを開始'}
               </h2>
               {activeCall ? (
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="flex items-center gap-1.5 bg-red-100 text-red-700 px-2 py-0.5 rounded">
-                    <Timer className="h-3.5 w-3.5" />
-                    <span className="font-mono font-bold">{formatDuration(callDuration)}</span>
+                <div className="flex items-center gap-2 sm:gap-3 text-sm flex-wrap">
+                  <div className="flex items-center gap-1 sm:gap-1.5 bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded">
+                    <Timer className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    <span className="font-mono font-bold text-xs sm:text-sm">{formatDuration(callDuration)}</span>
                   </div>
-                  <span className="text-slate-500">{record.phone1}</span>
+                  <span className="text-slate-500 text-xs sm:text-sm truncate">{record.phone1}</span>
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">準備ができたらボタンを押してください</p>
+                <p className="text-xs sm:text-sm text-slate-500">準備ができたらボタンを押してください</p>
               )}
             </div>
           </div>
@@ -650,8 +689,9 @@ export default function CallRecordDetailPage({
               size="lg"
               variant="danger"
               onClick={() => setShowEndCallModal(true)}
+              className="w-full sm:w-auto"
             >
-              <PhoneOff className="h-5 w-5 mr-2" />
+              <PhoneOff className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               コール終了
             </Button>
           ) : (
@@ -659,8 +699,9 @@ export default function CallRecordDetailPage({
               size="lg"
               onClick={handleStartCall}
               disabled={processing}
+              className="w-full sm:w-auto"
             >
-              <Phone className="h-5 w-5 mr-2" />
+              <Phone className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               コール開始
             </Button>
           )}
@@ -669,29 +710,31 @@ export default function CallRecordDetailPage({
 
       {/* Re-call Alert */}
       {hasReCallScheduled && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center gap-4">
-          <div className="p-2 bg-slate-100 rounded-lg">
-            <Clock className="h-5 w-5 text-slate-600" />
+        <div className="bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="p-1.5 sm:p-2 bg-slate-100 rounded-md sm:rounded-lg flex-shrink-0">
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="font-medium text-slate-700 text-sm sm:text-base">再コール予定</h4>
+              <p className="text-xs sm:text-sm text-slate-500 truncate">
+                {record.reCallDate && formatDate(record.reCallDate)} {record.reCallTime}
+                {record.reCallAssignee && ` - 担当: ${record.reCallAssignee}`}
+              </p>
+            </div>
           </div>
-          <div className="flex-1">
-            <h4 className="font-medium text-slate-700">再コール予定</h4>
-            <p className="text-sm text-slate-500">
-              {record.reCallDate && formatDate(record.reCallDate)} {record.reCallTime}
-              {record.reCallAssignee && ` - 担当: ${record.reCallAssignee}`}
-            </p>
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => handleFieldChange('reCallDate', '')}>
+          <Button variant="ghost" size="sm" onClick={() => handleFieldChange('reCallDate', '')} className="w-full sm:w-auto">
             クリア
           </Button>
         </div>
       )}
 
       {/* ========== MAIN CONTENT ========== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Left Column */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Quick Info */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 overflow-x-auto pb-1">
             <InfoPill icon={Building2} label="業種" value={record.industry} />
             <InfoPill icon={CreditCard} label="プラン" value={record.planName} />
             <InfoPill icon={Calendar} label="契約開始" value={record.contractStartDate ? formatDate(record.contractStartDate) : null} />
@@ -702,14 +745,14 @@ export default function CallRecordDetailPage({
 
           {/* Customer Details */}
           <Section icon={User} title="お客様情報" >
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               <EditableField label="店舗名" value={record.storeName} fieldName="storeName" onChange={handleFieldChange} icon={Building2} />
               <EditableField label="お客様名" value={record.customerName} fieldName="customerName" onChange={handleFieldChange} icon={User} />
               <EditableField label="フリガナ" value={record.customerNameKana} fieldName="customerNameKana" onChange={handleFieldChange} />
               <EditableField label="電話番号1" value={record.phone1} fieldName="phone1" onChange={handleFieldChange} icon={Phone} />
               <EditableField label="電話番号2" value={record.phone2} fieldName="phone2" onChange={handleFieldChange} icon={Phone} />
               <EditableField label="業種" value={record.industry} fieldName="industry" onChange={handleFieldChange} />
-              <div className="col-span-2 md:col-span-3">
+              <div className="col-span-1 sm:col-span-2 md:col-span-3">
                 <EditableField label="住所" value={record.address} fieldName="address" onChange={handleFieldChange} icon={MapPin} />
               </div>
             </div>
@@ -717,13 +760,13 @@ export default function CallRecordDetailPage({
 
           {/* Contract Info */}
           <Section icon={FileText} title="契約情報" >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5">
               <ServiceToggle label="Tappy" checked={record.hasTappy} fieldName="hasTappy" onChange={handleFieldChange} />
               <ServiceToggle label="Tip U" checked={record.hasTipU} fieldName="hasTipU" onChange={handleFieldChange} />
               <ServiceToggle label="Omakaseダッシュ" checked={record.hasOmakaseDash} fieldName="hasOmakaseDash" onChange={handleFieldChange} />
               <ServiceToggle label="Omakaseプラス" checked={record.hasOmakasePlus} fieldName="hasOmakasePlus" onChange={handleFieldChange} />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               <EditableField label="プラン名" value={record.planName} fieldName="planName" onChange={handleFieldChange} />
               <EditableField label="月額料金" value={record.planPrice ? `¥${record.planPrice.toLocaleString()}` : ''} fieldName="planPrice" onChange={handleFieldChange} type="number" icon={CreditCard} />
               <DataField label="GMOステータス" value={record.gmoStatus} />
@@ -735,8 +778,8 @@ export default function CallRecordDetailPage({
 
           {/* Payment Info */}
           <Section icon={CreditCard} title="支払い情報" >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              <div className="bg-slate-50 rounded-lg p-2 sm:p-3 border border-slate-200">
                 <DataField label="支払方法" value={record.paymentMethod ? PAYMENT_METHOD_TYPE_LABELS[record.paymentMethod] : null} icon={CreditCard} size="large" />
               </div>
               <EditableField label="請求回数" value={record.billingCycles} fieldName="billingCycles" onChange={handleFieldChange} type="number" />
@@ -749,15 +792,21 @@ export default function CallRecordDetailPage({
           <Section
             icon={History}
             title="コール履歴"
-                        badge={<Badge variant="secondary" className="ml-2">{histories.length}件</Badge>}
+            badge={<Badge variant="secondary" className="ml-2">{histories.length}件</Badge>}
+            action={
+              <Button size="sm" variant="outline" onClick={() => setShowAddHistoryModal(true)} className="h-8">
+                <Plus className="h-4 w-4 mr-1" />
+                履歴を追加
+              </Button>
+            }
           >
             {/* Re-call Settings */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-5">
-              <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
+              <h4 className="font-medium text-slate-700 mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
                 <Clock className="h-4 w-4 text-slate-500" />
                 再コール設定
               </h4>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <EditableField label="担当者" value={record.reCallAssignee} fieldName="reCallAssignee" onChange={handleFieldChange} />
                 <EditableField label="日付" value={record.reCallDate ? formatDate(record.reCallDate) : ''} fieldName="reCallDate" onChange={handleFieldChange} type="date" />
                 <EditableField label="時間" value={record.reCallTime} fieldName="reCallTime" onChange={handleFieldChange} />
@@ -784,185 +833,186 @@ export default function CallRecordDetailPage({
         </div>
 
         {/* Right Column */}
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {/* Account Info - Branded Cards */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-200">
-              <div className="flex items-center gap-2.5">
+          <div className="bg-white rounded-lg sm:rounded-xl border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3 bg-slate-50 border-b border-slate-200">
+              <div className="flex items-center gap-2 sm:gap-2.5">
                 <MessageCircle className="h-4 w-4 text-slate-500" />
-                <h3 className="font-semibold text-slate-700">アカウント情報</h3>
+                <h3 className="font-semibold text-slate-700 text-sm sm:text-base">アカウント情報</h3>
               </div>
             </div>
-            <div className="p-4 space-y-3">
+            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
               {/* LINE Card */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-[#06C755]/5 border border-[#06C755]/20 group hover:bg-[#06C755]/10 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-[#06C755] flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="h-5 w-5 text-white" />
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-[#06C755]/5 border border-[#06C755]/20 group hover:bg-[#06C755]/10 transition-colors">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#06C755] flex items-center justify-center flex-shrink-0">
+                  <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500 mb-0.5">LINE公式アカウント</p>
-                  <p className="text-sm font-medium text-slate-800 truncate">
-                    {record.lineOfficialAccountName || <span className="text-slate-300">未設定</span>}
-                  </p>
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="text-[10px] sm:text-xs text-[#06C755] font-bold">LINE公式アカウント</p>
+                    <Badge variant="success" className="h-4 sm:h-5 text-[9px] sm:text-[10px] px-1 sm:px-1.5">連携中</Badge>
+                  </div>
+                  <p className="font-bold text-slate-800 truncate text-sm sm:text-base">{record.lineOfficialAccountName || '未設定'}</p>
+                  <p className="text-[10px] sm:text-xs text-slate-500 truncate">{record.lineOfficialAccountId || '-'}</p>
                 </div>
-                {record.lineOfficialAccountId && (
-                  <span className="text-xs text-slate-400 font-mono">{record.lineOfficialAccountId}</span>
-                )}
               </div>
 
               {/* Instagram Card */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-[#833AB4]/5 via-[#FD1D1D]/5 to-[#F77737]/5 border border-[#E1306C]/20 group hover:from-[#833AB4]/10 hover:via-[#FD1D1D]/10 hover:to-[#F77737]/10 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] flex items-center justify-center flex-shrink-0">
-                  <Instagram className="h-5 w-5 text-white" />
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-[#E1306C]/5 border border-[#E1306C]/20 group hover:bg-[#E1306C]/10 transition-colors">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-tr from-[#FFDC80] via-[#F56040] to-[#833AB4] flex items-center justify-center flex-shrink-0">
+                  <Instagram className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500 mb-0.5">Instagram</p>
-                  <p className="text-sm font-medium text-slate-800 truncate">
-                    {record.instagramAccountName ? (
-                      <span>@{record.instagramAccountName}</span>
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="text-[10px] sm:text-xs text-[#E1306C] font-bold">Instagram</p>
+                    {record.instagramUrl ? (
+                      <a href={record.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-600">
+                        <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                      </a>
                     ) : (
-                      <span className="text-slate-300">未設定</span>
+                      <Badge variant="neutral" className="h-4 sm:h-5 text-[9px] sm:text-[10px] px-1 sm:px-1.5">未連携</Badge>
                     )}
-                  </p>
+                  </div>
+                  <p className="font-bold text-slate-800 truncate text-sm sm:text-base">{record.instagramAccountName || '未設定'}</p>
+                  <div className="flex gap-2 text-[10px] sm:text-xs text-slate-500 mt-0.5">
+                    <span className="truncate">ID: {record.instagramAccountId || '-'}</span>
+                  </div>
                 </div>
-                {record.instagramUrl && (
-                  <a
-                    href={record.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg hover:bg-white/50 transition-colors"
-                    title="Instagramを開く"
-                  >
-                    <ExternalLink className="h-4 w-4 text-[#E1306C]" />
-                  </a>
-                )}
-              </div>
-
-              {/* Email Card */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50/50 border border-blue-100 group hover:bg-blue-50 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
-                  <Mail className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500 mb-0.5">メールアドレス</p>
-                  <p className="text-sm font-medium text-slate-800 truncate">
-                    {record.emailAddress || <span className="text-slate-300">未設定</span>}
-                  </p>
-                </div>
-                {record.emailAddress && (
-                  <a
-                    href={`mailto:${record.emailAddress}`}
-                    className="p-2 rounded-lg hover:bg-white/50 transition-colors"
-                    title="メールを送信"
-                  >
-                    <ExternalLink className="h-4 w-4 text-blue-500" />
-                  </a>
-                )}
               </div>
             </div>
           </div>
 
-          {/* Notes - Better styling */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-200">
-              <div className="flex items-center gap-2.5">
-                <FileText className="h-4 w-4 text-slate-500" />
-                <h3 className="font-semibold text-slate-700">メモ・備考</h3>
-              </div>
-            </div>
-            <div className="p-4">
-              <div
-                className="min-h-[100px] p-3 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-700 cursor-pointer hover:bg-slate-100 transition-colors"
-                onClick={() => {/* TODO: Open edit modal */}}
-              >
-                {record.notes || <span className="text-slate-400 italic">メモを追加...</span>}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Templates - Better grid */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-200">
-              <div className="flex items-center gap-2.5">
+          {/* Quick Shortcuts */}
+          <div className="bg-white rounded-lg sm:rounded-xl border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3 bg-slate-50 border-b border-slate-200">
+              <div className="flex items-center gap-2 sm:gap-2.5">
                 <Zap className="h-4 w-4 text-slate-500" />
-                <h3 className="font-semibold text-slate-700">クイックテンプレート</h3>
+                <h3 className="font-semibold text-slate-700 text-sm sm:text-base">クイックアクション</h3>
               </div>
             </div>
-            <div className="p-3">
-              <div className="grid grid-cols-2 gap-2">
-                {SHORTCUT_BUTTONS.map((btn) => (
-                  <CopyButton key={btn.label} label={btn.label} template={btn.template} />
-                ))}
-              </div>
+            <div className="p-1.5 sm:p-2 grid grid-cols-2 gap-1.5 sm:gap-2">
+              {SHORTCUT_BUTTONS.map((btn) => (
+                <CopyButton key={btn.label} label={btn.label} template={btn.template} />
+              ))}
             </div>
-          </div>
-
-          {/* Record Meta - Cleaner */}
-          <div className="flex items-center justify-between px-4 py-3 bg-slate-50 rounded-lg text-xs text-slate-400">
-            <div className="flex items-center gap-4">
-              <span>作成: {record.createdBy}</span>
-              <span>更新: {record.modifiedBy}</span>
-            </div>
-            <span>{formatDateTime(record.updatedAt)}</span>
           </div>
         </div>
       </div>
 
-      {/* ========== END CALL MODAL ========== */}
+      {/* Add History Modal */}
+      <Modal
+        isOpen={showAddHistoryModal}
+        onClose={() => setShowAddHistoryModal(false)}
+        title="履歴を追加"
+      >
+        <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">日付</label>
+              <Input
+                type="date"
+                value={newHistory.callDate}
+                onChange={(e) => setNewHistory(prev => ({ ...prev, callDate: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">時間</label>
+              <Input
+                type="time"
+                value={newHistory.callTime}
+                onChange={(e) => setNewHistory(prev => ({ ...prev, callTime: e.target.value }))}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">担当者</label>
+            <Input
+              value={newHistory.callerEmployeeName}
+              onChange={(e) => setNewHistory(prev => ({ ...prev, callerEmployeeName: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">結果</label>
+            <SelectRoot
+              value={newHistory.result}
+              onValueChange={(value) => setNewHistory(prev => ({ ...prev, result: value as CallResult }))}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(CALL_RESULT_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">メモ</label>
+            <Textarea
+              value={newHistory.notes}
+              onChange={(e) => setNewHistory(prev => ({ ...prev, notes: e.target.value }))}
+              placeholder="会話の内容などを入力してください"
+              className="min-h-[80px] sm:min-h-[100px]"
+            />
+          </div>
+          <ModalFooter>
+            <Button variant="secondary" onClick={() => setShowAddHistoryModal(false)}>
+              キャンセル
+            </Button>
+            <Button onClick={handleAddHistory} loading={processing}>
+              追加
+            </Button>
+          </ModalFooter>
+        </div>
+      </Modal>
+
+      {/* End Call Modal */}
       <Modal
         isOpen={showEndCallModal}
         onClose={() => setShowEndCallModal(false)}
-        title="コール終了"
+        title="コール結果を記録"
       >
-        <div className="space-y-5">
-          {/* Call Duration */}
-          <div className="bg-slate-100 rounded-xl p-4 text-center">
-            <p className="text-sm text-slate-500 mb-1">通話時間</p>
-            <p className="text-3xl font-bold font-mono text-slate-800">{formatDuration(callDuration)}</p>
-          </div>
-
-          {/* Result Selection */}
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="text-sm font-bold mb-3 block">結果を選択</label>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(CALL_RESULT).map(([, value]) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setCallResult(value)}
-                  className={`p-3 rounded-xl text-sm font-medium transition-all ${
-                    callResult === value
-                      ? 'bg-primary text-white ring-2 ring-primary ring-offset-2'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  {CALL_RESULT_LABELS[value]}
-                </button>
-              ))}
-            </div>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">結果</label>
+            <SelectRoot
+              value={callResult}
+              onValueChange={(value) => setCallResult(value as CallResult)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(CALL_RESULT_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
           </div>
-
-          {/* Notes */}
           <div>
-            <label className="text-sm font-bold mb-2 block">メモ（任意）</label>
+            <label className="text-xs sm:text-sm font-medium text-slate-700 mb-1 block">メモ</label>
             <Textarea
               value={callNotes}
               onChange={(e) => setCallNotes(e.target.value)}
-              placeholder="通話内容をメモしてください..."
-              rows={4}
-              className="resize-none"
+              placeholder="会話の内容などを入力してください"
+              className="min-h-[80px] sm:min-h-[100px]"
             />
           </div>
+          <ModalFooter>
+            <Button variant="secondary" onClick={() => setShowEndCallModal(false)}>
+              キャンセル
+            </Button>
+            <Button onClick={handleEndCall} loading={processing}>
+              終了・保存
+            </Button>
+          </ModalFooter>
         </div>
-        <ModalFooter>
-          <Button variant="secondary" onClick={() => setShowEndCallModal(false)}>
-            キャンセル
-          </Button>
-          <Button onClick={handleEndCall} disabled={processing}>
-            <CheckCircle2 className="h-4 w-4 mr-2" />
-            終了する
-          </Button>
-        </ModalFooter>
       </Modal>
     </div>
   )

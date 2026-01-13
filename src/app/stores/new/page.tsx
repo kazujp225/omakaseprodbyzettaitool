@@ -79,12 +79,12 @@ export default function NewStorePage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">新規店舗登録</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">新規店舗登録</h1>
           <p className="mt-1 text-sm text-muted-foreground">MEOツールで管理する店舗情報を登録します</p>
         </div>
-        <Button variant="secondary" onClick={() => router.push('/stores')}>
+        <Button variant="secondary" onClick={() => router.push('/stores')} className="self-start sm:self-auto">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -101,7 +101,7 @@ export default function NewStorePage() {
                 <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">1</span>
                 基本情報
               </h3>
-              <div className="space-y-4 pl-8">
+              <div className="space-y-4 pl-0 sm:pl-8">
                 <Input
                   label="アカウント名"
                   value={formData.accountName}
@@ -135,8 +135,8 @@ export default function NewStorePage() {
                 <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">2</span>
                 連絡先
               </h3>
-              <div className="space-y-4 pl-8">
-                <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-4 pl-0 sm:pl-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Input
                     label="電話番号（市外局番）"
                     value={formData.phoneArea}
@@ -165,7 +165,7 @@ export default function NewStorePage() {
                 <span className="w-6 h-6 bg-primary/10 rounded text-primary text-sm flex items-center justify-center font-bold">3</span>
                 所在地
               </h3>
-              <div className="space-y-4 pl-8">
+              <div className="space-y-4 pl-0 sm:pl-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     label="郵便番号"
@@ -190,11 +190,11 @@ export default function NewStorePage() {
             </div>
 
             {/* アクション */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-              <Button variant="secondary" type="button" onClick={() => router.push('/stores')}>
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 border-t border-border">
+              <Button variant="secondary" type="button" onClick={() => router.push('/stores')} className="w-full sm:w-auto">
                 キャンセル
               </Button>
-              <Button type="submit" loading={creating} disabled={!isValid}>
+              <Button type="submit" loading={creating} disabled={!isValid} className="w-full sm:w-auto">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>

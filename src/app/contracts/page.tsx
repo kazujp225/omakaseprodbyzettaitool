@@ -285,26 +285,26 @@ function ContractListContent() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center">
-            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-muted rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">契約一覧</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">契約一覧</h1>
             <p className="text-sm text-muted-foreground">{filteredContracts.length}件の契約</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="secondary">
+        <div className="flex items-center gap-2 md:gap-3">
+          <Button variant="secondary" className="hidden sm:flex">
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             CSV出力
           </Button>
-          <Button onClick={openCreateModal}>
+          <Button onClick={openCreateModal} className="flex-1 sm:flex-none">
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -399,8 +399,8 @@ function ContractListContent() {
       </div>
 
       {/* Status Filter Chips */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted-foreground mr-1">ステータス:</span>
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+        <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">ステータス:</span>
         {Object.entries(CONTRACT_STATUS).map(([, value]) => {
           const count = contracts.filter((c) => c.status === value).length
           const isActive = statusFilter === value
@@ -421,11 +421,11 @@ function ContractListContent() {
         })}
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Filter Panel */}
         {showFilterPanel && (
-          <div className="w-64 flex-shrink-0">
-            <Card className="sticky top-24">
+          <div className="w-full lg:w-64 flex-shrink-0">
+            <Card className="lg:sticky lg:top-24">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">フィルタ</h3>
                 <button
@@ -494,79 +494,81 @@ function ContractListContent() {
             </Card>
           ) : (
             <Card padding="none">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>店舗名</TableHead>
-                    <TableHead>契約状態</TableHead>
-                    <TableHead>プラン</TableHead>
-                    <TableHead>支払方法</TableHead>
-                    <TableHead>今月請求</TableHead>
-                    <TableHead>ルート状態</TableHead>
-                    <TableHead>次アクション</TableHead>
-                    <TableHead>最終更新</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredContracts.map((contract) => {
-                    const route = getRoute(contract.id)
-                    const invoice = getInvoice(contract.id)
-                    const nextAction = getNextAction(contract)
-                    return (
-                      <TableRow
-                        key={contract.id}
-                        clickable
-                        onClick={() => router.push(`/contracts/${contract.id}`)}
-                      >
-                        <TableCell>
-                          <span className="font-medium text-foreground">{getAccountName(contract.accountId)}</span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]}>
-                            {CONTRACT_STATUS_LABELS[contract.status]}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-foreground">{getPlanName(contract.planId)}</span>
-                        </TableCell>
-                        <TableCell>{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
-                        <TableCell>
-                          {invoice ? (
-                            <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
-                              {INVOICE_STATUS_LABELS[invoice.status]}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>店舗名</TableHead>
+                      <TableHead>契約状態</TableHead>
+                      <TableHead className="hidden md:table-cell">プラン</TableHead>
+                      <TableHead className="hidden lg:table-cell">支払方法</TableHead>
+                      <TableHead className="hidden sm:table-cell">今月請求</TableHead>
+                      <TableHead className="hidden lg:table-cell">ルート状態</TableHead>
+                      <TableHead className="hidden md:table-cell">次アクション</TableHead>
+                      <TableHead className="hidden xl:table-cell">最終更新</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredContracts.map((contract) => {
+                      const route = getRoute(contract.id)
+                      const invoice = getInvoice(contract.id)
+                      const nextAction = getNextAction(contract)
+                      return (
+                        <TableRow
+                          key={contract.id}
+                          clickable
+                          onClick={() => router.push(`/contracts/${contract.id}`)}
+                        >
+                          <TableCell>
+                            <span className="font-medium text-foreground text-sm md:text-base">{getAccountName(contract.accountId)}</span>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={CONTRACT_STATUS_VARIANT[contract.status]}>
+                              <span className="text-xs">{CONTRACT_STATUS_LABELS[contract.status]}</span>
                             </Badge>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {route ? (
-                            <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
-                              {ROUTE_STATUS_LABELS[route.status]}
-                            </Badge>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {nextAction ? (
-                            <Link
-                              href={nextAction.href}
-                              className="text-sm font-medium text-primary hover:text-primary/80"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {nextAction.label}
-                            </Link>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">{formatDate(contract.updatedAt)}</TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <span className="text-foreground text-sm">{getPlanName(contract.planId)}</span>
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell text-sm">{contract.billingMethod === 'monthlypay' ? '月額ペイ' : '請求書'}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {invoice ? (
+                              <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
+                                <span className="text-xs">{INVOICE_STATUS_LABELS[invoice.status]}</span>
+                              </Badge>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {route ? (
+                              <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
+                                <span className="text-xs">{ROUTE_STATUS_LABELS[route.status]}</span>
+                              </Badge>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {nextAction ? (
+                              <Link
+                                href={nextAction.href}
+                                className="text-sm font-medium text-primary hover:text-primary/80 whitespace-nowrap"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {nextAction.label}
+                              </Link>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground text-sm hidden xl:table-cell">{formatDate(contract.updatedAt)}</TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             </Card>
           )}
         </div>

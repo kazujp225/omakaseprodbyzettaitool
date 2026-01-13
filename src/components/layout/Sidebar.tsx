@@ -12,12 +12,14 @@ import {
   XCircle,
   Users,
   Settings,
-  Phone
+  Phone,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 import { Avatar, AvatarFallback } from '@/components/ui/Avatar'
 import { Separator } from '@/components/ui/Separator'
+import { useSidebar } from './SidebarContext'
 
 interface NavItem {
   label: string
@@ -80,78 +82,112 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { isOpen, close } = useSidebar()
+
+  const handleNavClick = () => {
+    // Close sidebar on mobile after navigation
+    if (window.innerWidth < 1024) {
+      close()
+    }
+  }
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border">
-      <div className="flex h-full flex-col">
-        <div className="flex h-16 items-center gap-3 px-6 border-b border-border">
-          <div className="relative h-8 w-8 flex-shrink-0">
-            <img
-              src="/logo.png"
-              alt="Logo"
-              className="h-full w-full object-contain opacity-90"
-            />
-          </div>
-          <span className="text-lg font-bold tracking-tight text-foreground">
-            お任せ管理
-          </span>
-        </div>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={close}
+        />
+      )}
 
-        <ScrollArea className="flex-1 py-4">
-          <div className="px-3 space-y-1">
-            <div className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Contents
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex h-16 items-center justify-between gap-3 px-6 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="relative h-8 w-8 flex-shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="h-full w-full object-contain opacity-90"
+                />
+              </div>
+              <span className="text-lg font-bold tracking-tight text-foreground">
+                お任せ管理
+              </span>
             </div>
-            {navItems.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== '/' && pathname.startsWith(item.href))
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                  )}
-                >
-                  <span className={cn(
-                    "transition-colors",
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
-                  )}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
-                  )}
-                </Link>
-              )
-            })}
+            {/* Close button for mobile */}
+            <button
+              onClick={close}
+              className="lg:hidden p-2 -mr-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-        </ScrollArea>
 
-        <Separator />
+          <ScrollArea className="flex-1 py-4">
+            <div className="px-3 space-y-1">
+              <div className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Contents
+              </div>
+              {navItems.map((item) => {
+                const isActive = pathname === item.href ||
+                  (item.href !== '/' && pathname.startsWith(item.href))
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={handleNavClick}
+                    className={cn(
+                      'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    )}
+                  >
+                    <span className={cn(
+                      "transition-colors",
+                      isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"
+                    )}>
+                      {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                    {isActive && (
+                      <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
+          </ScrollArea>
 
-        <div className="p-4">
-          <div className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-accent transition-colors cursor-pointer group">
-            <Avatar className="h-9 w-9">
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">
-                AD
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                管理者
-              </p>
-              <p className="text-xs text-muted-foreground truncate">
-                admin@example.com
-              </p>
+          <Separator />
+
+          <div className="p-4">
+            <div className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-accent transition-colors cursor-pointer group">
+              <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">
+                  AD
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                  管理者
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  admin@example.com
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }

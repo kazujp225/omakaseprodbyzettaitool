@@ -1,5 +1,8 @@
+'use client'
+
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
+import { SidebarProvider } from './SidebarContext'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -7,12 +10,14 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar />
-      <Header />
-      <main className="ml-64 pt-16">
-        <div className="p-8">{children}</div>
-      </main>
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen bg-background">
+        <Sidebar />
+        <Header />
+        <main className="lg:ml-64 pt-16">
+          <div className="p-4 md:p-6 lg:p-8">{children}</div>
+        </main>
+      </div>
+    </SidebarProvider>
   )
 }

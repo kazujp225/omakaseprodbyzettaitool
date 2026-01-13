@@ -181,10 +181,10 @@ function StoreSearchContent() {
       />
 
       {/* フィルターチップ */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">都道府県:</span>
-          <div className="flex flex-wrap gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+          <span className="text-sm text-muted-foreground whitespace-nowrap">都道府県:</span>
+          <div className="flex gap-1">
             {['東京都', '神奈川県', '大阪府', '愛知県', '福岡県'].map((pref) => {
               const count = stores.filter(s => s.prefecture === pref).length
               return (
@@ -207,7 +207,7 @@ function StoreSearchContent() {
           </div>
         </div>
 
-        <Button variant="ghost" size="sm" onClick={handleLoadAll}>
+        <Button variant="ghost" size="sm" onClick={handleLoadAll} className="self-start sm:self-auto">
           全件表示
         </Button>
       </div>
@@ -265,10 +265,10 @@ function StoreSearchContent() {
         </Card>
       ) : (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-border">
+          <div className="px-4 md:px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">検索結果</h2>
-              <Button variant="secondary" size="sm">
+              <h2 className="text-base md:text-lg font-semibold text-foreground">検索結果</h2>
+              <Button variant="secondary" size="sm" className="hidden sm:flex">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
@@ -276,76 +276,78 @@ function StoreSearchContent() {
               </Button>
             </div>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>都道府県</TableHead>
-                <TableHead>担当者</TableHead>
-                <TableHead>電話番号</TableHead>
-                <TableHead>契約状態</TableHead>
-                <TableHead>今月請求</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStores.map((store) => {
-                const activeContract = getActiveContract(store.id)
-                const latestInvoice = getLatestInvoice(store.id)
-                return (
-                  <TableRow key={store.id} clickable onClick={() => router.push(`/stores/${store.id}`)}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-muted rounded-md flex items-center justify-center">
-                          <span className="text-sm font-semibold text-primary">{store.accountName.charAt(0)}</span>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead className="hidden sm:table-cell">都道府県</TableHead>
+                  <TableHead className="hidden lg:table-cell">担当者</TableHead>
+                  <TableHead className="hidden md:table-cell">電話番号</TableHead>
+                  <TableHead>契約状態</TableHead>
+                  <TableHead className="hidden lg:table-cell">今月請求</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredStores.map((store) => {
+                  const activeContract = getActiveContract(store.id)
+                  const latestInvoice = getLatestInvoice(store.id)
+                  return (
+                    <TableRow key={store.id} clickable onClick={() => router.push(`/stores/${store.id}`)}>
+                      <TableCell>
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="w-8 h-8 md:w-9 md:h-9 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs md:text-sm font-semibold text-primary">{store.accountName.charAt(0)}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground text-sm md:text-base truncate">{store.accountName}</p>
+                            <p className="text-xs md:text-sm text-muted-foreground truncate">{store.adminEmail}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{store.accountName}</p>
-                          <p className="text-sm text-muted-foreground">{store.adminEmail}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-foreground">{store.prefecture}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-muted-foreground">{store.accountManager || '-'}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-muted-foreground">{`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}</span>
-                    </TableCell>
-                    <TableCell>
-                      {activeContract ? (
-                        <Badge variant={CONTRACT_STATUS_VARIANT[activeContract.status]}>
-                          {CONTRACT_STATUS_LABELS[activeContract.status]}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">契約なし</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {latestInvoice ? (
-                        <Badge variant={INVOICE_STATUS_VARIANT[latestInvoice.status]}>
-                          {INVOICE_STATUS_LABELS[latestInvoice.status]}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/stores/${store.id}`}
-                        className="text-sm font-medium text-primary hover:text-primary/80"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        詳細
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <span className="text-foreground text-sm">{store.prefecture}</span>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        <span className="text-muted-foreground text-sm">{store.accountManager || '-'}</span>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <span className="text-muted-foreground text-sm whitespace-nowrap">{`${store.phoneArea}-${store.phoneLocal}-${store.phoneNumber}`}</span>
+                      </TableCell>
+                      <TableCell>
+                        {activeContract ? (
+                          <Badge variant={CONTRACT_STATUS_VARIANT[activeContract.status]}>
+                            <span className="text-xs">{CONTRACT_STATUS_LABELS[activeContract.status]}</span>
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-xs sm:text-sm">契約なし</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {latestInvoice ? (
+                          <Badge variant={INVOICE_STATUS_VARIANT[latestInvoice.status]}>
+                            {INVOICE_STATUS_LABELS[latestInvoice.status]}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/stores/${store.id}`}
+                          className="text-xs md:text-sm font-medium text-primary hover:text-primary/80"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          詳細
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       )}
     </div>

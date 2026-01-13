@@ -152,19 +152,19 @@ export default function InvoicesPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">請求（今月）</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">請求（今月）</h1>
             <p className="text-sm text-muted-foreground">{formatMonth(thisMonth)} の請求一覧</p>
           </div>
         </div>
-        <Button onClick={() => setGenerateModalOpen(true)} disabled={contractsWithoutInvoice.length === 0}>
+        <Button onClick={() => setGenerateModalOpen(true)} disabled={contractsWithoutInvoice.length === 0} className="self-start sm:self-auto">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
@@ -231,14 +231,14 @@ export default function InvoicesPage() {
 
       {/* Tabs and Table */}
       <Card padding="none">
-        <div className="border-b border-border">
-          <nav className="flex">
+        <div className="border-b border-border overflow-x-auto">
+          <nav className="flex min-w-max">
             {tabs.map((tab) => (
               <button
                 key={tab.status}
                 onClick={() => setActiveTab(tab.status)}
                 className={`
-                  flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition-colors
+                  flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                   ${
                     activeTab === tab.status
                       ? 'border-primary text-primary'
@@ -248,7 +248,7 @@ export default function InvoicesPage() {
               >
                 {tab.label}
                 <span
-                  className={`px-2 py-0.5 rounded-md text-sm ${
+                  className={`px-2 py-0.5 rounded-md text-xs md:text-sm ${
                     activeTab === tab.status
                       ? 'bg-primary/10 text-primary'
                       : tab.status === 'overdue' && counts[tab.status] > 0
@@ -282,18 +282,19 @@ export default function InvoicesPage() {
             />
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>支払方法</TableHead>
-                <TableHead>金額</TableHead>
-                <TableHead>請求状態</TableHead>
-                <TableHead>期限</TableHead>
-                <TableHead>入金状況</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead className="hidden md:table-cell">支払方法</TableHead>
+                  <TableHead>金額</TableHead>
+                  <TableHead>請求状態</TableHead>
+                  <TableHead className="hidden sm:table-cell">期限</TableHead>
+                  <TableHead className="hidden lg:table-cell">入金状況</TableHead>
+                  <TableHead>アクション</TableHead>
+                </TableRow>
+              </TableHeader>
             <TableBody>
               {filteredInvoices.map((invoice) => {
                 const paymentStatus = getPaymentStatus(invoice.id)
@@ -307,37 +308,37 @@ export default function InvoicesPage() {
                     className={invoice.status === 'overdue' ? 'bg-destructive/10/30' : ''}
                   >
                     <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 ${invoice.status === 'overdue' ? 'bg-destructive/10' : 'bg-muted'} rounded-md flex items-center justify-center`}>
-                          <span className={`text-sm font-semibold ${invoice.status === 'overdue' ? 'text-destructive' : 'text-primary'}`}>
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <div className={`w-8 h-8 md:w-9 md:h-9 ${invoice.status === 'overdue' ? 'bg-destructive/10' : 'bg-muted'} rounded-md flex items-center justify-center flex-shrink-0`}>
+                          <span className={`text-xs md:text-sm font-semibold ${invoice.status === 'overdue' ? 'text-destructive' : 'text-primary'}`}>
                             {getAccountName(invoice.contractId).charAt(0)}
                           </span>
                         </div>
-                        <span className="font-medium text-foreground">{getAccountName(invoice.contractId)}</span>
+                        <span className="font-medium text-foreground text-sm md:text-base truncate max-w-[120px] md:max-w-none">{getAccountName(invoice.contractId)}</span>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <span className="text-foreground">{getBillingMethod(invoice.contractId)}</span>
+                    <TableCell className="hidden md:table-cell">
+                      <span className="text-foreground text-sm">{getBillingMethod(invoice.contractId)}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="font-semibold text-foreground">{formatCurrency(invoice.amount)}</span>
+                      <span className="font-semibold text-foreground text-sm md:text-base">{formatCurrency(invoice.amount)}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
-                        {INVOICE_STATUS_LABELS[invoice.status]}
+                        <span className="text-xs">{INVOICE_STATUS_LABELS[invoice.status]}
                         {overdueDays > 0 && (
                           <span className="ml-1 font-bold">({overdueDays}日)</span>
-                        )}
+                        )}</span>
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      <span className={overdueDays > 0 ? 'text-destructive font-medium' : 'text-muted-foreground'}>
+                    <TableCell className="hidden sm:table-cell">
+                      <span className={`text-sm ${overdueDays > 0 ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
                         {formatDate(invoice.dueDate)}
                       </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       {paymentStatus ? (
-                        <Badge variant={paymentStatus.variant}>{paymentStatus.label}</Badge>
+                        <Badge variant={paymentStatus.variant}><span className="text-xs">{paymentStatus.label}</span></Badge>
                       ) : (
                         <span className="text-muted-foreground text-sm">-</span>
                       )}
@@ -375,6 +376,7 @@ export default function InvoicesPage() {
               })}
             </TableBody>
           </Table>
+          </div>
         )}
       </Card>
 

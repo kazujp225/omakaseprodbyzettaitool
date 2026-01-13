@@ -142,17 +142,16 @@ export default function ContractDetailPage({ params }: ContractDetailPageProps) 
 
 いつもお世話になっております。
 
-${
-  latestOverdueInvoice
-    ? `${formatMonth(latestOverdueInvoice.billingMonth)}分のお支払いについて、期限（${formatDate(latestOverdueInvoice.dueDate)}）を過ぎている可能性があるためご連絡いたしました。
+${latestOverdueInvoice
+        ? `${formatMonth(latestOverdueInvoice.billingMonth)}分のお支払いについて、期限（${formatDate(latestOverdueInvoice.dueDate)}）を過ぎている可能性があるためご連絡いたしました。
 
 ■ご請求情報
 ・対象月：${formatMonth(latestOverdueInvoice.billingMonth)}
 ・金額：${formatCurrency(latestOverdueInvoice.amount)}
 ・お支払期限：${formatDate(latestOverdueInvoice.dueDate)}
 ・延滞日数：${getOverdueDays(latestOverdueInvoice.dueDate)}日`
-    : 'お支払いについてご確認をお願いいたします。'
-}
+        : 'お支払いについてご確認をお願いいたします。'
+      }
 
 お手続きがお済みでない場合は、ご対応をお願いいたします。
 行き違いでお支払い済みの場合は、本メールにご返信いただけますと確認いたします。
@@ -457,16 +456,16 @@ ${
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Link href="/contracts" className="hover:text-foreground">
               契約一覧
             </Link>
             <span>/</span>
-            <span>{store.accountName}</span>
+            <span className="truncate">{store.accountName}</span>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">{store.accountName}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">{store.accountName}</h1>
           <p className="text-sm text-muted-foreground">
             {plan.name} - {formatCurrency(contract.contractMonthlyPriceSnapshot)}/月
           </p>
@@ -478,90 +477,92 @@ ${
 
       <Card>
         <CardTitle>契約ステータス</CardTitle>
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           {/* ステータスバー - モダンなステップインジケーター */}
-          <div className="relative">
-            {/* 進捗ライン（背景） */}
-            <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" />
-            {/* 進捗ライン（完了分） */}
-            <div
-              className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500"
-              style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * 100}%` }}
-            />
+          <div className="relative overflow-x-auto pb-2">
+            <div className="min-w-[500px]">
+              {/* 進捗ライン（背景） */}
+              <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" />
+              {/* 進捗ライン（完了分） */}
+              <div
+                className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500"
+                style={{ width: `${(currentStepIndex / (statusSteps.length - 1)) * 100}%` }}
+              />
 
-            <div className="relative flex justify-between">
-              {statusSteps.map((step, index) => {
-                const isPast = index < currentStepIndex
-                const isCurrent = step === contract.status
-                const isFuture = index > currentStepIndex
-                const canTransition = canTransitionTo(step)
-                const blocker = getTransitionBlocker(step)
-                const isCancelled = step === 'cancelled'
+              <div className="relative flex justify-between">
+                {statusSteps.map((step, index) => {
+                  const isPast = index < currentStepIndex
+                  const isCurrent = step === contract.status
+                  const isFuture = index > currentStepIndex
+                  const canTransition = canTransitionTo(step)
+                  const blocker = getTransitionBlocker(step)
+                  const isCancelled = step === 'cancelled'
 
-                return (
-                  <div key={step} className="flex flex-col items-center" style={{ width: '20%' }}>
-                    {/* ステップサークル */}
-                    <button
-                      onClick={() => {
-                        if (canTransition) {
-                          setTargetStatus(step)
-                          setStatusChangeModal(true)
-                        }
-                      }}
-                      disabled={!canTransition}
-                      className={`
-                        relative z-10 w-10 h-10 rounded-full flex items-center justify-center
-                        transition-all duration-200 border-2
-                        ${isPast ? 'bg-primary border-primary' : ''}
-                        ${isCurrent && !isCancelled ? 'bg-primary border-primary ring-4 ring-primary/20' : ''}
-                        ${isCurrent && isCancelled ? 'bg-destructive border-destructive ring-4 ring-destructive/20' : ''}
-                        ${isFuture && !isCancelled ? 'bg-card border-border' : ''}
-                        ${isFuture && isCancelled ? 'bg-card border-destructive/30' : ''}
-                        ${canTransition ? 'cursor-pointer hover:scale-110 hover:shadow-lg' : 'cursor-default'}
-                        ${canTransition && !isCancelled ? 'hover:bg-primary/90 hover:border-primary' : ''}
-                        ${canTransition && isCancelled ? 'hover:bg-destructive/90 hover:border-destructive' : ''}
-                      `}
-                      title={blocker || undefined}
-                    >
-                      {isPast ? (
-                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                      ) : isCurrent ? (
-                        <div className={`w-3 h-3 rounded-full ${isCancelled ? 'bg-white' : 'bg-white'}`} />
-                      ) : (
-                        <span className={`text-sm font-medium ${isCancelled ? 'text-destructive/60' : 'text-muted-foreground'}`}>
-                          {index + 1}
-                        </span>
-                      )}
-                    </button>
+                  return (
+                    <div key={step} className="flex flex-col items-center" style={{ width: '20%' }}>
+                      {/* ステップサークル */}
+                      <button
+                        onClick={() => {
+                          if (canTransition) {
+                            setTargetStatus(step)
+                            setStatusChangeModal(true)
+                          }
+                        }}
+                        disabled={!canTransition}
+                        className={`
+                          relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center
+                          transition-all duration-200 border-2
+                          ${isPast ? 'bg-primary border-primary' : ''}
+                          ${isCurrent && !isCancelled ? 'bg-primary border-primary ring-4 ring-primary/20' : ''}
+                          ${isCurrent && isCancelled ? 'bg-destructive border-destructive ring-4 ring-destructive/20' : ''}
+                          ${isFuture && !isCancelled ? 'bg-card border-border' : ''}
+                          ${isFuture && isCancelled ? 'bg-card border-destructive/30' : ''}
+                          ${canTransition ? 'cursor-pointer hover:scale-110 hover:shadow-lg' : 'cursor-default'}
+                          ${canTransition && !isCancelled ? 'hover:bg-primary/90 hover:border-primary' : ''}
+                          ${canTransition && isCancelled ? 'hover:bg-destructive/90 hover:border-destructive' : ''}
+                        `}
+                        title={blocker || undefined}
+                      >
+                        {isPast ? (
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : isCurrent ? (
+                          <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${isCancelled ? 'bg-white' : 'bg-white'}`} />
+                        ) : (
+                          <span className={`text-xs sm:text-sm font-medium ${isCancelled ? 'text-destructive/60' : 'text-muted-foreground'}`}>
+                            {index + 1}
+                          </span>
+                        )}
+                      </button>
 
-                    {/* ラベル */}
-                    <div className="mt-3 text-center">
-                      <span className={`
-                        text-sm font-medium block
-                        ${isPast ? 'text-foreground' : ''}
-                        ${isCurrent && !isCancelled ? 'text-primary' : ''}
-                        ${isCurrent && isCancelled ? 'text-destructive' : ''}
-                        ${isFuture && !isCancelled ? 'text-muted-foreground' : ''}
-                        ${isFuture && isCancelled ? 'text-destructive/50' : ''}
-                      `}>
-                        {CONTRACT_STATUS_LABELS[step]}
-                      </span>
-                      {canTransition && (
-                        <span className="text-sm text-primary mt-0.5 block">
-                          クリックで変更
+                      {/* ラベル */}
+                      <div className="mt-2 sm:mt-3 text-center">
+                        <span className={`
+                          text-xs sm:text-sm font-medium block whitespace-nowrap
+                          ${isPast ? 'text-foreground' : ''}
+                          ${isCurrent && !isCancelled ? 'text-primary' : ''}
+                          ${isCurrent && isCancelled ? 'text-destructive' : ''}
+                          ${isFuture && !isCancelled ? 'text-muted-foreground' : ''}
+                          ${isFuture && isCancelled ? 'text-destructive/50' : ''}
+                        `}>
+                          {CONTRACT_STATUS_LABELS[step]}
                         </span>
-                      )}
-                      {blocker && !canTransition && index > currentStepIndex && (
-                        <span className="text-sm text-amber-500 mt-0.5 block">
-                          条件未達成
-                        </span>
-                      )}
+                        {canTransition && (
+                          <span className="text-xs sm:text-sm text-primary mt-0.5 block hidden sm:block">
+                            クリックで変更
+                          </span>
+                        )}
+                        {blocker && !canTransition && index > currentStepIndex && (
+                          <span className="text-xs sm:text-sm text-amber-500 mt-0.5 block hidden sm:block">
+                            条件未達成
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
           </div>
 
@@ -719,7 +720,47 @@ ${
                   <p className="text-sm text-red-600">{route.lastError}</p>
                 </div>
               )}
-              <div className="flex gap-2">
+
+              {/* Platform Alignment Status */}
+              <div className="space-y-3 pt-2 border-t border-border">
+                <p className="text-sm font-medium text-foreground">連携プラットフォーム</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {[
+                    { key: 'instagram', domain: 'instagram.com', label: 'Instagram', status: route.instagramStatus, error: route.instagramError },
+                    { key: 'facebook', domain: 'facebook.com', label: 'Facebook', status: route.facebookStatus, error: route.facebookError },
+                    { key: 'gbp', domain: 'google.com', label: 'Google Business Profile', status: route.gbpStatus, error: route.gbpError },
+                    { key: 'line', domain: 'line.me', label: 'LINE公式アカウント', status: route.lineStatus, error: route.lineError },
+                  ].map((platform) => (
+                    <div key={platform.key} className="flex items-center justify-between p-2 rounded-lg border border-border bg-card/50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-md bg-white border border-border flex items-center justify-center overflow-hidden shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://www.google.com/s2/favicons?domain=${platform.domain}&sz=128`}
+                            alt={platform.label}
+                            className="w-5 h-5 object-contain"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{platform.label}</p>
+                          {platform.error && <p className="text-xs text-destructive truncate max-w-[150px]">{platform.error}</p>}
+                        </div>
+                      </div>
+                      <Badge variant={
+                        platform.status === 'connected' ? 'success' :
+                          platform.status === 'error' ? 'danger' :
+                            platform.status === 'pending' ? 'warning' : 'neutral'
+                      }>
+                        {platform.status === 'connected' ? '連携中' :
+                          platform.status === 'error' ? 'エラー' :
+                            platform.status === 'pending' ? '準備中' : '未連携'}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-2">
                 {route.status === 'running' && (
                   <Button variant="secondary" size="sm" onClick={() => handleRouteAction('pause')} loading={processing}>
                     停止
@@ -804,122 +845,126 @@ ${
       </div>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-border">
+        <div className="px-4 sm:px-6 py-4 border-b border-border">
           <CardTitle>請求/入金タイムライン</CardTitle>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-6 py-12 text-center text-muted-foreground">請求データがありません</div>
+          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">請求データがありません</div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>対象月</TableHead>
-                <TableHead>金額</TableHead>
-                <TableHead>請求状態</TableHead>
-                <TableHead>期限</TableHead>
-                <TableHead>入金状態</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {invoices.map((invoice) => {
-                const invoicePayments = payments.filter((p) => p.invoiceId === invoice.id)
-                const latestPayment = invoicePayments[0]
-                const overdueDays =
-                  invoice.status === 'overdue' ? getOverdueDays(invoice.dueDate) : 0
-                return (
-                  <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">{formatMonth(invoice.billingMonth)}</TableCell>
-                    <TableCell>{formatCurrency(invoice.amount)}</TableCell>
-                    <TableCell>
-                      <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
-                        {INVOICE_STATUS_LABELS[invoice.status]}
-                        {overdueDays > 0 && ` (${overdueDays}日)`}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(invoice.dueDate)}</TableCell>
-                    <TableCell>
-                      {latestPayment ? (
-                        <Badge variant={PAYMENT_STATUS_VARIANT[latestPayment.status]}>
-                          {PAYMENT_STATUS_LABELS[latestPayment.status]}
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>対象月</TableHead>
+                  <TableHead>金額</TableHead>
+                  <TableHead>請求状態</TableHead>
+                  <TableHead className="hidden sm:table-cell">期限</TableHead>
+                  <TableHead className="hidden md:table-cell">入金状態</TableHead>
+                  <TableHead>アクション</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => {
+                  const invoicePayments = payments.filter((p) => p.invoiceId === invoice.id)
+                  const latestPayment = invoicePayments[0]
+                  const overdueDays =
+                    invoice.status === 'overdue' ? getOverdueDays(invoice.dueDate) : 0
+                  return (
+                    <TableRow key={invoice.id}>
+                      <TableCell className="font-medium">{formatMonth(invoice.billingMonth)}</TableCell>
+                      <TableCell>{formatCurrency(invoice.amount)}</TableCell>
+                      <TableCell>
+                        <Badge variant={INVOICE_STATUS_VARIANT[invoice.status]}>
+                          {INVOICE_STATUS_LABELS[invoice.status]}
+                          {overdueDays > 0 && ` (${overdueDays}日)`}
                         </Badge>
-                      ) : (
-                        <span className="text-gray-400">未入金</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        {invoice.status === 'draft' && (
-                          <Button variant="primary" size="sm" onClick={() => sendInvoice(invoice.id)} loading={processing}>
-                            送付
-                          </Button>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">{formatDate(invoice.dueDate)}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {latestPayment ? (
+                          <Badge variant={PAYMENT_STATUS_VARIANT[latestPayment.status]}>
+                            {PAYMENT_STATUS_LABELS[latestPayment.status]}
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400">未入金</span>
                         )}
-                        {['sent', 'overdue'].includes(invoice.status) && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => recordPayment(invoice.id)}
-                            loading={processing}
-                          >
-                            入金記録
-                          </Button>
-                        )}
-                        {invoice.status === 'overdue' && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => generateNotificationDraft('reminder_1')}
-                          >
-                            督促
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1 sm:gap-2 flex-wrap">
+                          {invoice.status === 'draft' && (
+                            <Button variant="primary" size="sm" onClick={() => sendInvoice(invoice.id)} loading={processing}>
+                              送付
+                            </Button>
+                          )}
+                          {['sent', 'overdue'].includes(invoice.status) && (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => recordPayment(invoice.id)}
+                              loading={processing}
+                            >
+                              入金
+                            </Button>
+                          )}
+                          {invoice.status === 'overdue' && (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => generateNotificationDraft('reminder_1')}
+                            >
+                              督促
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </Card>
 
       <Card padding="none">
-        <div className="px-6 py-4 border-b border-border">
+        <div className="px-4 sm:px-6 py-4 border-b border-border">
           <CardTitle>操作ログ</CardTitle>
         </div>
         {opsLogs.length === 0 ? (
-          <div className="px-6 py-12 text-center text-muted-foreground">操作ログがありません</div>
+          <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">操作ログがありません</div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>日時</TableHead>
-                <TableHead>操作</TableHead>
-                <TableHead>変更内容</TableHead>
-                <TableHead>理由</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {opsLogs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell className="text-muted-foreground">{formatDate(log.createdAt)}</TableCell>
-                  <TableCell className="font-medium">{log.action}</TableCell>
-                  <TableCell>
-                    {log.before && log.after ? (
-                      <span>
-                        {JSON.stringify(log.before)} → {JSON.stringify(log.after)}
-                      </span>
-                    ) : log.after ? (
-                      <span>{JSON.stringify(log.after)}</span>
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell>{log.reason || '-'}</TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>日時</TableHead>
+                  <TableHead>操作</TableHead>
+                  <TableHead className="hidden sm:table-cell">変更内容</TableHead>
+                  <TableHead className="hidden md:table-cell">理由</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {opsLogs.map((log) => (
+                  <TableRow key={log.id}>
+                    <TableCell className="text-muted-foreground">{formatDate(log.createdAt)}</TableCell>
+                    <TableCell className="font-medium">{log.action}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {log.before && log.after ? (
+                        <span className="truncate max-w-[200px] block">
+                          {JSON.stringify(log.before)} → {JSON.stringify(log.after)}
+                        </span>
+                      ) : log.after ? (
+                        <span className="truncate max-w-[200px] block">{JSON.stringify(log.after)}</span>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{log.reason || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </Card>
 

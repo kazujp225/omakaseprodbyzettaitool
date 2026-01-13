@@ -168,25 +168,25 @@ export default function DashboardPage() {
         {/* Primary Insight Card (Wider) */}
         <div className="md:col-span-8">
           <Card padding="none" className="h-full overflow-hidden">
-            <div className="p-8 h-full flex flex-col justify-between relative overflow-hidden">
+            <div className="p-4 md:p-8 h-full flex flex-col justify-between relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-muted rounded-full -mr-32 -mt-32 opacity-50 pointer-events-none" />
 
               <div>
-                <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">Financial Overview</h2>
-                <div className="flex items-baseline gap-4 mt-2">
-                  <span className="text-5xl font-bold text-foreground tracking-tight text-monospaced-numbers">{formatCurrency(monthlyRevenue)}</span>
-                  <span className="text-lg text-muted-foreground font-medium">税込 / 月次</span>
+                <h2 className="text-xs md:text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">Financial Overview</h2>
+                <div className="flex flex-wrap items-baseline gap-2 md:gap-4 mt-2">
+                  <span className="text-3xl md:text-5xl font-bold text-foreground tracking-tight text-monospaced-numbers">{formatCurrency(monthlyRevenue)}</span>
+                  <span className="text-sm md:text-lg text-muted-foreground font-medium">税込 / 月次</span>
                 </div>
               </div>
 
-              <div className="mt-8 grid grid-cols-2 gap-8">
+              <div className="mt-6 md:mt-8 grid grid-cols-2 gap-4 md:gap-8">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">稼働中契約</p>
-                  <p className="text-2xl font-bold text-foreground">{activeCount}<span className="text-sm font-normal text-muted-foreground ml-1">件</span></p>
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">稼働中契約</p>
+                  <p className="text-xl md:text-2xl font-bold text-foreground">{activeCount}<span className="text-sm font-normal text-muted-foreground ml-1">件</span></p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">前月比</p>
-                  <p className="text-2xl font-bold text-green-600">+12<span className="text-sm font-normal text-green-500 ml-1">%</span></p>
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">前月比</p>
+                  <p className="text-xl md:text-2xl font-bold text-green-600">+12<span className="text-sm font-normal text-green-500 ml-1">%</span></p>
                 </div>
               </div>
             </div>
@@ -240,48 +240,50 @@ export default function DashboardPage() {
                 <p className="text-sm text-muted-foreground mt-1">対応が必要なアラートはありません</p>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="whitespace-nowrap">店舗名</TableHead>
-                    <TableHead className="whitespace-nowrap w-[120px]">ステータス</TableHead>
-                    <TableHead className="whitespace-nowrap">対応</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">更新日時</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {alerts.slice(0, 5).map((alert) => (
-                    <TableRow
-                      key={alert.id}
-                      clickable
-                      onClick={() => window.location.href = alert.nextActionHref}
-                    >
-                      <TableCell>
-                        <div className="max-w-[200px] lg:max-w-none">
-                          <p className="font-bold text-foreground truncate text-[15px]">{alert.storeName}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5 truncate">{alert.planName}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={alert.statusVariant} dot={alert.statusVariant === 'danger'}>
-                          <span className="whitespace-nowrap">{alert.status}</span>
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 whitespace-nowrap transition-colors">
-                          {alert.nextAction}
-                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground text-sm whitespace-nowrap text-monospaced-numbers">
-                        {formatDate(alert.updatedAt)}
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="whitespace-nowrap">店舗名</TableHead>
+                      <TableHead className="whitespace-nowrap w-[120px]">ステータス</TableHead>
+                      <TableHead className="whitespace-nowrap hidden sm:table-cell">対応</TableHead>
+                      <TableHead className="text-right whitespace-nowrap hidden md:table-cell">更新日時</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {alerts.slice(0, 5).map((alert) => (
+                      <TableRow
+                        key={alert.id}
+                        clickable
+                        onClick={() => window.location.href = alert.nextActionHref}
+                      >
+                        <TableCell>
+                          <div className="max-w-[150px] sm:max-w-[200px] lg:max-w-none">
+                            <p className="font-bold text-foreground truncate text-sm sm:text-[15px]">{alert.storeName}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 truncate">{alert.planName}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={alert.statusVariant} dot={alert.statusVariant === 'danger'}>
+                            <span className="whitespace-nowrap text-xs sm:text-sm">{alert.status}</span>
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          <span className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 whitespace-nowrap transition-colors">
+                            {alert.nextAction}
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground text-sm whitespace-nowrap text-monospaced-numbers hidden md:table-cell">
+                          {formatDate(alert.updatedAt)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </Card>
         </div>

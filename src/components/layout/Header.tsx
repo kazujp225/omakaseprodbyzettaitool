@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Menu } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { mockAccountRepository, mockContractRepository, mockInvoiceRepository } from '@/repositories/mock'
@@ -10,6 +11,7 @@ import type { Account, Contract, Invoice } from '@/domain/types'
 import { CONTRACT_STATUS_LABELS, CONTRACT_STATUS_VARIANT, INVOICE_STATUS_LABELS, INVOICE_STATUS_VARIANT } from '@/domain/status'
 import { DEFAULT_ORG_ID } from '@/seed/data'
 import { cn, formatCurrency, formatMonth } from '@/lib/utils'
+import { useSidebar } from './SidebarContext'
 
 type SearchCategory = 'all' | 'stores' | 'contracts' | 'invoices' | 'commands'
 
@@ -89,6 +91,7 @@ export function Header() {
   const searchRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const { toggle } = useSidebar()
 
   // Load recent searches
   useEffect(() => {
@@ -577,8 +580,7 @@ export function Header() {
       {/* Backdrop - positioned below header but above main content */}
       {showBackdrop && (
         <div
-          className="fixed inset-0 bg-black/30 z-40 animate-backdrop"
-          style={{ top: '64px', left: '256px' }}
+          className="fixed inset-0 bg-black/30 z-40 animate-backdrop top-16 lg:left-64"
           onClick={() => {
             setShowResults(false)
             setShowBackdrop(false)
@@ -586,8 +588,16 @@ export function Header() {
         />
       )}
 
-      <header className="fixed top-0 right-0 left-64 z-50 h-16 bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between h-full px-6">
+      <header className="fixed top-0 right-0 left-0 lg:left-64 z-50 h-16 bg-white border-b border-gray-200">
+        <div className="flex items-center justify-between h-full px-3 md:px-6">
+          {/* Mobile menu button */}
+          <button
+            onClick={toggle}
+            className="lg:hidden p-2 -ml-1 mr-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+            aria-label="メニューを開く"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
           {/* Global Search Bar */}
           <div ref={searchRef} className={cn(
             "relative flex-1 max-w-2xl transition-all duration-300",
@@ -613,7 +623,7 @@ export function Header() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="今日は何をお探しですか？ (Cmd+K)"
+                placeholder="検索..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => {
@@ -622,13 +632,13 @@ export function Header() {
                 }}
                 onKeyDown={handleKeyDown}
                 className={cn(
-                  'w-full border-0 bg-transparent pl-12 pr-24 py-3 text-base text-gray-800 placeholder-gray-400',
+                  'w-full border-0 bg-transparent pl-12 pr-12 md:pr-24 py-3 text-base text-gray-800 placeholder-gray-400',
                   'focus:outline-none transition-all'
                 )}
               />
-              {/* Keyboard shortcut hint */}
+              {/* Keyboard shortcut hint - desktop only */}
               {!showResults && !searchQuery && (
-                <div className="absolute right-4 flex items-center gap-1.5">
+                <div className="absolute right-4 hidden md:flex items-center gap-1.5">
                   <kbd className="px-2 py-1 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-md shadow-sm">
                     ⌘K
                   </kbd>
@@ -899,14 +909,14 @@ export function Header() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3 ml-6">
-            {/* Status indicator */}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-md">
+          <div className="flex items-center gap-2 md:gap-3 ml-2 md:ml-6">
+            {/* Status indicator - hidden on mobile, compact on tablet */}
+            <div className="hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 bg-green-50 border border-green-200 rounded-md">
               <span className="inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              <span className="text-sm font-medium text-green-700">稼働中</span>
+              <span className="hidden md:inline text-sm font-medium text-green-700">稼働中</span>
             </div>
 
-            <div className="h-6 w-px bg-gray-200"></div>
+            <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
 
             {/* Notifications */}
             <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-all">

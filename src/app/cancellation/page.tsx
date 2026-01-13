@@ -94,12 +94,12 @@ export default function CancellationPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">解約管理</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">解約管理</h1>
         <p className="mt-1 text-sm text-muted-foreground">解約予定の契約を管理</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card padding="sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-muted rounded-md flex items-center justify-center">
@@ -162,141 +162,144 @@ export default function CancellationPage() {
         </Card>
       ) : (
         <Card padding="none">
-          <div className="px-6 py-4 border-b border-border">
-            <h2 className="text-lg font-semibold text-foreground">解約予定一覧</h2>
+          <div className="px-4 sm:px-6 py-4 border-b border-border">
+            <h2 className="text-base sm:text-lg font-semibold text-foreground">解約予定一覧</h2>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>店舗名</TableHead>
-                <TableHead>プラン</TableHead>
-                <TableHead>解約予定日</TableHead>
-                <TableHead>最終請求</TableHead>
-                <TableHead>ルート状態</TableHead>
-                <TableHead>完了条件</TableHead>
-                <TableHead>アクション</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map(({ contract, account, plan, lastInvoice, route, canComplete, blockers }) => (
-                <TableRow
-                  key={contract.id}
-                  clickable
-                  onClick={() => router.push(`/contracts/${contract.id}`)}
-                  className={canComplete ? 'bg-green-50/30' : ''}
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 ${canComplete ? 'bg-green-50' : 'bg-amber-50'} rounded-md flex items-center justify-center`}>
-                        <span className={`text-sm font-semibold ${canComplete ? 'text-green-700' : 'text-amber-700'}`}>
-                          {account.accountName.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground">{account.accountName}</p>
-                        {contract.cancellationReason && (
-                          <p className="text-sm text-muted-foreground max-w-[200px] truncate">{contract.cancellationReason}</p>
-                        )}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="neutral">{plan.name}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    {contract.cancellationEffectiveDate
-                      ? formatDate(contract.cancellationEffectiveDate)
-                      : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {lastInvoice ? (
-                      <Badge variant={INVOICE_STATUS_VARIANT[lastInvoice.status]}>
-                        {INVOICE_STATUS_LABELS[lastInvoice.status]}
-                      </Badge>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {route ? (
-                      <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
-                        {ROUTE_STATUS_LABELS[route.status]}
-                      </Badge>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {canComplete ? (
-                      <Badge variant="success">完了可能</Badge>
-                    ) : (
-                      <div className="space-y-1">
-                        {blockers.map((blocker, i) => (
-                          <div key={i} className="flex items-center gap-1 text-sm text-destructive">
-                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            {blocker}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {canComplete ? (
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          router.push(`/contracts/${contract.id}`)
-                        }}
-                      >
-                        解約確定
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          router.push(`/contracts/${contract.id}`)
-                        }}
-                      >
-                        対応する
-                      </Button>
-                    )}
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>店舗名</TableHead>
+                  <TableHead className="hidden md:table-cell">プラン</TableHead>
+                  <TableHead className="hidden sm:table-cell">解約予定日</TableHead>
+                  <TableHead className="hidden lg:table-cell">最終請求</TableHead>
+                  <TableHead className="hidden lg:table-cell">ルート状態</TableHead>
+                  <TableHead>完了条件</TableHead>
+                  <TableHead>アクション</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {items.map(({ contract, account, plan, lastInvoice, route, canComplete, blockers }) => (
+                  <TableRow
+                    key={contract.id}
+                    clickable
+                    onClick={() => router.push(`/contracts/${contract.id}`)}
+                    className={canComplete ? 'bg-green-50/30' : ''}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className={`w-8 h-8 sm:w-9 sm:h-9 ${canComplete ? 'bg-green-50' : 'bg-amber-50'} rounded-md flex items-center justify-center flex-shrink-0`}>
+                          <span className={`text-xs sm:text-sm font-semibold ${canComplete ? 'text-green-700' : 'text-amber-700'}`}>
+                            {account.accountName.charAt(0)}
+                          </span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-foreground truncate max-w-[100px] sm:max-w-none">{account.accountName}</p>
+                          {contract.cancellationReason && (
+                            <p className="text-sm text-muted-foreground max-w-[150px] sm:max-w-[200px] truncate hidden sm:block">{contract.cancellationReason}</p>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <Badge variant="neutral">{plan.name}</Badge>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {contract.cancellationEffectiveDate
+                        ? formatDate(contract.cancellationEffectiveDate)
+                        : '-'}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      {lastInvoice ? (
+                        <Badge variant={INVOICE_STATUS_VARIANT[lastInvoice.status]}>
+                          {INVOICE_STATUS_LABELS[lastInvoice.status]}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      {route ? (
+                        <Badge variant={ROUTE_STATUS_VARIANT[route.status]}>
+                          {ROUTE_STATUS_LABELS[route.status]}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {canComplete ? (
+                        <Badge variant="success">完了可能</Badge>
+                      ) : (
+                        <div className="space-y-1">
+                          {blockers.map((blocker, i) => (
+                            <div key={i} className="flex items-center gap-1 text-xs sm:text-sm text-destructive">
+                              <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                              <span className="truncate max-w-[80px] sm:max-w-none">{blocker}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {canComplete ? (
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            router.push(`/contracts/${contract.id}`)
+                          }}
+                        >
+                          <span className="hidden sm:inline">解約確定</span>
+                          <span className="sm:hidden">確定</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            router.push(`/contracts/${contract.id}`)
+                          }}
+                        >
+                          対応
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       )}
 
       {/* Steps guide */}
       <Card>
-        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-foreground flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
           </svg>
           解約完了までの手順
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {[
             { step: 1, title: '解約申請受付', desc: '契約ステータスを「解約予定」に変更' },
             { step: 2, title: '最終請求確認', desc: '最終請求を確定し、入金を確認' },
             { step: 3, title: 'ルート停止', desc: 'MEOツールを停止または削除' },
             { step: 4, title: '解約確定', desc: '契約ステータスを「解約完了」に（不可逆）' },
           ].map((item) => (
-            <div key={item.step} className="bg-muted rounded-lg border border-border p-4">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-primary font-bold text-sm">
+            <div key={item.step} className="bg-muted rounded-lg border border-border p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-muted rounded-full flex items-center justify-center text-primary font-bold text-xs sm:text-sm flex-shrink-0">
                   {item.step}
                 </div>
-                <h4 className="font-medium text-foreground">{item.title}</h4>
+                <h4 className="font-medium text-foreground text-sm sm:text-base">{item.title}</h4>
               </div>
-              <p className="text-sm text-muted-foreground pl-11">{item.desc}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground pl-8 sm:pl-11 hidden sm:block">{item.desc}</p>
             </div>
           ))}
         </div>
