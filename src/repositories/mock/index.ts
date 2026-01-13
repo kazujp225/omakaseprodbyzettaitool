@@ -15,6 +15,9 @@ import type {
   AgentPerformanceRepository,
   AgentEntitlementRepository,
   AgentSettlementRepository,
+  CallRecordRepository,
+  CallRecordFilters,
+  CallHistoryRepository,
 } from '../interfaces'
 import type {
   Account,
@@ -53,8 +56,13 @@ import type {
   AgentSettlement,
   CreateAgentSettlementInput,
   UpdateAgentSettlementInput,
+  CallRecord,
+  CreateCallRecordInput,
+  UpdateCallRecordInput,
+  CallHistory,
+  CreateCallHistoryInput,
 } from '@/domain/types'
-import type { ContractStatus, InvoiceStatus, PaymentStatus, NotificationStatus, AgentSettlementStatus, PayoutStatus, PayoutMethod } from '@/domain/status'
+import type { ContractStatus, InvoiceStatus, PaymentStatus, NotificationStatus, AgentSettlementStatus, PayoutStatus, PayoutMethod, CallResult } from '@/domain/status'
 import { generateId, randomDelay } from '@/lib/utils'
 import {
   accounts as seedAccounts,
@@ -72,6 +80,8 @@ import {
   agentPerformances as seedAgentPerformances,
   agentEntitlements as seedAgentEntitlements,
   agentSettlements as seedAgentSettlements,
+  callRecords as seedCallRecords,
+  callHistories as seedCallHistories,
 } from '@/seed/data'
 
 let accounts: Account[] = [...seedAccounts]
@@ -89,6 +99,8 @@ let agentContractsData: AgentContract[] = [...seedAgentContracts]
 let agentPerformances: AgentMonthlyPerformance[] = [...seedAgentPerformances]
 let agentEntitlements: AgentMonthlyEntitlement[] = [...seedAgentEntitlements]
 let agentSettlements: AgentSettlement[] = [...seedAgentSettlements]
+let callRecords: CallRecord[] = [...seedCallRecords]
+let callHistories: CallHistory[] = [...seedCallHistories]
 
 export const mockAccountRepository: AccountRepository = {
   async list(orgId: string): Promise<Account[]> {
@@ -653,6 +665,8 @@ export function resetMockData() {
   agentPerformances = [...seedAgentPerformances]
   agentEntitlements = [...seedAgentEntitlements]
   agentSettlements = [...seedAgentSettlements]
+  callRecords = [...seedCallRecords]
+  callHistories = [...seedCallHistories]
 }
 
 export function getMockAccounts() {
@@ -1013,4 +1027,193 @@ export const mockAgentSettlementRepository: AgentSettlementRepository = {
     agentSettlements[index] = updated
     return updated
   },
+}
+
+// Call Record Mock Repository
+export const mockCallRecordRepository: CallRecordRepository = {
+  async list(orgId: string): Promise<CallRecord[]> {
+    await randomDelay()
+    return callRecords.filter((c) => c.orgId === orgId)
+  },
+
+  async filter(orgId: string, filters: CallRecordFilters): Promise<CallRecord[]> {
+    await randomDelay()
+    return callRecords.filter((c) => {
+      if (c.orgId !== orgId) return false
+      if (filters.status && filters.status.length > 0 && !filters.status.includes(c.status)) return false
+      if (filters.acquisitionCompany && c.acquisitionCompany !== filters.acquisitionCompany) return false
+      if (filters.meoProvider && c.meoProvider !== filters.meoProvider) return false
+      if (filters.hasReCallSchedule !== undefined) {
+        const hasSchedule = c.reCallDate !== null
+        if (filters.hasReCallSchedule !== hasSchedule) return false
+      }
+      return true
+    })
+  },
+
+  async search(orgId: string, query: string): Promise<CallRecord[]> {
+    await randomDelay()
+    const lowerQuery = query.toLowerCase()
+    return callRecords.filter(
+      (c) => c.orgId === orgId && (
+        c.storeName.toLowerCase().includes(lowerQuery) ||
+        c.customerName.toLowerCase().includes(lowerQuery) ||
+        c.customerId.toLowerCase().includes(lowerQuery) ||
+        (c.phone1 && c.phone1.includes(query)) ||
+        (c.phone2 && c.phone2.includes(query))
+      )
+    )
+  },
+
+  async get(id: string): Promise<CallRecord | null> {
+    await randomDelay()
+    return callRecords.find((c) => c.id === id) || null
+  },
+
+  async getByIndex(orgId: string, index: number): Promise<CallRecord | null> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    return filtered[index] || null
+  },
+
+  async count(orgId: string): Promise<number> {
+    await randomDelay()
+    return callRecords.filter((c) => c.orgId === orgId).length
+  },
+
+  async create(input: CreateCallRecordInput): Promise<CallRecord> {
+    await randomDelay()
+    const now = new Date()
+    const record: CallRecord = {
+      ...input,
+      id: generateId(),
+      createdAt: now,
+      updatedAt: now,
+    }
+    callRecords.push(record)
+    return record
+  },
+
+  async update(id: string, input: UpdateCallRecordInput): Promise<CallRecord> {
+    await randomDelay()
+    const index = callRecords.findIndex((c) => c.id === id)
+    if (index === -1) throw new Error('CallRecord not found')
+    const updated = {
+      ...callRecords[index],
+      ...input,
+      updatedAt: new Date(),
+    }
+    callRecords[index] = updated
+    return updated
+  },
+
+  async getNext(orgId: string, currentId: string): Promise<CallRecord | null> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    const currentIndex = filtered.findIndex((c) => c.id === currentId)
+    if (currentIndex === -1 || currentIndex >= filtered.length - 1) return null
+    return filtered[currentIndex + 1]
+  },
+
+  async getPrevious(orgId: string, currentId: string): Promise<CallRecord | null> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    const currentIndex = filtered.findIndex((c) => c.id === currentId)
+    if (currentIndex <= 0) return null
+    return filtered[currentIndex - 1]
+  },
+
+  async getFirst(orgId: string): Promise<CallRecord | null> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    return filtered[0] || null
+  },
+
+  async getLast(orgId: string): Promise<CallRecord | null> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    return filtered[filtered.length - 1] || null
+  },
+
+  async getPosition(orgId: string, id: string): Promise<number> {
+    await randomDelay()
+    const filtered = callRecords.filter((c) => c.orgId === orgId)
+    const index = filtered.findIndex((c) => c.id === id)
+    return index + 1
+  },
+}
+
+// Call History Mock Repository
+export const mockCallHistoryRepository: CallHistoryRepository = {
+  async listByCallRecord(callRecordId: string): Promise<CallHistory[]> {
+    await randomDelay()
+    return callHistories
+      .filter((h) => h.callRecordId === callRecordId)
+      .sort((a, b) => b.callDate.getTime() - a.callDate.getTime())
+  },
+
+  async get(id: string): Promise<CallHistory | null> {
+    await randomDelay()
+    return callHistories.find((h) => h.id === id) || null
+  },
+
+  async create(input: CreateCallHistoryInput): Promise<CallHistory> {
+    await randomDelay()
+    const history: CallHistory = {
+      ...input,
+      id: generateId(),
+      createdAt: new Date(),
+    }
+    callHistories.push(history)
+    return history
+  },
+
+  async startCall(callRecordId: string, orgId: string, callerName: string, callerId?: string): Promise<CallHistory> {
+    await randomDelay()
+    const now = new Date()
+    const history: CallHistory = {
+      id: generateId(),
+      callRecordId,
+      orgId,
+      callDate: now,
+      callTime: now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+      callerEmployeeId: callerId || null,
+      callerEmployeeName: callerName,
+      result: 'connected' as CallResult,
+      resultNote: null,
+      startedAt: now,
+      endedAt: null,
+      duration: null,
+      notes: null,
+      createdAt: now,
+    }
+    callHistories.push(history)
+    return history
+  },
+
+  async endCall(id: string, result: CallResult, notes?: string): Promise<CallHistory> {
+    await randomDelay()
+    const index = callHistories.findIndex((h) => h.id === id)
+    if (index === -1) throw new Error('CallHistory not found')
+    const now = new Date()
+    const startedAt = callHistories[index].startedAt
+    const duration = startedAt ? Math.floor((now.getTime() - startedAt.getTime()) / 1000) : null
+    const updated: CallHistory = {
+      ...callHistories[index],
+      result,
+      endedAt: now,
+      duration,
+      notes: notes || callHistories[index].notes,
+    }
+    callHistories[index] = updated
+    return updated
+  },
+}
+
+export function getMockCallRecords() {
+  return callRecords
+}
+
+export function getMockCallHistories() {
+  return callHistories
 }

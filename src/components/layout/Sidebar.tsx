@@ -11,7 +11,8 @@ import {
   AlertTriangle,
   XCircle,
   Users,
-  Settings
+  Settings,
+  Phone
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/ScrollArea'
@@ -64,6 +65,11 @@ const navItems: NavItem[] = [
     label: '代理店管理',
     href: '/agents',
     icon: <Users className="h-5 w-5" />,
+  },
+  {
+    label: 'コール管理',
+    href: '/calls',
+    icon: <Phone className="h-5 w-5" />,
   },
   {
     label: '設定',

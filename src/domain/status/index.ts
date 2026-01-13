@@ -287,3 +287,104 @@ export const PLATFORM_TYPE_LABELS: Record<PlatformType, string> = {
   gbp: 'Google Business Profile',
   line: 'LINE',
 }
+
+// Call Record Status
+export const CALL_RECORD_STATUS = {
+  NEW: 'new',
+  IN_PROGRESS: 'in_progress',
+  CONTACTED: 'contacted',
+  CALLBACK_SCHEDULED: 'callback_scheduled',
+  COMPLETED: 'completed',
+  NOT_INTERESTED: 'not_interested',
+  INVALID: 'invalid',
+} as const
+
+export type CallRecordStatus = (typeof CALL_RECORD_STATUS)[keyof typeof CALL_RECORD_STATUS]
+
+export const CALL_RECORD_STATUS_LABELS: Record<CallRecordStatus, string> = {
+  new: '新規',
+  in_progress: '進行中',
+  contacted: '接触済',
+  callback_scheduled: '再コール予定',
+  completed: '完了',
+  not_interested: '関心なし',
+  invalid: '無効',
+}
+
+export const CALL_RECORD_STATUS_VARIANT: Record<CallRecordStatus, BadgeVariant> = {
+  new: 'neutral',
+  in_progress: 'warning',
+  contacted: 'success',
+  callback_scheduled: 'warning',
+  completed: 'success',
+  not_interested: 'neutral',
+  invalid: 'danger',
+}
+
+// Call Result
+export const CALL_RESULT = {
+  CONNECTED: 'connected',
+  NO_ANSWER: 'no_answer',
+  BUSY: 'busy',
+  VOICEMAIL: 'voicemail',
+  WRONG_NUMBER: 'wrong_number',
+  CALLBACK_REQUESTED: 'callback_requested',
+  CONTRACT_CONFIRMED: 'contract_confirmed',
+  PAYMENT_PENDING: 'payment_pending',
+  DELIVERY_OK: 'delivery_ok',
+  TIMING_NG: 'timing_ng',
+  CANCELLED: 'cancelled',
+  NOT_INTERESTED: 'not_interested',
+  COMPLETED: 'completed',
+} as const
+
+export type CallResult = (typeof CALL_RESULT)[keyof typeof CALL_RESULT]
+
+export const CALL_RESULT_LABELS: Record<CallResult, string> = {
+  connected: '接続',
+  no_answer: '不在',
+  busy: '話中',
+  voicemail: '留守電',
+  wrong_number: '番号違い',
+  callback_requested: '折返し依頼',
+  contract_confirmed: '契約確認コール',
+  payment_pending: '決済登録待ち',
+  delivery_ok: '納品コールOK',
+  timing_ng: 'タイミングNG',
+  cancelled: 'キャンセル',
+  not_interested: '興味なし',
+  completed: '完了',
+}
+
+export const CALL_RESULT_VARIANT: Record<CallResult, BadgeVariant> = {
+  connected: 'success',
+  no_answer: 'neutral',
+  busy: 'warning',
+  voicemail: 'neutral',
+  wrong_number: 'danger',
+  callback_requested: 'warning',
+  contract_confirmed: 'success',
+  payment_pending: 'warning',
+  delivery_ok: 'success',
+  timing_ng: 'danger',
+  cancelled: 'danger',
+  not_interested: 'neutral',
+  completed: 'success',
+}
+
+// Payment Method Type (for call records)
+export const PAYMENT_METHOD_TYPE = {
+  CREDIT_CARD: 'credit_card',
+  BANK_TRANSFER: 'bank_transfer',
+  DIRECT_DEBIT: 'direct_debit',
+  CONVENIENCE_STORE: 'convenience_store',
+} as const
+
+export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPE)[keyof typeof PAYMENT_METHOD_TYPE]
+
+export const PAYMENT_METHOD_TYPE_LABELS: Record<PaymentMethodType, string> = {
+  credit_card: 'クレジットカード',
+  bank_transfer: '銀行振込',
+  direct_debit: '口座振替',
+  convenience_store: 'コンビニ払い',
+}

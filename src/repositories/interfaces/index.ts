@@ -35,8 +35,13 @@ import type {
   LinkageError,
   CreateLinkageErrorInput,
   UpdateLinkageErrorInput,
+  CallRecord,
+  CreateCallRecordInput,
+  UpdateCallRecordInput,
+  CallHistory,
+  CreateCallHistoryInput,
 } from '@/domain/types'
-import type { ContractStatus, InvoiceStatus, PaymentStatus, NotificationStatus, AgentSettlementStatus, PayoutStatus, IntegrationStatus } from '@/domain/status'
+import type { ContractStatus, InvoiceStatus, PaymentStatus, NotificationStatus, AgentSettlementStatus, PayoutStatus, CallRecordStatus, CallResult } from '@/domain/status'
 
 export interface AccountRepository {
   list(orgId: string): Promise<Account[]>
@@ -175,4 +180,38 @@ export interface AgentSettlementRepository {
   requestPayout(id: string, method: string, providerId: string): Promise<AgentSettlement>
   completePayout(id: string): Promise<AgentSettlement>
   failPayout(id: string, reason: string): Promise<AgentSettlement>
+}
+
+// Call Record Repository
+export interface CallRecordFilters {
+  status?: CallRecordStatus[]
+  acquisitionCompany?: string
+  meoProvider?: string
+  hasReCallSchedule?: boolean
+  dateFrom?: Date
+  dateTo?: Date
+}
+
+export interface CallRecordRepository {
+  list(orgId: string): Promise<CallRecord[]>
+  filter(orgId: string, filters: CallRecordFilters): Promise<CallRecord[]>
+  search(orgId: string, query: string): Promise<CallRecord[]>
+  get(id: string): Promise<CallRecord | null>
+  getByIndex(orgId: string, index: number): Promise<CallRecord | null>
+  count(orgId: string): Promise<number>
+  create(input: CreateCallRecordInput): Promise<CallRecord>
+  update(id: string, input: UpdateCallRecordInput): Promise<CallRecord>
+  getNext(orgId: string, currentId: string): Promise<CallRecord | null>
+  getPrevious(orgId: string, currentId: string): Promise<CallRecord | null>
+  getFirst(orgId: string): Promise<CallRecord | null>
+  getLast(orgId: string): Promise<CallRecord | null>
+  getPosition(orgId: string, id: string): Promise<number>
+}
+
+export interface CallHistoryRepository {
+  listByCallRecord(callRecordId: string): Promise<CallHistory[]>
+  get(id: string): Promise<CallHistory | null>
+  create(input: CreateCallHistoryInput): Promise<CallHistory>
+  startCall(callRecordId: string, orgId: string, callerName: string, callerId?: string): Promise<CallHistory>
+  endCall(id: string, result: CallResult, notes?: string): Promise<CallHistory>
 }

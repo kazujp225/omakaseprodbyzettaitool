@@ -55,3 +55,13 @@ export function getOverdueDays(dueDate: Date): number {
   const diff = today.getTime() - due.getTime()
   return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)))
 }
+
+export function formatDateTime(date: Date): string {
+  return date.toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
