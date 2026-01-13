@@ -2,14 +2,13 @@
 
 import { useEffect, useState, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button, Badge, Card, Input, Textarea, LoadingState, Modal, ModalFooter, SelectRoot, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui'
+import { Button, Badge, Input, Textarea, LoadingState, Modal, ModalFooter } from '@/components/ui'
 import { mockCallRecordRepository, mockCallHistoryRepository } from '@/repositories/mock'
 import type { CallRecord, CallHistory, UpdateCallRecordInput } from '@/domain/types'
 import {
   CALL_RECORD_STATUS_LABELS,
   CALL_RECORD_STATUS_VARIANT,
   CALL_RESULT_LABELS,
-  CALL_RESULT_VARIANT,
   CALL_RESULT,
   PAYMENT_METHOD_TYPE_LABELS,
   type CallResult,
@@ -35,8 +34,6 @@ import {
   Instagram,
   MessageCircle,
   Edit3,
-  Save,
-  X,
   MapPin,
   Mail,
   ExternalLink,
