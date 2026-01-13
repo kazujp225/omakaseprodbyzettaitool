@@ -150,16 +150,20 @@ export default function DashboardPage() {
   return (
     <div className="space-y-10 pb-12">
       {/* Editorial Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            {greeting}、<br className="hidden md:block" />
-            <span className="text-muted-foreground">本日の業務状況です。</span>
-          </h1>
-        </div>
-        <div className="text-right">
-          <p className="text-sm font-bold text-foreground tracking-wider uppercase">TODAY</p>
-          <p className="text-xl font-medium text-muted-foreground text-monospaced-numbers">{formatDate(new Date())}</p>
+      <div className="border-b border-border pb-4 sm:pb-6">
+        <div className="flex items-start sm:items-end justify-between gap-3 sm:gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+              {greeting}、
+            </h1>
+            <p className="text-sm sm:text-lg md:text-xl text-muted-foreground font-medium mt-0.5 sm:mt-1">
+              本日の業務状況です。
+            </p>
+          </div>
+          <div className="text-right flex-shrink-0">
+            <p className="text-[10px] sm:text-xs font-bold text-muted-foreground tracking-wider uppercase">TODAY</p>
+            <p className="text-sm sm:text-lg md:text-xl font-medium text-foreground text-monospaced-numbers">{formatDate(new Date())}</p>
+          </div>
         </div>
       </div>
 
