@@ -173,55 +173,55 @@ export default function InvoicesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
         <Card padding="sm" accent="primary">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">今月請求総額</p>
-              <p className="text-xl font-bold text-primary">{formatCurrency(totalAmount)}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">請求総額</p>
+              <p className="text-base sm:text-xl font-bold text-primary truncate">{formatCurrency(totalAmount)}</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent="success">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">入金済額</p>
-              <p className="text-xl font-bold text-green-600">{formatCurrency(paidAmount)}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">入金済額</p>
+              <p className="text-base sm:text-xl font-bold text-green-600 truncate">{formatCurrency(paidAmount)}</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent={overdueAmount > 0 ? 'danger' : 'none'}>
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${overdueAmount > 0 ? 'bg-destructive/10' : 'bg-muted'} rounded-lg flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${overdueAmount > 0 ? 'text-destructive' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className={`w-8 h-8 sm:w-10 sm:h-10 ${overdueAmount > 0 ? 'bg-destructive/10' : 'bg-muted'} rounded-lg flex items-center justify-center flex-shrink-0`}>
+              <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${overdueAmount > 0 ? 'text-destructive' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">未回収額</p>
-              <p className={`text-xl font-bold ${overdueAmount > 0 ? 'text-destructive' : 'text-foreground'}`}>{formatCurrency(overdueAmount)}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">未回収額</p>
+              <p className={`text-base sm:text-xl font-bold ${overdueAmount > 0 ? 'text-destructive' : 'text-foreground'} truncate`}>{formatCurrency(overdueAmount)}</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-muted-foreground">回収率</p>
-              <p className="text-lg font-bold text-primary">{collectionRate}%</p>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <p className="text-xs sm:text-sm text-muted-foreground">回収率</p>
+              <p className="text-sm sm:text-lg font-bold text-primary">{collectionRate}%</p>
             </div>
-            <div className="w-full bg-border rounded-full h-2.5 overflow-hidden">
+            <div className="w-full bg-border rounded-full h-2 sm:h-2.5 overflow-hidden">
               <div
-                className="bg-primary h-2.5 rounded-full transition-all duration-300"
+                className="bg-primary h-2 sm:h-2.5 rounded-full transition-all duration-300"
                 style={{ width: `${collectionRate}%` }}
               />
             </div>
@@ -238,7 +238,7 @@ export default function InvoicesPage() {
                 key={tab.status}
                 onClick={() => setActiveTab(tab.status)}
                 className={`
-                  flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                  flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                   ${
                     activeTab === tab.status
                       ? 'border-primary text-primary'
@@ -248,7 +248,7 @@ export default function InvoicesPage() {
               >
                 {tab.label}
                 <span
-                  className={`px-2 py-0.5 rounded-md text-xs md:text-sm ${
+                  className={`px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-sm ${
                     activeTab === tab.status
                       ? 'bg-primary/10 text-primary'
                       : tab.status === 'overdue' && counts[tab.status] > 0

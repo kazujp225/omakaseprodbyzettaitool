@@ -181,9 +181,9 @@ function StoreSearchContent() {
       />
 
       {/* フィルターチップ */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
-          <span className="text-sm text-muted-foreground whitespace-nowrap">都道府県:</span>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 sm:pb-0">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">都道府県:</span>
           <div className="flex gap-1">
             {['東京都', '神奈川県', '大阪府', '愛知県', '福岡県'].map((pref) => {
               const count = stores.filter(s => s.prefecture === pref).length
@@ -194,6 +194,7 @@ function StoreSearchContent() {
                   count={count}
                   active={prefectureFilter === pref}
                   onClick={() => setPrefectureFilter(prefectureFilter === pref ? '' : pref)}
+                  size="sm"
                 />
               )
             })}
@@ -202,12 +203,13 @@ function StoreSearchContent() {
                 label={prefectureFilter}
                 active
                 onClick={() => setPrefectureFilter('')}
+                size="sm"
               />
             )}
           </div>
         </div>
 
-        <Button variant="ghost" size="sm" onClick={handleLoadAll} className="self-start sm:self-auto">
+        <Button variant="ghost" size="sm" onClick={handleLoadAll} className="self-start sm:self-auto text-xs">
           全件表示
         </Button>
       </div>

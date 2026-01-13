@@ -331,6 +331,7 @@ interface FilterChipProps {
   active?: boolean
   onClick?: () => void
   color?: 'primary' | 'success' | 'warning' | 'danger' | 'neutral'
+  size?: 'sm' | 'md'
 }
 
 export function FilterChip({
@@ -339,6 +340,7 @@ export function FilterChip({
   active = false,
   onClick,
   color = 'primary',
+  size = 'md',
 }: FilterChipProps) {
   const activeColors: Record<string, string> = {
     primary: 'bg-primary/10 text-primary border-primary/30 ring-2 ring-primary/20',
@@ -348,11 +350,22 @@ export function FilterChip({
     neutral: 'bg-muted text-foreground border-border ring-2 ring-border',
   }
 
+  const sizeClasses = {
+    sm: 'gap-1 px-2 py-1 text-xs',
+    md: 'gap-1.5 px-3 py-1.5 text-sm',
+  }
+
+  const countSizeClasses = {
+    sm: 'min-w-[1rem] h-4 px-1 text-[10px]',
+    md: 'min-w-[1.25rem] h-5 px-1.5 text-xs',
+  }
+
   return (
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium',
+        'inline-flex items-center font-medium',
+        sizeClasses[size],
         'border rounded-full transition-all duration-150',
         'hover:scale-105 active:scale-95',
         active
@@ -364,8 +377,8 @@ export function FilterChip({
       {count !== undefined && (
         <span
           className={cn(
-            'min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center',
-            'text-xs font-semibold rounded-full',
+            'flex items-center justify-center font-semibold rounded-full',
+            countSizeClasses[size],
             active ? 'bg-background/50' : 'bg-muted text-muted-foreground'
           )}
         >

@@ -25,7 +25,7 @@ function ContractListContent() {
   const [statusFilter, setStatusFilter] = useState<string>(statusParam || '')
   const [billingMethodFilter, setBillingMethodFilter] = useState<string>('')
   const [planFilter, setPlanFilter] = useState<string>('')
-  const [showFilterPanel, setShowFilterPanel] = useState(true)
+  const [showFilterPanel, setShowFilterPanel] = useState(false)
 
   // 検索機能
   const [searchQuery, setSearchQuery] = useState('')
@@ -343,64 +343,64 @@ function ContractListContent() {
       />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
         <Card padding="sm" accent="success">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">稼働中</p>
-              <p className="text-xl font-bold text-green-600">{activeCount}件</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">稼働中</p>
+              <p className="text-lg sm:text-xl font-bold text-green-600">{activeCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent="primary">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">商談中</p>
-              <p className="text-xl font-bold text-primary">{leadCount}件</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">商談中</p>
+              <p className="text-lg sm:text-xl font-bold text-primary">{leadCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm" accent={cancelPendingCount > 0 ? 'warning' : 'none'}>
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${cancelPendingCount > 0 ? 'bg-amber-50' : 'bg-muted'} rounded-lg flex items-center justify-center`}>
-              <svg className={`w-5 h-5 ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className={`w-8 h-8 sm:w-10 sm:h-10 ${cancelPendingCount > 0 ? 'bg-amber-50' : 'bg-muted'} rounded-lg flex items-center justify-center flex-shrink-0`}>
+              <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">解約予定</p>
-              <p className={`text-xl font-bold ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-foreground'}`}>{cancelPendingCount}件</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">解約予定</p>
+              <p className={`text-lg sm:text-xl font-bold ${cancelPendingCount > 0 ? 'text-amber-600' : 'text-foreground'}`}>{cancelPendingCount}件</p>
             </div>
           </div>
         </Card>
         <Card padding="sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">合計</p>
-              <p className="text-xl font-bold text-foreground">{contracts.length}件</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">合計</p>
+              <p className="text-lg sm:text-xl font-bold text-foreground">{contracts.length}件</p>
             </div>
           </div>
         </Card>
       </div>
 
       {/* Status Filter Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-        <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">ステータス:</span>
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 md:pb-0">
+        <span className="text-xs sm:text-sm text-muted-foreground mr-0.5 sm:mr-1 whitespace-nowrap">ステータス:</span>
         {Object.entries(CONTRACT_STATUS).map(([, value]) => {
           const count = contracts.filter((c) => c.status === value).length
           const isActive = statusFilter === value
@@ -412,6 +412,7 @@ function ContractListContent() {
               count={count}
               active={isActive}
               color={chipColor}
+              size="sm"
               onClick={() => {
                 setStatusFilter(isActive ? '' : value)
                 router.push(isActive ? '/contracts' : `/contracts?status=${value}`)
